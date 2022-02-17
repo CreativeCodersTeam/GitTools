@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.23.0-alphacliconsolea0038" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="CreativeCoders.Core" Version="0.23.0-alphacliconsolea0038" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Git\CreativeCoders.Git.Auth.CredentialManagerCore\CreativeCoders.Git.Auth.CredentialManagerCore.csproj" />
+    <ProjectReference Include="..\..\Git\CreativeCoders.Git\CreativeCoders.Git.csproj" />
+  </ItemGroup>
+
+</Project>
