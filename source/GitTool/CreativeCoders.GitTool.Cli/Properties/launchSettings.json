@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "CreativeCoders.DevTools.GitTool.Cli": {
-      "commandName": "Project",
-      "commandLineArgs": "help feature start",
-      "workingDirectory": "C:\\develop\\github\\darthsharp\\TestRepo"
-    }
-  }
-}
