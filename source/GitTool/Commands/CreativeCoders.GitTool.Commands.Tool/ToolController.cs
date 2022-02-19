@@ -37,9 +37,8 @@ namespace CreativeCoders.GitTool.Commands.Tool
             _helpPrinter = Ensure.NotNull(helpPrinter, nameof(helpPrinter));
         }
 
-        [CliAction]
         [CliAction("help")]
-        public void ShowHelp()
+        public void ShowHelp(string[] args)
         {
             _sysConsole
                 .WriteLine()
@@ -47,7 +46,7 @@ namespace CreativeCoders.GitTool.Commands.Tool
                 .WriteLine($"Copyright {DateTime.Now.Year} CreativeCoders")
                 .WriteLine();
 
-            _helpPrinter.PrintHelp(new []{"feature", "finish"});
+            _helpPrinter.PrintHelp(args);
         }
 
         [CliAction("setup")]
@@ -87,6 +86,7 @@ namespace CreativeCoders.GitTool.Commands.Tool
             await _repositoryConfigurations.SaveConfigurationAsync(repository.Info.RemoteUri, configuration);
         }
 
+        // ReSharper disable once StringLiteralTypo
         [CliAction("showconfig")]
         public void ShowConfig()
         {

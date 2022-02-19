@@ -6,7 +6,7 @@ namespace CreativeCoders.GitTool.Base
 {
     public interface IGitServiceProviders
     {
-        Task<IGitServiceProvider?> GetServiceProviderAsync(IGitRepository gitRepository, string? providerName);
+        Task<IGitServiceProvider> GetServiceProviderAsync(IGitRepository gitRepository, string? providerName);
 
         IEnumerable<string> ProviderNames { get; }
     }

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.Core" Version="0.23.0-alphacliconsolea0038" />
+    <PackageReference Include="CreativeCoders.Core" Version="0.23.0-alphacliconsolea0048" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     
   </ItemGroup>

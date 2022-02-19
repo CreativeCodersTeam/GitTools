@@ -101,7 +101,7 @@ namespace CreativeCoders.Git
                 if (!gitPushOptions.CreateRemoteBranchIfNotExists)
                 {
                     throw new GitPushFailedException(
-                        $" Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
+                        $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
                 }
 
                 var remoteOrigin = _repo.Network.Remotes[GitRemotes.Origin];

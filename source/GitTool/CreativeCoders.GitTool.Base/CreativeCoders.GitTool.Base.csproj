@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.23.0-alphacliconsolea0038" />
+    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.23.0-alphacliconsolea0048" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="CreativeCoders.Core" Version="0.23.0-alphacliconsolea0038" />
+    <PackageReference Include="CreativeCoders.Core" Version="0.23.0-alphacliconsolea0048" />
   </ItemGroup>
 
   <ItemGroup>

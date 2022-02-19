@@ -79,8 +79,7 @@ namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature
                     .WriteLine();
             }
 
-            // todo
-            //data.GitRepository.LibGit2Repository.Network.Remotes[""]
+            //data.GitRepository.Remotes[data.FeatureBranch]
         }
 
         private void CreateAndCheckOutFeatureBranch(IGitRepository repository,
