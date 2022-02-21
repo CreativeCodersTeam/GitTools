@@ -13,6 +13,7 @@ using CreativeCoders.GitTool.GitLab;
 using CreativeCoders.SysConsole.Cli.Actions;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime.Middleware;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -47,6 +48,8 @@ namespace CreativeCoders.GitTool.Cli
             runtimeBuilder.AddController<BranchesController>();
             runtimeBuilder.AddController<ReleasesController>();
             runtimeBuilder.AddController<ToolController>();
+
+            runtimeBuilder.UseMiddleware<GitToolsExceptionMiddleware>();
 
             runtimeBuilder.UseRouting();
         }
