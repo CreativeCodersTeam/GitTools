@@ -23,19 +23,13 @@ namespace CreativeCoders.GitTool.Commands.Branches
 
         [UsedImplicitly]
         [CliAction]
-        [CliAction("list")]
+        [CliAction("list", HelpText = "List repository branches")]
         public async Task<CliActionResult> ListAsync(ListBranchesOptions options)
-        {
-            var result = await _listBranchesCommand.ExecuteAsync(options);
-
-            return new CliActionResult(result);
-        }
+            => new(await _listBranchesCommand.ExecuteAsync(options));
 
         [UsedImplicitly]
-        [CliAction("update")]
-        public async Task<int> UpdateAsync(UpdateBranchesOptions options)
-        {
-            return await _updateBranchesCommand.ExecuteAsync(options);
-        }
+        [CliAction("update", HelpText = "Update all permanent local branches by pulling from remote branches")]
+        public async Task<CliActionResult> UpdateAsync(UpdateBranchesOptions options)
+            => new(await _updateBranchesCommand.ExecuteAsync(options));
     }
 }
