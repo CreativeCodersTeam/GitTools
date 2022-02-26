@@ -1,8 +1,7 @@
-namespace CreativeCoders.Git.Abstractions.RefSpecs
+namespace CreativeCoders.Git.Abstractions.RefSpecs;
+
+public enum GitRefSpecDirection
 {
-    public enum GitRefSpecDirection
-    {
-        Fetch,
-        Push
-    }
+    Fetch,
+    Push
 }

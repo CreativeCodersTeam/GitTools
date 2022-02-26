@@ -6,39 +6,38 @@ using CreativeCoders.Git.Abstractions.References;
 using CreativeCoders.Git.Objects;
 using LibGit2Sharp;
 
-namespace CreativeCoders.Git.References
+namespace CreativeCoders.Git.References;
+
+public class GitReference : ComparableObject<GitReference, IGitReference>, IGitReference
 {
-    public class GitReference : ComparableObject<GitReference, IGitReference>, IGitReference
+    private readonly Reference _reference;
+
+    internal GitReference(Reference reference)
     {
-        private readonly Reference _reference;
+        _reference = Ensure.NotNull(reference, nameof(reference));
 
-        internal GitReference(Reference reference)
+        Name = new ReferenceName(reference.CanonicalName);
+
+        if (reference is DirectReference)
         {
-            _reference = Ensure.NotNull(reference, nameof(reference));
-
-            Name = new ReferenceName(reference.CanonicalName);
-
-            if (reference is DirectReference)
-            {
-                ReferenceTargetId = new GitObjectId(reference.TargetIdentifier);
-            }
+            ReferenceTargetId = new GitObjectId(reference.TargetIdentifier);
         }
-
-        static GitReference() => InitComparableObject(x => x.Name.Canonical);
-
-        internal static GitReference? From(Reference? reference)
-        {
-            return reference == null
-                ? null
-                : new GitReference(reference);
-        }
-
-        public ReferenceName Name { get; }
-
-        public string TargetIdentifier => _reference.TargetIdentifier;
-
-        public IGitObjectId? ReferenceTargetId { get; }
-
-        public static implicit operator Reference(GitReference reference) => reference._reference;
     }
+
+    static GitReference() => InitComparableObject(x => x.Name.Canonical);
+
+    internal static GitReference? From(Reference? reference)
+    {
+        return reference == null
+            ? null
+            : new GitReference(reference);
+    }
+
+    public ReferenceName Name { get; }
+
+    public string TargetIdentifier => _reference.TargetIdentifier;
+
+    public IGitObjectId? ReferenceTargetId { get; }
+
+    public static implicit operator Reference(GitReference reference) => reference._reference;
 }

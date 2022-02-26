@@ -5,39 +5,38 @@ using CreativeCoders.Git.Common;
 using CreativeCoders.Git.Objects;
 using LibGit2Sharp;
 
-namespace CreativeCoders.Git.Diffs
+namespace CreativeCoders.Git.Diffs;
+
+public class GitTreeEntryChanges : IGitTreeEntryChanges
 {
-    public class GitTreeEntryChanges : IGitTreeEntryChanges
+    private readonly TreeEntryChanges _treeEntryChanges;
+
+    internal GitTreeEntryChanges(TreeEntryChanges treeEntryChanges)
     {
-        private readonly TreeEntryChanges _treeEntryChanges;
+        _treeEntryChanges = Ensure.NotNull(treeEntryChanges, nameof(treeEntryChanges));
 
-        internal GitTreeEntryChanges(TreeEntryChanges treeEntryChanges)
-        {
-            _treeEntryChanges = Ensure.NotNull(treeEntryChanges, nameof(treeEntryChanges));
-
-            Mode = treeEntryChanges.Mode.ToGitEntryMode();
-            Oid = new GitObjectId(treeEntryChanges.Oid);
-            Status = treeEntryChanges.Status.ToGitEntryChangeKind();
-            OldMode = treeEntryChanges.OldMode.ToGitEntryMode();
-            OldOid = new GitObjectId(treeEntryChanges.OldOid);
-        }
-
-        public string Path => _treeEntryChanges.Path;
-
-        public GitEntryMode Mode { get; }
-
-        public IGitObjectId Oid { get; }
-
-        public bool Exists => _treeEntryChanges.Exists;
-
-        public GitEntryChangeKind Status { get; }
-
-        public string OldPath => _treeEntryChanges.OldPath;
-
-        public GitEntryMode OldMode { get; }
-
-        public IGitObjectId OldOid { get; }
-
-        public bool OldExists => _treeEntryChanges.OldExists;
+        Mode = treeEntryChanges.Mode.ToGitEntryMode();
+        Oid = new GitObjectId(treeEntryChanges.Oid);
+        Status = treeEntryChanges.Status.ToGitEntryChangeKind();
+        OldMode = treeEntryChanges.OldMode.ToGitEntryMode();
+        OldOid = new GitObjectId(treeEntryChanges.OldOid);
     }
+
+    public string Path => _treeEntryChanges.Path;
+
+    public GitEntryMode Mode { get; }
+
+    public IGitObjectId Oid { get; }
+
+    public bool Exists => _treeEntryChanges.Exists;
+
+    public GitEntryChangeKind Status { get; }
+
+    public string OldPath => _treeEntryChanges.OldPath;
+
+    public GitEntryMode OldMode { get; }
+
+    public IGitObjectId OldOid { get; }
+
+    public bool OldExists => _treeEntryChanges.OldExists;
 }

@@ -1,15 +1,14 @@
-﻿namespace CreativeCoders.Git.Abstractions.Commits
+﻿namespace CreativeCoders.Git.Abstractions.Commits;
+
+public class GitMergeResult
 {
-    public class GitMergeResult
+    public GitMergeResult(GitMergeStatus mergeStatus, IGitCommit? commit)
     {
-        public GitMergeResult(GitMergeStatus mergeStatus, IGitCommit? commit)
-        {
-            MergeStatus = mergeStatus;
-            Commit = commit;
-        }
-
-        public GitMergeStatus MergeStatus { get; }
-
-        public IGitCommit? Commit { get; }
+        MergeStatus = mergeStatus;
+        Commit = commit;
     }
+
+    public GitMergeStatus MergeStatus { get; }
+
+    public IGitCommit? Commit { get; }
 }

@@ -5,31 +5,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Octokit;
 
-namespace CreativeCoders.GitTool.GitHub
+namespace CreativeCoders.GitTool.GitHub;
+
+public static class GitHubServiceCollectionExtensions
 {
-    public static class GitHubServiceCollectionExtensions
+    public static IServiceCollection AddGitHubTools(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddGitHubTools(this IServiceCollection services, IConfiguration configuration)
+        Ensure.NotNull(configuration, nameof(configuration));
+
+        services.AddGitTools();
+
+        services.AddTransient<IGitHubClient>(sp =>
         {
-            Ensure.NotNull(configuration, nameof(configuration));
+            var credentialStore = sp.GetRequiredService<ICredentialStore>();
 
-            services.AddGitTools();
+            return new GitHubClient(new ProductHeaderValue("git-feature"), credentialStore);
+        });
 
-            services.AddTransient<IGitHubClient>(sp =>
-            {
-                var credentialStore = sp.GetRequiredService<ICredentialStore>();
+        services.TryAddSingleton<ICredentialStore, GitHubCredentialStore>();
 
-                return new GitHubClient(new ProductHeaderValue("git-feature"), credentialStore);
-            });
+        services.AddTransient<IGitServiceProviderFactory, DefaultGitHubServiceProviderFactory>();
 
-            services.TryAddSingleton<ICredentialStore, GitHubCredentialStore>();
+        services.Configure<GitHubServiceProviderOptions>(
+            configuration.GetSection("GitServiceProviders").GetSection("GitHub"));
 
-            services.AddTransient<IGitServiceProviderFactory, DefaultGitHubServiceProviderFactory>();
-
-            services.Configure<GitHubServiceProviderOptions>(
-                configuration.GetSection("GitServiceProviders").GetSection("GitHub"));
-
-            return services;
-        }
+        return services;
     }
 }

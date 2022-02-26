@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create
+namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create;
+
+public interface ICreateReleaseCommand
 {
-    public interface ICreateReleaseCommand
-    {
-        Task<int> ExecuteAsync(CreateReleaseOptions options);
-    }
+    Task<int> ExecuteAsync(CreateReleaseOptions options);
 }

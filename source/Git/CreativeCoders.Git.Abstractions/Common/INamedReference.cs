@@ -1,7 +1,6 @@
-﻿namespace CreativeCoders.Git.Abstractions.Common
+﻿namespace CreativeCoders.Git.Abstractions.Common;
+
+public interface INamedReference
 {
-    public interface INamedReference
-    {
-        ReferenceName Name { get; }
-    }
+    ReferenceName Name { get; }
 }

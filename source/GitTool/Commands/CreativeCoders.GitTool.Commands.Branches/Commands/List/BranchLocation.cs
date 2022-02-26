@@ -1,9 +1,8 @@
-﻿namespace CreativeCoders.GitTool.Commands.Branches.Commands.List
+﻿namespace CreativeCoders.GitTool.Commands.Branches.Commands.List;
+
+public enum BranchLocation
 {
-    public enum BranchLocation
-    {
-        All,
-        Local,
-        Remote
-    }
+    All,
+    Local,
+    Remote
 }

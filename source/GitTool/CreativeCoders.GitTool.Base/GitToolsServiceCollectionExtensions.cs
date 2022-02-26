@@ -4,21 +4,20 @@ using CreativeCoders.GitTool.Base.Configurations;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class GitToolsServiceCollectionExtensions
 {
-    public static class GitToolsServiceCollectionExtensions
+    public static IServiceCollection AddGitTools(this IServiceCollection services)
     {
-        public static IServiceCollection AddGitTools(this IServiceCollection services)
-        {
-            services.TryAddSingleton<IRepositoryConfigurations, DefaultRepositoryConfigurations>();
+        services.TryAddSingleton<IRepositoryConfigurations, DefaultRepositoryConfigurations>();
 
-            services.AddGit();
+        services.AddGit();
 
-            services.AddGcmCoreCredentialProvider();
+        services.AddGcmCoreCredentialProvider();
 
-            services.TryAddTransient<IGitServiceProviders, DefaultGitServiceProviders>();
+        services.TryAddTransient<IGitServiceProviders, DefaultGitServiceProviders>();
 
-            return services;
-        }
+        return services;
     }
 }

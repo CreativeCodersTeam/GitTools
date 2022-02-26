@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature
+namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature;
+
+public interface IStartFeatureCommand
 {
-    public interface IStartFeatureCommand
-    {
-        Task<int> StartFeatureAsync(StartFeatureOptions options);
-    }
+    Task<int> StartFeatureAsync(StartFeatureOptions options);
 }

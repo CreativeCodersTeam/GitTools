@@ -2,21 +2,20 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CreativeCoders.GitTool.GitLab
+namespace CreativeCoders.GitTool.GitLab;
+
+public static class GitLabServiceCollectionExtensions
 {
-    public static class GitLabServiceCollectionExtensions
+    public static IServiceCollection AddGitLabTools(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddGitLabTools(this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddGitTools();
+        services.AddGitTools();
 
-            services.AddTransient<IGitServiceProviderFactory, DefaultGitLabServiceProviderFactory>();
+        services.AddTransient<IGitServiceProviderFactory, DefaultGitLabServiceProviderFactory>();
 
-            services.Configure<GitLabServiceProviderOptions>(
-                configuration.GetSection("GitServiceProviders").GetSection("GitLab"));
+        services.Configure<GitLabServiceProviderOptions>(
+            configuration.GetSection("GitServiceProviders").GetSection("GitLab"));
 
-            return services;
-        }
+        return services;
     }
 }

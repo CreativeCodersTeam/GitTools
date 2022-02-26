@@ -1,12 +1,11 @@
-﻿namespace CreativeCoders.GitTool.Base
-{
-    public class GitPullRequest
-    {
-        public GitPullRequest(string url)
-        {
-            Url = url;
-        }
+﻿namespace CreativeCoders.GitTool.Base;
 
-        public string Url { get; }
+public class GitPullRequest
+{
+    public GitPullRequest(string url)
+    {
+        Url = url;
     }
+
+    public string Url { get; }
 }

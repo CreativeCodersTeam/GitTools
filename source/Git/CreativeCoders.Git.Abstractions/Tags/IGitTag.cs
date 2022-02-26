@@ -3,13 +3,12 @@ using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Common;
 using JetBrains.Annotations;
 
-namespace CreativeCoders.Git.Abstractions.Tags
-{
-    [PublicAPI]
-    public interface IGitTag : IEquatable<IGitTag?>, IComparable<IGitTag>, INamedReference
-    {
-        string TargetSha { get; }
+namespace CreativeCoders.Git.Abstractions.Tags;
 
-        IGitCommit? PeeledTargetCommit();
-    }
+[PublicAPI]
+public interface IGitTag : IEquatable<IGitTag?>, IComparable<IGitTag>, INamedReference
+{
+    string TargetSha { get; }
+
+    IGitCommit? PeeledTargetCommit();
 }

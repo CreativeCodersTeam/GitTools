@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace CreativeCoders.GitTool.Commands.Features.Commands.FinishFeature
+namespace CreativeCoders.GitTool.Commands.Features.Commands.FinishFeature;
+
+public interface IFinishFeatureCommand
 {
-    public interface IFinishFeatureCommand
-    {
-        Task<int> FinishFeatureAsync(FinishFeatureOptions options);
-    }
+    Task<int> FinishFeatureAsync(FinishFeatureOptions options);
 }

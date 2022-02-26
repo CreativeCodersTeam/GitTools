@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace CreativeCoders.Git.Abstractions.Tags
+namespace CreativeCoders.Git.Abstractions.Tags;
+
+public interface IGitTagCollection : IEnumerable<IGitTag>
 {
-    public interface IGitTagCollection : IEnumerable<IGitTag>
-    {
-    }
 }

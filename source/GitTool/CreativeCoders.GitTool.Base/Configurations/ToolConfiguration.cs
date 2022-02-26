@@ -1,7 +1,6 @@
-﻿namespace CreativeCoders.GitTool.Base.Configurations
+﻿namespace CreativeCoders.GitTool.Base.Configurations;
+
+public class ToolConfiguration
 {
-    public class ToolConfiguration
-    {
-        public string? DefaultGitServiceProviderName { get; set; }
-    }
+    public string? DefaultGitServiceProviderName { get; set; }
 }

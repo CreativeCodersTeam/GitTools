@@ -1,11 +1,10 @@
-﻿namespace CreativeCoders.Git.Abstractions
+﻿namespace CreativeCoders.Git.Abstractions;
+
+public class GitFetchOptions
 {
-    public class GitFetchOptions
-    {
-        public bool? Prune { get; set; }
+    public bool? Prune { get; set; }
 
-        public GitTagFetchMode? TagFetchMode { get; set; }
+    public GitTagFetchMode? TagFetchMode { get; set; }
 
-        public string[]? CustomHeaders { get; set; }
-    }
+    public string[]? CustomHeaders { get; set; }
 }

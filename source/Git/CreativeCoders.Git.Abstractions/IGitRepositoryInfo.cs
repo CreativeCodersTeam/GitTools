@@ -2,15 +2,14 @@
 using CreativeCoders.Git.Abstractions.Branches;
 using JetBrains.Annotations;
 
-namespace CreativeCoders.Git.Abstractions
+namespace CreativeCoders.Git.Abstractions;
+
+[PublicAPI]
+public interface IGitRepositoryInfo
 {
-    [PublicAPI]
-    public interface IGitRepositoryInfo
-    {
-        string? Path { get; }
+    string? Path { get; }
 
-        GitMainBranch MainBranch { get; }
+    GitMainBranch MainBranch { get; }
 
-        Uri RemoteUri { get; }
-    }
+    Uri RemoteUri { get; }
 }

@@ -5,25 +5,24 @@ using CreativeCoders.SysConsole.Cli.Actions;
 using CreativeCoders.SysConsole.Cli.Actions.Definition;
 using JetBrains.Annotations;
 
-namespace CreativeCoders.GitTool.Commands.Releases
+namespace CreativeCoders.GitTool.Commands.Releases;
+
+[PublicAPI]
+[CliController("release")]
+public class ReleasesController
 {
-    [PublicAPI]
-    [CliController("release")]
-    public class ReleasesController
+    private readonly ICreateReleaseCommand _createReleaseCommand;
+
+    public ReleasesController(ICreateReleaseCommand createReleaseCommand)
     {
-        private readonly ICreateReleaseCommand _createReleaseCommand;
+        _createReleaseCommand = Ensure.NotNull(createReleaseCommand, nameof(createReleaseCommand));
+    }
 
-        public ReleasesController(ICreateReleaseCommand createReleaseCommand)
-        {
-            _createReleaseCommand = Ensure.NotNull(createReleaseCommand, nameof(createReleaseCommand));
-        }
+    [CliAction("create")]
+    public async Task<CliActionResult> CreateAsync(CreateReleaseOptions options)
+    {
+        var result = await _createReleaseCommand.ExecuteAsync(options);
 
-        [CliAction("create")]
-        public async Task<CliActionResult> CreateAsync(CreateReleaseOptions options)
-        {
-            var result = await _createReleaseCommand.ExecuteAsync(options);
-
-            return new CliActionResult(result);
-        }
+        return new CliActionResult(result);
     }
 }

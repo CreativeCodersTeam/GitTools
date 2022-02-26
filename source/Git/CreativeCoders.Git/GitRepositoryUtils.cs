@@ -1,16 +1,15 @@
 ﻿using CreativeCoders.Git.Abstractions;
 using LibGit2Sharp;
 
-namespace CreativeCoders.Git
+namespace CreativeCoders.Git;
+
+internal class GitRepositoryUtils : IGitRepositoryUtils
 {
-    internal class GitRepositoryUtils : IGitRepositoryUtils
-    {
-        public bool IsValidGitPath(string path) => Repository.IsValid(path);
+    public bool IsValidGitPath(string path) => Repository.IsValid(path);
 
-        public string? DiscoverGitPath(string path) => Repository.Discover(path);
+    public string? DiscoverGitPath(string path) => Repository.Discover(path);
 
-        public string? InitRepository(string path) => Repository.Init(path);
+    public string? InitRepository(string path) => Repository.Init(path);
 
-        public string? InitRepository(string path, bool isBare) => Repository.Init(path, isBare);
-    }
+    public string? InitRepository(string path, bool isBare) => Repository.Init(path, isBare);
 }

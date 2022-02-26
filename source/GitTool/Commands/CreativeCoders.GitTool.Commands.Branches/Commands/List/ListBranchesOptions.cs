@@ -1,10 +1,9 @@
 ﻿using CreativeCoders.SysConsole.Cli.Parsing;
 
-namespace CreativeCoders.GitTool.Commands.Branches.Commands.List
+namespace CreativeCoders.GitTool.Commands.Branches.Commands.List;
+
+public class ListBranchesOptions
 {
-    public class ListBranchesOptions
-    {
-        [OptionParameter('l', "Location", HelpText = "Location of branches (all, local, remote)")]
-        public BranchLocation Location { get; set; }
-    }
+    [OptionParameter('l', "Location", HelpText = "Location of branches (all, local, remote)")]
+    public BranchLocation Location { get; set; }
 }

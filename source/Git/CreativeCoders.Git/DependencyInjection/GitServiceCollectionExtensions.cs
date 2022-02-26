@@ -9,39 +9,38 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class GitServiceCollectionExtensions
 {
-    public static class GitServiceCollectionExtensions
+    public static IServiceCollection AddGit(this IServiceCollection services)
     {
-        public static IServiceCollection AddGit(this IServiceCollection services)
+        services.TryAddSingleton<IGitRepositoryFactory, DefaultGitRepositoryFactory>();
+
+        services.TryAddSingleton<IGitCredentialProviders, DefaultGitCredentialProviders>();
+
+        services.TryAddSingleton<IGitRepositoryUtils, GitRepositoryUtils>();
+
+        return services;
+    }
+
+    [PublicAPI]
+    public static IServiceCollection AddGit(this IServiceCollection services,
+        Action<GitRepositoryOptions> setupOptions)
+    {
+        Ensure.Argument(setupOptions, nameof(setupOptions)).NotNull();
+
+        services.AddGit();
+
+        services.TryAddTransient(sp =>
         {
-            services.TryAddSingleton<IGitRepositoryFactory, DefaultGitRepositoryFactory>();
+            var options = new GitRepositoryOptions();
 
-            services.TryAddSingleton<IGitCredentialProviders, DefaultGitCredentialProviders>();
+            setupOptions(options);
 
-            services.TryAddSingleton<IGitRepositoryUtils, GitRepositoryUtils>();
+            return sp.GetRequiredService<IGitRepositoryFactory>().OpenRepository(options.Path);
+        });
 
-            return services;
-        }
-
-        [PublicAPI]
-        public static IServiceCollection AddGit(this IServiceCollection services,
-            Action<GitRepositoryOptions> setupOptions)
-        {
-            Ensure.Argument(setupOptions, nameof(setupOptions)).NotNull();
-
-            services.AddGit();
-
-            services.TryAddTransient(sp =>
-            {
-                var options = new GitRepositoryOptions();
-
-                setupOptions(options);
-
-                return sp.GetRequiredService<IGitRepositoryFactory>().OpenRepository(options.Path);
-            });
-
-            return services;
-        }
+        return services;
     }
 }

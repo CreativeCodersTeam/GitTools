@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using CreativeCoders.Git.Abstractions;
 
-namespace CreativeCoders.GitTool.Base
+namespace CreativeCoders.GitTool.Base;
+
+public interface IGitServiceProviderFactory
 {
-    public interface IGitServiceProviderFactory
-    {
-        Task<IGitServiceProvider> CreateProviderAsync(IGitRepository gitRepository);
+    Task<IGitServiceProvider> CreateProviderAsync(IGitRepository gitRepository);
 
-        bool IsResponsibleFor(IGitRepository gitRepository);
+    bool IsResponsibleFor(IGitRepository gitRepository);
 
-        string ProviderName { get; }
-    }
+    string ProviderName { get; }
 }

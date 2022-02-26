@@ -1,11 +1,10 @@
-﻿namespace CreativeCoders.GitTool.Base
+﻿namespace CreativeCoders.GitTool.Base;
+
+public static class GitToolApp
 {
-    public static class GitToolApp
-    {
-        public const string ConfigFolderName = "CreativeCoders/CcGitTool";
+    public const string ConfigFolderName = "CreativeCoders/CcGitTool";
 
-        public const string ConfigFileName = "gt.json";
+    public const string ConfigFileName = "gt.json";
 
-        public const string RepositoryConfigFilePrefix = "repo_";
-    }
+    public const string RepositoryConfigFilePrefix = "repo_";
 }

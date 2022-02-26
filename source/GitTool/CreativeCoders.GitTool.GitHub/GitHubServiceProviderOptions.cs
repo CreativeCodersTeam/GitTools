@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace CreativeCoders.GitTool.GitHub
+namespace CreativeCoders.GitTool.GitHub;
+
+public class GitHubServiceProviderOptions
 {
-    public class GitHubServiceProviderOptions
-    {
-        public string[] Hosts { get; set; } = Array.Empty<string>();
-    }
+    public string[] Hosts { get; set; } = Array.Empty<string>();
 }

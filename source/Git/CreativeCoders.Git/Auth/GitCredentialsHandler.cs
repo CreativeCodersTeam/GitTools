@@ -3,48 +3,47 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions.Auth;
 using LibGit2Sharp;
 
-namespace CreativeCoders.Git.Auth
+namespace CreativeCoders.Git.Auth;
+
+public class GitCredentialsHandler
 {
-    public class GitCredentialsHandler
+    private readonly IGitCredentialProviders _credentialProviders;
+
+    public GitCredentialsHandler(IGitCredentialProviders credentialProviders)
     {
-        private readonly IGitCredentialProviders _credentialProviders;
+        _credentialProviders = Ensure
+            .Argument(credentialProviders, nameof(credentialProviders))
+            .NotNull()
+            .Value;
+    }
 
-        public GitCredentialsHandler(IGitCredentialProviders credentialProviders)
+    public Credentials? HandleCredentials(string url, string? usernameFromUrl, SupportedCredentialTypes types)
+    {
+        var credential = _credentialProviders.GetCredentials(url, usernameFromUrl);
+
+        if (credential == null || types == SupportedCredentialTypes.Default)
         {
-            _credentialProviders = Ensure
-                .Argument(credentialProviders, nameof(credentialProviders))
-                .NotNull()
-                .Value;
+            return types.HasFlag(SupportedCredentialTypes.Default) ? new DefaultCredentials() : null;
         }
 
-        public Credentials? HandleCredentials(string url, string? usernameFromUrl, SupportedCredentialTypes types)
+        return new SecureUsernamePasswordCredentials
         {
-            var credential = _credentialProviders.GetCredentials(url, usernameFromUrl);
+            Username = credential.UserName,
+            Password = TextToSecure(credential.Password)
+        };
+    }
 
-            if (credential == null || types == SupportedCredentialTypes.Default)
-            {
-                return types.HasFlag(SupportedCredentialTypes.Default) ? new DefaultCredentials() : null;
-            }
+    private static SecureString TextToSecure(string password)
+    {
+        var secureString = new SecureString();
 
-            return new SecureUsernamePasswordCredentials
-            {
-                Username = credential.UserName,
-                Password = TextToSecure(credential.Password)
-            };
+        foreach (var passwordChar in password)
+        {
+            secureString.AppendChar(passwordChar);
         }
 
-        private static SecureString TextToSecure(string password)
-        {
-            var secureString = new SecureString();
+        secureString.MakeReadOnly();
 
-            foreach (var passwordChar in password)
-            {
-                secureString.AppendChar(passwordChar);
-            }
-
-            secureString.MakeReadOnly();
-
-            return secureString;
-        }
+        return secureString;
     }
 }

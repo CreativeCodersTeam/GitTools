@@ -1,9 +1,8 @@
 ﻿using Microsoft.Git.CredentialManager;
 
-namespace CreativeCoders.Git.Auth.CredentialManagerCore
+namespace CreativeCoders.Git.Auth.CredentialManagerCore;
+
+public interface IGcmCoreCredentialStore
 {
-    public interface IGcmCoreCredentialStore
-    {
-        ICredentialStore Create(string? credentialsNameSpace = default);
-    }
+    ICredentialStore Create(string? credentialsNameSpace = default);
 }

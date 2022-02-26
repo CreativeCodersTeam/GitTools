@@ -7,49 +7,48 @@ using CreativeCoders.GitTool.Base.Exceptions;
 using GitLabApiClient;
 using GitLabApiClient.Models.MergeRequests.Requests;
 
-namespace CreativeCoders.GitTool.GitLab
+namespace CreativeCoders.GitTool.GitLab;
+
+internal class DefaultGitLabServiceProvider : IGitServiceProvider
 {
-    internal class DefaultGitLabServiceProvider : IGitServiceProvider
+    private readonly IGitLabClient _gitLabClient;
+
+    public DefaultGitLabServiceProvider(IGitLabClient gitLabClient)
     {
-        private readonly IGitLabClient _gitLabClient;
+        _gitLabClient = Ensure.NotNull(gitLabClient, nameof(gitLabClient));
+    }
 
-        public DefaultGitLabServiceProvider(IGitLabClient gitLabClient)
+    public async Task<GitPullRequest> CreatePullRequestAsync(GitCreatePullRequest gitCreatePullRequest)
+    {
+        var newMergeRequest = new CreateMergeRequest(gitCreatePullRequest.SourceBranch,
+            gitCreatePullRequest.TargetBranch,
+            gitCreatePullRequest.Title);
+
+        if (!string.IsNullOrWhiteSpace(gitCreatePullRequest.Description))
         {
-            _gitLabClient = Ensure.NotNull(gitLabClient, nameof(gitLabClient));
+            newMergeRequest.Description = gitCreatePullRequest.Description;
         }
 
-        public async Task<GitPullRequest> CreatePullRequestAsync(GitCreatePullRequest gitCreatePullRequest)
+        var projectId = GitLabProjectId.GetProjectId(gitCreatePullRequest.RepositoryUrl);
+
+        var mergeRequest = await _gitLabClient.MergeRequests.CreateAsync(projectId, newMergeRequest);
+
+        if (mergeRequest == null)
         {
-            var newMergeRequest = new CreateMergeRequest(gitCreatePullRequest.SourceBranch,
-                gitCreatePullRequest.TargetBranch,
-                gitCreatePullRequest.Title);
-
-            if (!string.IsNullOrWhiteSpace(gitCreatePullRequest.Description))
-            {
-                newMergeRequest.Description = gitCreatePullRequest.Description;
-            }
-
-            var projectId = GitLabProjectId.GetProjectId(gitCreatePullRequest.RepositoryUrl);
-
-            var mergeRequest = await _gitLabClient.MergeRequests.CreateAsync(projectId, newMergeRequest);
-
-            if (mergeRequest == null)
-            {
-                throw new CreatePullRequestFailedException();
-            }
-
-            return new GitPullRequest(mergeRequest.WebUrl);
+            throw new CreatePullRequestFailedException();
         }
 
-        public async Task<bool> PullRequestExists(Uri repositoryUrl, string sourceBranch, string targetBranch)
-        {
-            var projectId = GitLabProjectId.GetProjectId(repositoryUrl);
+        return new GitPullRequest(mergeRequest.WebUrl);
+    }
 
-            var mergeRequests = await _gitLabClient.MergeRequests.GetAsync(projectId);
+    public async Task<bool> PullRequestExists(Uri repositoryUrl, string sourceBranch, string targetBranch)
+    {
+        var projectId = GitLabProjectId.GetProjectId(repositoryUrl);
 
-            return mergeRequests.Any(x =>
-                x.SourceBranch == sourceBranch
-                && x.TargetBranch == targetBranch);
-        }
+        var mergeRequests = await _gitLabClient.MergeRequests.GetAsync(projectId);
+
+        return mergeRequests.Any(x =>
+            x.SourceBranch == sourceBranch
+            && x.TargetBranch == targetBranch);
     }
 }

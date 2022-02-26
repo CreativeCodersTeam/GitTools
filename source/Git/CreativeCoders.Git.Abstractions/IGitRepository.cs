@@ -7,43 +7,42 @@ using CreativeCoders.Git.Abstractions.Remotes;
 using CreativeCoders.Git.Abstractions.Tags;
 using JetBrains.Annotations;
 
-namespace CreativeCoders.Git.Abstractions
+namespace CreativeCoders.Git.Abstractions;
+
+[PublicAPI]
+public interface IGitRepository : IDisposable
 {
-    [PublicAPI]
-    public interface IGitRepository : IDisposable
-    {
-        IGitBranch? CheckOut(string branchName);
+    IGitBranch? CheckOut(string branchName);
 
-        GitMergeResult Pull();
+    GitMergeResult Pull();
 
-        IGitBranch? CreateBranch(string branchName);
+    IGitBranch? CreateBranch(string branchName);
 
-        void Push(GitPushOptions gitPushOptions);
+    void Push(GitPushOptions gitPushOptions);
 
-        void Fetch(string remoteName, GitFetchOptions gitFetchOptions);
+    void Fetch(string remoteName, GitFetchOptions gitFetchOptions);
 
-        void DeleteLocalBranch(string branchName);
+    void DeleteLocalBranch(string branchName);
 
-        GitMergeResult Merge(string sourceBranchName, string targetBranchName, GitMergeOptions mergeOptions);
+    GitMergeResult Merge(string sourceBranchName, string targetBranchName, GitMergeOptions mergeOptions);
 
-        bool HasUncommittedChanges(bool includeUntracked);
+    bool HasUncommittedChanges(bool includeUntracked);
 
-        IGitRepositoryInfo Info { get; }
+    IGitRepositoryInfo Info { get; }
 
-        bool IsHeadDetached { get; }
+    bool IsHeadDetached { get; }
 
-        IGitBranch Head { get; }
+    IGitBranch Head { get; }
 
-        IGitTagCollection Tags { get; }
+    IGitTagCollection Tags { get; }
 
-        IGitReferenceCollection Refs { get; }
+    IGitReferenceCollection Refs { get; }
 
-        IGitBranchCollection Branches { get; }
+    IGitBranchCollection Branches { get; }
 
-        IGitCommitLog Commits { get; }
+    IGitCommitLog Commits { get; }
 
-        IGitRemoteCollection Remotes { get; }
+    IGitRemoteCollection Remotes { get; }
 
-        IGitDiffer Differ { get; }
-    }
+    IGitDiffer Differ { get; }
 }

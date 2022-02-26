@@ -1,10 +1,9 @@
-﻿namespace CreativeCoders.Git.Abstractions.Exceptions
+﻿namespace CreativeCoders.Git.Abstractions.Exceptions;
+
+public class GitRemoteNotFoundException : GitException
 {
-    public class GitRemoteNotFoundException : GitException
+    public GitRemoteNotFoundException(string remoteName)
+        : base($"Remote '{remoteName}' not found")
     {
-        public GitRemoteNotFoundException(string remoteName)
-            : base($"Remote '{remoteName}' not found")
-        {
-        }
     }
 }

@@ -1,17 +1,16 @@
-﻿namespace CreativeCoders.Git.Abstractions.Diffs
+﻿namespace CreativeCoders.Git.Abstractions.Diffs;
+
+public enum GitEntryChangeKind
 {
-    public enum GitEntryChangeKind
-    {
-        Unmodified,
-        Added,
-        Deleted,
-        Modified,
-        Renamed,
-        Copied,
-        Ignored,
-        Untracked,
-        TypeChanged,
-        Unreadable,
-        Conflicted,
-    }
+    Unmodified,
+    Added,
+    Deleted,
+    Modified,
+    Renamed,
+    Copied,
+    Ignored,
+    Untracked,
+    TypeChanged,
+    Unreadable,
+    Conflicted,
 }

@@ -3,21 +3,20 @@ using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Common;
 using JetBrains.Annotations;
 
-namespace CreativeCoders.Git.Abstractions.Branches
+namespace CreativeCoders.Git.Abstractions.Branches;
+
+[PublicAPI]
+public interface IGitBranch : IEquatable<IGitBranch>, IComparable<IGitBranch>, INamedReference
 {
-    [PublicAPI]
-    public interface IGitBranch : IEquatable<IGitBranch>, IComparable<IGitBranch>, INamedReference
-    {
-        IGitCommit? Tip { get; }
+    IGitCommit? Tip { get; }
 
-        bool IsRemote { get; }
+    bool IsRemote { get; }
 
-        bool IsTracking { get; }
+    bool IsTracking { get; }
 
-        IGitBranch? TrackedBranch { get; }
+    IGitBranch? TrackedBranch { get; }
 
-        bool IsDetachedHead { get; }
+    bool IsDetachedHead { get; }
 
-        IGitCommitLog? Commits { get; }
-    }
+    IGitCommitLog? Commits { get; }
 }

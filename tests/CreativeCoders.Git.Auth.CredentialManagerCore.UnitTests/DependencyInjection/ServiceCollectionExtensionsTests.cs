@@ -4,26 +4,25 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests.DependencyInjection
+namespace CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests.DependencyInjection;
+
+public class ServiceCollectionExtensionsTests
 {
-    public class ServiceCollectionExtensionsTests
+    [Fact]
+    public void AddGcmCoreCredentialProvider_NoArgs_RegistersDefaultGcmCoreCredentialProvider()
     {
-        [Fact]
-        public void AddGcmCoreCredentialProvider_NoArgs_RegistersDefaultGcmCoreCredentialProvider()
-        {
-            var services = new ServiceCollection();
+        var services = new ServiceCollection();
 
-            // Act
-            services.AddGcmCoreCredentialProvider();
+        // Act
+        services.AddGcmCoreCredentialProvider();
 
-            var sp = services.BuildServiceProvider();
+        var sp = services.BuildServiceProvider();
 
-            // Assert
-            var provider = sp.GetRequiredService<IGitCredentialProvider>();
+        // Assert
+        var provider = sp.GetRequiredService<IGitCredentialProvider>();
 
-            provider
-                .Should()
-                .BeOfType<DefaultGcmCoreCredentialProvider>();
-        }
+        provider
+            .Should()
+            .BeOfType<DefaultGcmCoreCredentialProvider>();
     }
 }

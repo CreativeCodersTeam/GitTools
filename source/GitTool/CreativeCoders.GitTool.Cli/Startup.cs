@@ -16,41 +16,40 @@ using CreativeCoders.SysConsole.Cli.Actions.Runtime.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CreativeCoders.GitTool.Cli
+namespace CreativeCoders.GitTool.Cli;
+
+public class Startup : ICliStartup
 {
-    public class Startup : ICliStartup
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
+        services.AddOptions();
 
-            services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
+        services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
 
-            services.AddTransient<IStartFeatureCommand, StartFeatureCommand>();
-            services.AddTransient<IFinishFeatureCommand, FinishFeatureCommand>();
-            services.AddTransient<IFinishFeatureSteps, FinishFeatureSteps>();
+        services.AddTransient<IStartFeatureCommand, StartFeatureCommand>();
+        services.AddTransient<IFinishFeatureCommand, FinishFeatureCommand>();
+        services.AddTransient<IFinishFeatureSteps, FinishFeatureSteps>();
 
-            services.AddTransient<IListBranchesCommand, ListBranchesCommand>();
+        services.AddTransient<IListBranchesCommand, ListBranchesCommand>();
 
-            services.AddTransient<ICreateReleaseCommand, CreateReleaseCommand>();
+        services.AddTransient<ICreateReleaseCommand, CreateReleaseCommand>();
 
-            services.AddTransient<IUpdateBranchesCommand, UpdateBranchesCommand>();
+        services.AddTransient<IUpdateBranchesCommand, UpdateBranchesCommand>();
 
-            services.AddGitTools();
-            services.AddGitHubTools(configuration);
-            services.AddGitLabTools(configuration);
-        }
+        services.AddGitTools();
+        services.AddGitHubTools(configuration);
+        services.AddGitLabTools(configuration);
+    }
 
-        public void Configure(ICliActionRuntimeBuilder runtimeBuilder)
-        {
-            runtimeBuilder.AddController<FeaturesController>();
-            runtimeBuilder.AddController<BranchesController>();
-            runtimeBuilder.AddController<ReleasesController>();
-            runtimeBuilder.AddController<ToolController>();
+    public void Configure(ICliActionRuntimeBuilder runtimeBuilder)
+    {
+        runtimeBuilder.AddController<FeaturesController>();
+        runtimeBuilder.AddController<BranchesController>();
+        runtimeBuilder.AddController<ReleasesController>();
+        runtimeBuilder.AddController<ToolController>();
 
-            runtimeBuilder.UseMiddleware<GitToolsExceptionMiddleware>();
+        runtimeBuilder.UseMiddleware<GitToolsExceptionMiddleware>();
 
-            runtimeBuilder.UseRouting();
-        }
+        runtimeBuilder.UseRouting();
     }
 }

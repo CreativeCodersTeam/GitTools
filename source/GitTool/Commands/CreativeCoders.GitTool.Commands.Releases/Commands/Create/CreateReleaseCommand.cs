@@ -5,52 +5,51 @@ using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
-namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create
+namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create;
+
+public class CreateReleaseCommand : ICreateReleaseCommand
 {
-    public class CreateReleaseCommand : ICreateReleaseCommand
+    private readonly IGitServiceProviders _gitServiceProviders;
+
+    private readonly ISysConsole _sysConsole;
+
+    private readonly IGitRepositoryFactory _gitRepositoryFactory;
+
+    public CreateReleaseCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole,
+        IGitServiceProviders gitServiceProviders)
     {
-        private readonly IGitServiceProviders _gitServiceProviders;
+        _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
+        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
+        _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
+    }
 
-        private readonly ISysConsole _sysConsole;
+    public async Task<int> ExecuteAsync(CreateReleaseOptions options)
+    {
+        using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
 
-        private readonly IGitRepositoryFactory _gitRepositoryFactory;
+        var mainBranchName = GitBranchNames.Local.GetFriendlyName(repository.Info.MainBranch);
 
-        public CreateReleaseCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole,
-            IGitServiceProviders gitServiceProviders)
+        if (repository.Branches["develop"] != null)
         {
-            _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-            _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
-            _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
+            _sysConsole.WriteLine(
+                $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
+
+            await MergeDevelopToMain(repository, mainBranchName, options);
         }
 
-        public async Task<int> ExecuteAsync(CreateReleaseOptions options)
-        {
-            using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+        return 0;
+    }
 
-            var mainBranchName = GitBranchNames.Local.GetFriendlyName(repository.Info.MainBranch);
+    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
+        CreateReleaseOptions options)
+    {
+        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
 
-            if (repository.Branches["develop"] != null)
-            {
-                _sysConsole.WriteLine(
-                    $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
+        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
+            $"Release {options.Version}", "develop", mainBranchName);
 
-                await MergeDevelopToMain(repository, mainBranchName, options);
-            }
-
-            return 0;
-        }
-
-        private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
-            CreateReleaseOptions options)
-        {
-            var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
-
-            var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
-                $"Release {options.Version}", "develop", mainBranchName);
-
-            var pullRequest = await provider.CreatePullRequestAsync(createPullRequest);
+        var pullRequest = await provider.CreatePullRequestAsync(createPullRequest);
 
             
-        }
     }
 }

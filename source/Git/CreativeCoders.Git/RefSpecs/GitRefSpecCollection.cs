@@ -4,23 +4,22 @@ using System.Linq;
 using CreativeCoders.Git.Abstractions.RefSpecs;
 using LibGit2Sharp;
 
-namespace CreativeCoders.Git.RefSpecs
+namespace CreativeCoders.Git.RefSpecs;
+
+public class GitRefSpecCollection : IGitRefSpecCollection
 {
-    public class GitRefSpecCollection : IGitRefSpecCollection
+    private readonly RefSpecCollection _refSpecCollection;
+
+    public GitRefSpecCollection(RefSpecCollection refSpecCollection)
     {
-        private readonly RefSpecCollection _refSpecCollection;
+        _refSpecCollection = refSpecCollection;
+    }
 
-        public GitRefSpecCollection(RefSpecCollection refSpecCollection)
-        {
-            _refSpecCollection = refSpecCollection;
-        }
+    public IEnumerator<IGitRefSpec> GetEnumerator()
+        => _refSpecCollection.Select(x => new GitRefSpec(x)).GetEnumerator();
 
-        public IEnumerator<IGitRefSpec> GetEnumerator()
-            => _refSpecCollection.Select(x => new GitRefSpec(x)).GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
