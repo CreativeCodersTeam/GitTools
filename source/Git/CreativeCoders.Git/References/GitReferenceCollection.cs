@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using CreativeCoders.Core;
-using CreativeCoders.Git.Abstractions.Exceptions;
+﻿using CreativeCoders.Git.Abstractions.Exceptions;
 using CreativeCoders.Git.Abstractions.Objects;
 using CreativeCoders.Git.Abstractions.References;
 using CreativeCoders.Git.Common;
 using CreativeCoders.Git.Objects;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.References;
 

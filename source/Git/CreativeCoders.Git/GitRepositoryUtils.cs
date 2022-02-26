@@ -1,7 +1,4 @@
-﻿using CreativeCoders.Git.Abstractions;
-using LibGit2Sharp;
-
-namespace CreativeCoders.Git;
+﻿namespace CreativeCoders.Git;
 
 internal class GitRepositoryUtils : IGitRepositoryUtils
 {

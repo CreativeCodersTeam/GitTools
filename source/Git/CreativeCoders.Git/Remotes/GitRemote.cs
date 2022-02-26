@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CreativeCoders.Core;
-using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.RefSpecs;
+﻿using CreativeCoders.Git.Abstractions.RefSpecs;
 using CreativeCoders.Git.Abstractions.Remotes;
 using CreativeCoders.Git.RefSpecs;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.Remotes;
 

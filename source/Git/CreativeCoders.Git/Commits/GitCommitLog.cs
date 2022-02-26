@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using CreativeCoders.Core;
-using CreativeCoders.Git.Abstractions.Commits;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.Commits;
 
 namespace CreativeCoders.Git.Commits;
 

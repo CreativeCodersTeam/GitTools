@@ -1,5 +1,4 @@
-﻿using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.Objects;
+﻿using CreativeCoders.Git.Abstractions.Objects;
 
 namespace CreativeCoders.Git.Objects;
 

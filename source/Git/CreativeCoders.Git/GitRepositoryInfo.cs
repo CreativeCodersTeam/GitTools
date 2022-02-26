@@ -1,7 +1,4 @@
-﻿using System;
-using CreativeCoders.Git.Abstractions;
-using CreativeCoders.Git.Abstractions.Branches;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.Branches;
 
 namespace CreativeCoders.Git;
 

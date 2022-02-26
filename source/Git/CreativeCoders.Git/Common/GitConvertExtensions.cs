@@ -1,9 +1,6 @@
-using System;
-using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
 using CreativeCoders.Git.Abstractions.RefSpecs;
-using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.Common;

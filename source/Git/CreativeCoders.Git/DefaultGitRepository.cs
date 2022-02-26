@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using CreativeCoders.Core;
-using CreativeCoders.Git.Abstractions;
-using CreativeCoders.Git.Abstractions.Auth;
+﻿using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
@@ -18,7 +14,6 @@ using CreativeCoders.Git.Diffs;
 using CreativeCoders.Git.References;
 using CreativeCoders.Git.Remotes;
 using CreativeCoders.Git.Tags;
-using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git;

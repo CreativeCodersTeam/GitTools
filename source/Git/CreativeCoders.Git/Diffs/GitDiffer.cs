@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using CreativeCoders.Core;
-using CreativeCoders.Git.Abstractions.Diffs;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.Diffs;
 
 namespace CreativeCoders.Git.Diffs;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using CreativeCoders.Core;
-using CreativeCoders.Git;
-using CreativeCoders.Git.Abstractions;
+﻿using CreativeCoders.Git;
 using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Auth;
 using CreativeCoders.Git.DependencyInjection;

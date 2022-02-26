@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using CreativeCoders.Git.Abstractions.RefSpecs;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.RefSpecs;
 
 namespace CreativeCoders.Git.RefSpecs;
 

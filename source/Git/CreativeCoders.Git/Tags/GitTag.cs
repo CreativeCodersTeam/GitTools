@@ -1,10 +1,7 @@
-﻿using CreativeCoders.Core;
-using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.Commits;
+﻿using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Common;
 using CreativeCoders.Git.Abstractions.Tags;
 using CreativeCoders.Git.Commits;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.Tags;
 

@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using CreativeCoders.Core;
-using CreativeCoders.Git.Abstractions.Tags;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.Tags;
 
 namespace CreativeCoders.Git.Tags;
 

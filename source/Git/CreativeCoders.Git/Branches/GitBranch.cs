@@ -1,11 +1,7 @@
-﻿using System;
-using CreativeCoders.Core;
-using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.Branches;
+﻿using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Common;
 using CreativeCoders.Git.Commits;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.Branches;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using CreativeCoders.Core;
+﻿using System.Diagnostics.CodeAnalysis;
 using CreativeCoders.Git.Abstractions.Auth;
 
 namespace CreativeCoders.Git.Auth;

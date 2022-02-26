@@ -1,7 +1,5 @@
 ﻿using System.Security;
-using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions.Auth;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.Auth;
 

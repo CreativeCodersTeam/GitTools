@@ -1,7 +1,4 @@
-﻿using CreativeCoders.Core;
-using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.Objects;
-using LibGit2Sharp;
+﻿using CreativeCoders.Git.Abstractions.Objects;
 
 namespace CreativeCoders.Git.Objects;
 

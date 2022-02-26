@@ -1,9 +1,6 @@
-﻿using CreativeCoders.Core;
-using CreativeCoders.Core.SysEnvironment;
-using CreativeCoders.Git.Abstractions;
+﻿using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Exceptions;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git;
 

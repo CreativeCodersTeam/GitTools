@@ -1,8 +1,5 @@
-﻿using CreativeCoders.Core;
-using CreativeCoders.Core.Comparing;
-using CreativeCoders.Git.Abstractions.RefSpecs;
+﻿using CreativeCoders.Git.Abstractions.RefSpecs;
 using CreativeCoders.Git.Common;
-using LibGit2Sharp;
 
 namespace CreativeCoders.Git.RefSpecs;
 
