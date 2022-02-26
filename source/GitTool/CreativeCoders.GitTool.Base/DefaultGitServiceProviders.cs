@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Exceptions;
+using Microsoft.Extensions.Options;
 
 namespace CreativeCoders.GitTool.Base;
 
@@ -12,7 +14,8 @@ internal class DefaultGitServiceProviders : IGitServiceProviders
 {
     private readonly IEnumerable<IGitServiceProviderFactory> _providerFactories;
 
-    public DefaultGitServiceProviders(IEnumerable<IGitServiceProviderFactory> providerFactories)
+    public DefaultGitServiceProviders(IEnumerable<IGitServiceProviderFactory> providerFactories,
+        IOptions<ToolConfiguration> toolOptions)
     {
         _providerFactories = Ensure.NotNull(providerFactories, nameof(providerFactories));
     }

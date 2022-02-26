@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace CreativeCoders.Git.Common;
+﻿namespace CreativeCoders.Git.Common;
 
 [PublicAPI]
 public class FuncExceptionWrapper<TException, TResult>

@@ -2,7 +2,6 @@
 using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Auth;
 using CreativeCoders.Git.DependencyInjection;
-using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace

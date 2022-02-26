@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="GitLabApiClient" Version="1.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
