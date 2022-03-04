@@ -14,16 +14,21 @@ internal class DefaultGitServiceProviders : IGitServiceProviders
 {
     private readonly IEnumerable<IGitServiceProviderFactory> _providerFactories;
 
+    private readonly ToolConfiguration _toolOptions;
+
     public DefaultGitServiceProviders(IEnumerable<IGitServiceProviderFactory> providerFactories,
         IOptions<ToolConfiguration> toolOptions)
     {
         _providerFactories = Ensure.NotNull(providerFactories, nameof(providerFactories));
+
+        _toolOptions = Ensure.NotNull(toolOptions, nameof(toolOptions)).Value;
     }
 
     public async Task<IGitServiceProvider> GetServiceProviderAsync(IGitRepository gitRepository,
         string? providerName)
     {
-        var providerFactory = GetProviderFactory(gitRepository, providerName);
+        var providerFactory = GetProviderFactory(gitRepository,
+            providerName ?? _toolOptions.DefaultGitServiceProviderName);
 
         if (providerFactory == null)
         {

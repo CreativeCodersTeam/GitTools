@@ -17,14 +17,10 @@ public class FinishFeatureSteps : IFinishFeatureSteps
 
     private readonly ISysConsole _sysConsole;
 
-    private readonly ToolConfiguration _toolOptions;
-
-    public FinishFeatureSteps(ISysConsole sysConsole, IGitServiceProviders gitServiceProviders,
-        IOptions<ToolConfiguration> toolOptions)
+    public FinishFeatureSteps(ISysConsole sysConsole, IGitServiceProviders gitServiceProviders)
     {
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
         _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
-        _toolOptions = Ensure.NotNull(toolOptions, nameof(toolOptions)).Value;
     }
 
     public void UpdateFeatureBranch(FinishFeatureData data)
@@ -130,25 +126,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
 
     public async Task CreatePullRequest(FinishFeatureData data)
     {
-        var provider = await _gitServiceProviders.GetServiceProviderAsync(data.Repository, null);
-
-        if (provider == null)
-        {
-            var providerName = string.IsNullOrEmpty(data.RepositoryGitServiceProviderName)
-                ? _toolOptions.DefaultGitServiceProviderName
-                : data.RepositoryGitServiceProviderName;
-
-            provider = await _gitServiceProviders.GetServiceProviderAsync(data.Repository, providerName);
-        }
-
-        if (provider == null)
-        {
-            _sysConsole
-                .WriteLineError("No git service provider found")
-                .WriteLine();
-
-            return;
-        }
+        var provider = await _gitServiceProviders.GetServiceProviderAsync(data.Repository, data.RepositoryGitServiceProviderName);
 
         if (await provider.PullRequestExists(data.Repository.Info.RemoteUri, data.FeatureBranch,
                 data.DefaultBranch))
