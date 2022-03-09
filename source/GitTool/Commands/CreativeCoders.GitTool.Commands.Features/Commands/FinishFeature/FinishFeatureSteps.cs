@@ -3,11 +3,9 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.GitTool.Base;
-using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Exceptions;
 using CreativeCoders.SysConsole.App;
 using CreativeCoders.SysConsole.Core.Abstractions;
-using Microsoft.Extensions.Options;
 
 namespace CreativeCoders.GitTool.Commands.Features.Commands.FinishFeature;
 
@@ -117,7 +115,10 @@ public class FinishFeatureSteps : IFinishFeatureSteps
         _sysConsole
             .WriteLine("Push feature branch to remote");
 
-        data.Repository.Push(new GitPushOptions());
+        if (data.Repository.Head.BranchIsPushedToRemote())
+        {
+            data.Repository.Push(new GitPushOptions());
+        }
 
         _sysConsole
             .WriteLine("Feature branch pushed to remote")

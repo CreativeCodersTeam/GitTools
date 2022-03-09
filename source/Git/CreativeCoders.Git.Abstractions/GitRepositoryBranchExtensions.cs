@@ -26,4 +26,9 @@ public static class GitRepositoryBranchExtensions
 
         return gitRepository.CreateBranch(newBranchName);
     }
+
+    public static bool BranchIsPushedToRemote(this IGitBranch branch)
+    {
+        return branch.IsRemote || branch.Tip?.Sha == branch.TrackedBranch?.Tip?.Sha;
+    }
 }

@@ -18,7 +18,19 @@ public interface IGitRepository : IDisposable
 
     IGitBranch? CreateBranch(string branchName);
 
+    IGitTag CreateTag(string tagName);
+
+    IGitTag CreateTag(string tagName, string objectish);
+
+    IGitTag CreateTagWithMessage(string tagName, string message);
+
+    IGitTag CreateTagWithMessage(string tagName, string objectish, string message);
+
     void Push(GitPushOptions gitPushOptions);
+
+    void PushTag(IGitTag tag);
+
+    void PushAllTags();
 
     void Fetch(string remoteName, GitFetchOptions gitFetchOptions);
 

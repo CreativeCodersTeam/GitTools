@@ -4,6 +4,9 @@ namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create;
 
 public class CreateReleaseOptions
 {
-    [OptionParameter('v', "version", IsRequired = true)]
+    [OptionValue(0, IsRequired = true)]
     public string Version { get; set; }
+
+    [OptionParameter('a', "alltags")]
+    public bool PushAllTags { get; set; }
 }

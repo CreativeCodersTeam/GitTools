@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Commands\Info\" />
     <Folder Include="Commands\Update\" />
   </ItemGroup>
 

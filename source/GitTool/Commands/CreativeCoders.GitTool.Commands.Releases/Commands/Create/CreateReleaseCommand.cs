@@ -27,7 +27,7 @@ public class CreateReleaseCommand : ICreateReleaseCommand
     {
         using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
 
-        var mainBranchName = GitBranchNames.Local.GetFriendlyName(repository.Info.MainBranch);
+        var mainBranchName = GitBranchNames.Local.GetCanonicalName(repository.Info.MainBranch);
 
         if (repository.Branches["develop"] != null)
         {
@@ -35,6 +35,25 @@ public class CreateReleaseCommand : ICreateReleaseCommand
                 $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
 
             await MergeDevelopToMain(repository, mainBranchName, options);
+        }
+
+        var tagName = $"v{options.Version}";
+
+        _sysConsole.WriteLine($"Create tag '{tagName}'");
+
+        var versionTag = repository.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
+
+        if (options.PushAllTags)
+        {
+            _sysConsole.WriteLine("Push all tags to remote");
+
+            repository.PushAllTags();
+        }
+        else
+        {
+            _sysConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
+
+            repository.PushTag(versionTag);
         }
 
         return 0;

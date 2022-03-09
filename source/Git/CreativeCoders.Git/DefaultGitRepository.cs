@@ -1,4 +1,5 @@
-﻿using CreativeCoders.Git.Abstractions.Auth;
+﻿using CreativeCoders.Core.Collections;
+using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
@@ -87,6 +88,26 @@ internal class DefaultGitRepository : IGitRepository
         return GitBranch.From(_repo.CreateBranch(branchName));
     }
 
+    public IGitTag CreateTag(string tagName)
+    {
+        return new GitTag(_repo.ApplyTag(tagName));
+    }
+
+    public IGitTag CreateTag(string tagName, string objectish)
+    {
+        return new GitTag(_repo.ApplyTag(tagName, objectish));
+    }
+
+    public IGitTag CreateTagWithMessage(string tagName, string message)
+    {
+        return new GitTag(_repo.ApplyTag(tagName, GetSignature(), message));
+    }
+
+    public IGitTag CreateTagWithMessage(string tagName, string objectish, string message)
+    {
+        return new GitTag(_repo.ApplyTag(tagName, objectish, GetSignature(), message));
+    }
+
     public void Push(GitPushOptions gitPushOptions)
     {
         var pushBranch = _repo.Head;
@@ -112,6 +133,21 @@ internal class DefaultGitRepository : IGitRepository
         };
 
         _repo.Network.Push(pushBranch, pushOptions);
+    }
+
+    public void PushTag(IGitTag tag)
+    {
+        var pushOptions = new PushOptions
+        {
+            CredentialsProvider = GetCredentialsHandler()
+        };
+
+        _repo.Network.Push(_repo.Network.Remotes[GitRemotes.Origin], tag.Name.Canonical, pushOptions);
+    }
+
+    public void PushAllTags()
+    {
+        Tags.ForEach(PushTag);
     }
 
     public void Fetch(string remoteName, GitFetchOptions gitFetchOptions)
