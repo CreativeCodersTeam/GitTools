@@ -1,4 +1,6 @@
 ﻿using CreativeCoders.Git.Abstractions.Commits;
+using CreativeCoders.Git.Abstractions.Common;
+using CreativeCoders.Git.Common;
 
 namespace CreativeCoders.Git.Commits;
 
@@ -11,6 +13,8 @@ public class GitCommit : Objects.GitObject, IGitCommit
         _commit = Ensure.NotNull(commit, nameof(commit));
 
         Parents = _commit.Parents.Select(x => new GitCommit(x));
+        Author = new GitSignature(_commit.Author);
+        Committer = new GitSignature(_commit.Committer);
     }
 
     internal static GitCommit? From(Commit? commit)
@@ -32,7 +36,9 @@ public class GitCommit : Objects.GitObject, IGitCommit
 
     public IEnumerable<IGitCommit> Parents { get; }
 
-    public DateTimeOffset When => _commit.Committer.When;
+    public IGitSignature Author { get; }
+
+    public IGitSignature Committer { get; }
 
     public string Message => _commit.Message;
 

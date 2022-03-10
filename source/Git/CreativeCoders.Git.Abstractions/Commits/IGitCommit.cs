@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CreativeCoders.Git.Abstractions.Common;
 using CreativeCoders.Git.Abstractions.Objects;
 using JetBrains.Annotations;
 
@@ -10,7 +11,9 @@ public interface IGitCommit : IEquatable<IGitCommit>, IComparable<IGitCommit>, I
 {
     IEnumerable<IGitCommit> Parents { get; }
 
-    DateTimeOffset When { get; }
+    IGitSignature Author { get; }
+
+    IGitSignature Committer { get; }
 
     string Message { get; }
 }

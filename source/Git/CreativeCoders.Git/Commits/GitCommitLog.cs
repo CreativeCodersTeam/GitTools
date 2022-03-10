@@ -27,7 +27,7 @@ public class GitCommitLog : IGitCommitLog
     }
 
     public IEnumerable<IGitCommit> GetCommitsPriorTo(DateTimeOffset olderThan)
-        => this.SkipWhile(c => c.When > olderThan);
+        => this.SkipWhile(c => c.Committer.When > olderThan);
 
     public IEnumerable<IGitCommit> QueryBy(GitCommitFilter commitFilter)
     {

@@ -69,6 +69,6 @@ public class CreateReleaseCommand : ICreateReleaseCommand
 
         var pullRequest = await provider.CreatePullRequestAsync(createPullRequest);
 
-            
+        
     }
 }

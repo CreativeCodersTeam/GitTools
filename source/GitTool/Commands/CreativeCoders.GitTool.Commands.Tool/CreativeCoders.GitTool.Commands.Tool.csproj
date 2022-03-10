@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.23.0-alphacliconsolea0048" />
+    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.25.0" />
   </ItemGroup>
 
   <ItemGroup>

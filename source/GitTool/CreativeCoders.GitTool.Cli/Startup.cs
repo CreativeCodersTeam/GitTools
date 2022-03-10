@@ -16,6 +16,7 @@ using CreativeCoders.SysConsole.Cli.Actions.Runtime;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli;
 
@@ -42,6 +43,8 @@ public class Startup : ICliStartup
         services.AddGitTools();
         services.AddGitHubTools(configuration);
         services.AddGitLabTools(configuration);
+
+        services.AddSingleton(_ => new AnsiConsoleFactory().Create(new AnsiConsoleSettings()));
     }
 
     public void Configure(ICliActionRuntimeBuilder runtimeBuilder)
