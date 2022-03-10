@@ -4,5 +4,5 @@ namespace CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 
 public interface IInfoBranchesCommand
 {
-    Task<int> ExecuteAsync();
+    Task<int> ExecuteAsync(InfoBranchesOptions options);
 }

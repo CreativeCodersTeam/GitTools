@@ -39,6 +39,6 @@ public class BranchesController
 
     [UsedImplicitly]
     [CliAction("info", HelpText = "Show infos of current branch")]
-    public async Task<CliActionResult> InfoAsync()
-        => new(await _infoBranchesCommand.ExecuteAsync());
+    public async Task<CliActionResult> InfoAsync(InfoBranchesOptions options)
+        => new(await _infoBranchesCommand.ExecuteAsync(options));
 }

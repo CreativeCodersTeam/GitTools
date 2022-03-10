@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
@@ -23,7 +24,7 @@ public class InfoBranchesCommand : IInfoBranchesCommand
         _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
     }
 
-    public Task<int> ExecuteAsync()
+    public Task<int> ExecuteAsync(InfoBranchesOptions options)
     {
         using var gitRepository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
 
@@ -50,18 +51,23 @@ public class InfoBranchesCommand : IInfoBranchesCommand
             .WriteLine()
             .WriteLine("Last commits");
 
-        var maxMessageWidth = _ansiConsole.Profile.Width - 30;
+        var maxMessageWidth = _ansiConsole.Profile.Width - 60;
 
         var commitsTable = new Table()
             .Border(TableBorder.None)
             .HideHeaders()
-            .AddColumn("Sha", x => x.Width(10).NoWrap())
+            .AddColumn("When")
             .AddColumn("Message", x => x.Width(maxMessageWidth).NoWrap())
-            .AddColumn("Author");
+            .AddColumn("Author")
+            .AddColumn("Sha", x => x.Width(15).NoWrap());
 
-        gitRepository.Head.Commits?.Take(10).ForEach(x =>
+        gitRepository.Head.Commits?.Take(options.CommitLogCount).ForEach(x =>
         {
-            var shaColumn = new Markup($"[italic green]{x.Sha}[/]")
+            var when = x.Author.When.LocalDateTime.ToString(CultureInfo.CurrentCulture.DateTimeFormat);
+
+            var whenColumn = new Markup($"[italic teal]{when}[/]");
+
+            var shaColumn = new Markup($"[silver]{x.Sha}[/]")
             {
                 Overflow = Overflow.Ellipsis
             };
@@ -80,7 +86,7 @@ public class InfoBranchesCommand : IInfoBranchesCommand
             var authorColumn = new Markup($"[italic green]{x.Author.Name}[/]");
 
             commitsTable
-                .AddRow(shaColumn, messageColumn, authorColumn);
+                .AddRow(whenColumn, messageColumn, authorColumn, shaColumn);
         });
 
         _ansiConsole.Write(commitsTable);
