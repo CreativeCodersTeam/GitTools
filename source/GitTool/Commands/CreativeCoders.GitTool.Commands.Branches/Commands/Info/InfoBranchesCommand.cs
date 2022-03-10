@@ -76,7 +76,7 @@ public class InfoBranchesCommand : IInfoBranchesCommand
 
             message = message.Length < maxMessageWidth
                 ? message
-                : message.Substring(0, maxMessageWidth);
+                : message[..maxMessageWidth];
 
             var messageColumn = new Markup($"[bold]{message}[/]")
             {

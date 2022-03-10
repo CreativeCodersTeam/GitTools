@@ -67,7 +67,7 @@ public class CreateReleaseCommand : ICreateReleaseCommand
         var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
             $"Release {options.Version}", "develop", mainBranchName);
 
-        var pullRequest = await provider.CreatePullRequestAsync(createPullRequest);
+        var _ = await provider.CreatePullRequestAsync(createPullRequest);
 
         
     }
