@@ -4,7 +4,6 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
-using CreativeCoders.SysConsole.Core.Abstractions;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
