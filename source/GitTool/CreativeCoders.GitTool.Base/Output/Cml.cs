@@ -1,7 +1,16 @@
-﻿namespace CreativeCoders.GitTool.Base.Output;
+﻿using Spectre.Console;
+
+namespace CreativeCoders.GitTool.Base.Output;
 
 public class Cml : ICml
 {
+    private readonly IAnsiConsole _ansiConsole;
+
+    public Cml(IAnsiConsole ansiConsole)
+    {
+        _ansiConsole = ansiConsole;
+    }
+
     public string Text(string text)
     {
         return text;
@@ -19,7 +28,12 @@ public class Cml : ICml
 
     public string Warning(string text)
     {
-        return text;
+        return $"[bold italic yellow]{text}[/]";
+    }
+
+    public string Error(string text)
+    {
+        return $"[bold italic red3]{text}[/]";
     }
 
     public string HighLight(string text)
@@ -27,8 +41,10 @@ public class Cml : ICml
         return $"[bold lime]{text}[/]";
     }
 
-    public string Url(string text)
+    public string Url(string url)
     {
-        return text;
+        return _ansiConsole.Profile.Capabilities.Links
+            ? $"[link={url}]{url}[/]"
+            : $"[underline aqua]{url}[/]";
     }
 }

@@ -10,6 +10,8 @@ public interface ICml
 
     string Warning(string text);
 
+    string Error(string text);
+
     string HighLight(string text);
 
     string Url(string text);
