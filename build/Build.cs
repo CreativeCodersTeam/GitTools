@@ -83,6 +83,13 @@ class Build : NukeBuild, IBuildInfo
                 .SetCopyright($"{DateTime.Now.Year} CreativeCoders")
                 .SetEnableNoBuild(false));
 
+    Target Publish => _ => _
+        .UseBuildAction<DotNetPublishBuildAction>(this,
+            x => x
+                .SetProject(SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
+                            "CreativeCoders.GitTool.Cli.csproj")
+                .SetOutput(ArtifactsDirectory / "GitTool.Cli"));
+
     Target PushToNuGet => _ => _
         .Requires(() => NuGetApiKey)
         .UseBuildAction<PushBuildAction>(this,
