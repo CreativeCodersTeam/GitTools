@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
 		<IsPackable>True</IsPackable>
+		<RepositoryUrl>https://github.com/CreativeCodersTeam/GitTools</RepositoryUrl>
 	</PropertyGroup>
 </Project>
