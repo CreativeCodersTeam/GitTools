@@ -2,5 +2,6 @@
 	<PropertyGroup>
 		<Authors>CreativeCoders</Authors>
 		<IsPackable>False</IsPackable>
+		<RepositoryUrl>https://github.com/CreativeCodersTeam/GitTools</RepositoryUrl>
 	</PropertyGroup>
 </Project>
