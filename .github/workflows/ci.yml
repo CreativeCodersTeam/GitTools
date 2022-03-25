@@ -52,6 +52,12 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: dotnet nuget push .artifacts/**/*.nupkg --skip-duplicate -k ${{secrets.NUGET_ORG_TOKEN}} -s nuget.org
 
-      - name: Publish GitTool.Cli
+      - name: Create GitTool.Cli zip package
         shell: pwsh
-        run: ./build.ps1 Publish
+        run: ./build.ps1 CreateCliZip
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: GitTool.Cli
+          path: .artifacts/GitTool.Cli.zip
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`

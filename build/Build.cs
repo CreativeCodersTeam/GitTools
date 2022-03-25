@@ -1,4 +1,5 @@
 using System;
+using System.IO.Compression;
 using CreativeCoders.NukeBuild;
 using CreativeCoders.NukeBuild.BuildActions;
 using Nuke.Common;
@@ -96,6 +97,13 @@ class Build : NukeBuild, IBuildInfo
             x => x
                 .SetSource(NuGetSource)
                 .SetApiKey(NuGetApiKey));
+
+    Target CreateCliZip => _ => _
+        .DependsOn(Publish)
+        .Executes(() =>
+        {
+            ZipFile.CreateFromDirectory(ArtifactsDirectory / "GitTool.Cli", ArtifactsDirectory / "GitTool.Cli.zip");
+        });
 
     Target RunBuild => _ => _
         .DependsOn(Clean)
