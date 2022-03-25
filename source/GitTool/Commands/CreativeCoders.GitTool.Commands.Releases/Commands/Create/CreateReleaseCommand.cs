@@ -41,6 +41,10 @@ public class CreateReleaseCommand : ICreateReleaseCommand
 
         _sysConsole.WriteLine($"Create tag '{tagName}'");
 
+        repository.CheckOut(mainBranchName);
+
+        repository.Pull();
+
         var versionTag = repository.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
 
         if (options.PushAllTags)

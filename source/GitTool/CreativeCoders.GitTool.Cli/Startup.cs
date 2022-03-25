@@ -1,4 +1,5 @@
 ﻿using CreativeCoders.GitTool.Base.Configurations;
+using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Branches;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 using CreativeCoders.GitTool.Commands.Branches.Commands.List;
@@ -45,6 +46,8 @@ public class Startup : ICliStartup
         services.AddGitLabTools(configuration);
 
         services.AddSingleton(_ => new AnsiConsoleFactory().Create(new AnsiConsoleSettings()));
+
+        services.AddSingleton<ICml, Cml>();
     }
 
     public void Configure(ICliActionRuntimeBuilder runtimeBuilder)

@@ -115,7 +115,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
         _sysConsole
             .WriteLine("Push feature branch to remote");
 
-        if (data.Repository.Head.BranchIsPushedToRemote())
+        if (!data.Repository.Head.BranchIsPushedToRemote())
         {
             data.Repository.Push(new GitPushOptions());
         }
