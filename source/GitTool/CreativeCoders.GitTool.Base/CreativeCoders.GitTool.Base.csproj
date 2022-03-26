@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.26.0" />
+    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.28.0-alphacreatesetup0001" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="CreativeCoders.Core" Version="0.27.0" />
+    <PackageReference Include="CreativeCoders.Core" Version="0.28.0-alphacreatesetup0001" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.43.0" />
   </ItemGroup>

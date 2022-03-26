@@ -8,6 +8,7 @@ using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.InnoSetup;
 
 [CheckBuildProjectConfigurations]
 class Build : NukeBuild, IBuildInfo
@@ -91,6 +92,16 @@ class Build : NukeBuild, IBuildInfo
                             "CreativeCoders.GitTool.Cli.csproj")
                 .SetOutput(ArtifactsDirectory / "GitTool.Cli"));
 
+    Target PublishCliWin64 => _ => _
+        .DependsOn(Clean)
+        .DependsOn(Restore)
+        .UseBuildAction<DotNetPublishBuildAction>(this,
+            x => x
+                .SetProject(SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
+                            "CreativeCoders.GitTool.Cli.csproj")
+                .SetOutput(ArtifactsDirectory / "GitTool.Cli.Win64")
+                .SetRuntime(DotNetRuntime.WinX64));
+
     Target PushToNuGet => _ => _
         .Requires(() => NuGetApiKey)
         .UseBuildAction<PushBuildAction>(this,
@@ -104,6 +115,13 @@ class Build : NukeBuild, IBuildInfo
         {
             ZipFile.CreateFromDirectory(ArtifactsDirectory / "GitTool.Cli", ArtifactsDirectory / "GitTool.Cli.zip");
         });
+
+    Target CreateWin64Setup => _ => _
+        .DependsOn(PublishCliWin64)
+        .Executes(() => InnoSetupTasks
+            .InnoSetup(x => x
+                .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
+                .AddKeyValueDefinition("CiAppVersion", GitVersion.SemVer)));
 
     Target RunBuild => _ => _
         .DependsOn(Clean)
