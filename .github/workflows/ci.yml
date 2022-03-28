@@ -60,15 +60,15 @@ jobs:
         shell: pwsh
         run: ./build.ps1 CreateCliZip
 
-      - name: Create GitTool.Cli setup
-        shell: pwsh
-        run: ./build.ps1 CreateWin64Setup
-
       - uses: actions/upload-artifact@v3
         with:
           name: GitTool.Cli
           path: .artifacts/GitTool.Cli
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
+      - name: Create GitTool.Cli setup
+        shell: pwsh
+        run: ./build.ps1 CreateWin64Setup
 
       - uses: actions/upload-artifact@v3
         with:
