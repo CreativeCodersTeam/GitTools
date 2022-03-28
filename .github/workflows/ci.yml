@@ -67,9 +67,13 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: GitTool.Cli
-          path: |
-            .artifacts/GitTool.Cli
-            .artifacts/setups/gittool_setup_*.exe
+          path: .artifacts/GitTool.Cli
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: GitTool.Cli.Setup.Win64
+          path: .artifacts/setups/gittool_setup_*.exe
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
       - name: Release
