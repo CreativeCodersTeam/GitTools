@@ -60,7 +60,7 @@ jobs:
         shell: pwsh
         run: ./build.ps1 CreateCliZip
 
-      - name: Create GitTool.Cli output
+      - name: Create GitTool.Cli setup
         shell: pwsh
         run: ./build.ps1 CreateWin64Setup
 
