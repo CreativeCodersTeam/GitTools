@@ -60,14 +60,22 @@ jobs:
         shell: pwsh
         run: ./build.ps1 CreateCliZip
 
+      - name: Create GitTool.Cli output
+        shell: pwsh
+        run: ./build.ps1 CreateWin64Setup
+
       - uses: actions/upload-artifact@v3
         with:
           name: GitTool.Cli
-          path: .artifacts/GitTool.Cli
+          path: |
+            .artifacts/GitTool.Cli
+            .artifacts/setups/gittool_setup_*.exe
           if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          files: .artifacts/GitTool.Cli.zip
+          files: |
+            .artifacts/GitTool.Cli.zip
+            .artifacts/setups/gittool_setup_*.exe
