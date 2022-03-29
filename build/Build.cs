@@ -121,7 +121,7 @@ class Build : NukeBuild, IBuildInfo
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
                 .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
-                .AddKeyValueDefinition("CiAppVersion", GitVersion.SemVer)));
+                .AddKeyValueDefinition("CiAppVersion", GitVersion.NuGetVersionV2)));
 
     Target RunBuild => _ => _
         .DependsOn(Clean)
