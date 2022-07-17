@@ -2,6 +2,7 @@
 using CreativeCoders.Core;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 using CreativeCoders.GitTool.Commands.Branches.Commands.List;
+using CreativeCoders.GitTool.Commands.Branches.Commands.Pull;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Update;
 using CreativeCoders.SysConsole.Cli.Actions;
 using CreativeCoders.SysConsole.Cli.Actions.Definition;
@@ -18,12 +19,16 @@ public class BranchesController
 
     private readonly IInfoBranchesCommand _infoBranchesCommand;
 
+    private readonly IPullBranchCommand _pullBranchCommand;
+
     public BranchesController(IListBranchesCommand listBranchesCommand,
-        IUpdateBranchesCommand updateBranchesCommand, IInfoBranchesCommand infoBranchesCommand)
+        IUpdateBranchesCommand updateBranchesCommand, IInfoBranchesCommand infoBranchesCommand,
+        IPullBranchCommand pullBranchCommand)
     {
         _listBranchesCommand = Ensure.NotNull(listBranchesCommand, nameof(listBranchesCommand));
         _updateBranchesCommand = Ensure.NotNull(updateBranchesCommand, nameof(updateBranchesCommand));
         _infoBranchesCommand = Ensure.NotNull(infoBranchesCommand, nameof(infoBranchesCommand));
+        _pullBranchCommand = Ensure.NotNull(pullBranchCommand, nameof(pullBranchCommand));
     }
 
     [UsedImplicitly]
@@ -41,4 +46,9 @@ public class BranchesController
     [CliAction("info", HelpText = "Show infos of current branch")]
     public async Task<CliActionResult> InfoAsync(InfoBranchesOptions options)
         => new(await _infoBranchesCommand.ExecuteAsync(options));
+
+    [UsedImplicitly]
+    [CliAction("pull", HelpText = "Pulls updates for current branch from remote")]
+    public async Task<CliActionResult> PullAsync()
+        => new(await _pullBranchCommand.ExecuteAsync());
 }

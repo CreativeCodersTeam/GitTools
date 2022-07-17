@@ -68,11 +68,19 @@ internal class DefaultGitRepository : IGitRepository
         {
             FetchOptions = new FetchOptions
             {
-                CredentialsProvider = GetCredentialsHandler()
+                CredentialsProvider = GetCredentialsHandler(),
+                OnTransferProgress = OnTransferProgress
             },
             MergeOptions = new MergeOptions
             {
-                FastForwardStrategy = FastForwardStrategy.Default
+                FastForwardStrategy = FastForwardStrategy.Default,
+                CheckoutNotifyFlags = CheckoutNotifyFlags.Conflict
+                                      | CheckoutNotifyFlags.Dirty
+                                      | CheckoutNotifyFlags.Ignored
+                                      | CheckoutNotifyFlags.Untracked
+                                      | CheckoutNotifyFlags.Updated,
+                OnCheckoutNotify = OnCheckoutNotify,
+                OnCheckoutProgress = OnCheckoutProgress
             }
         };
 
@@ -81,6 +89,25 @@ internal class DefaultGitRepository : IGitRepository
         var mergeResult = Commands.Pull(_repo, signature, options);
 
         return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
+    }
+
+    private void OnCheckoutProgress(string path, int completedSteps, int totalSteps)
+    {
+        
+    }
+
+    private bool OnTransferProgress(TransferProgress progress)
+    {
+        //throw new NotImplementedException();
+
+        return true;
+    }
+
+    private bool OnCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
+    {
+        Console.WriteLine($"{notifyFlags}: {path}");
+
+        return true;
     }
 
     public IGitBranch? CreateBranch(string branchName)

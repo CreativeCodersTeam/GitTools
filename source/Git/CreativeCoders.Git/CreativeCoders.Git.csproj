@@ -17,4 +17,8 @@
 		<ProjectReference Include="..\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Merges\" />
+	</ItemGroup>
+
 </Project>
