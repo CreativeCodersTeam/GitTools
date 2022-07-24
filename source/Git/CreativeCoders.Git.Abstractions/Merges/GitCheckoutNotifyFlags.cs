@@ -1,8 +1,10 @@
-﻿namespace CreativeCoders.Git.Merges;
+﻿using System;
+
+namespace CreativeCoders.Git.Abstractions.Merges;
 
 /// <summary>Flags controlling checkout notification behavior.</summary>
 [Flags]
-public enum CheckoutNotifyFlags
+public enum GitCheckoutNotifyFlags
 {
     /// <summary>No checkout notification.</summary>
     None = 0,
@@ -18,5 +20,6 @@ public enum CheckoutNotifyFlags
     /// <summary>Notify for untracked files.</summary>
     Untracked = 8,
     /// <summary>Notify about ignored file.</summary>
-    Ignored = 16
+    Ignored = 16,
+    All = 31
 }

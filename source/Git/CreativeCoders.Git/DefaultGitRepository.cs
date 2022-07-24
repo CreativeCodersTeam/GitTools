@@ -4,6 +4,7 @@ using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
 using CreativeCoders.Git.Abstractions.Exceptions;
+using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.References;
 using CreativeCoders.Git.Abstractions.Remotes;
 using CreativeCoders.Git.Abstractions.Tags;
@@ -12,6 +13,7 @@ using CreativeCoders.Git.Branches;
 using CreativeCoders.Git.Commits;
 using CreativeCoders.Git.Common;
 using CreativeCoders.Git.Diffs;
+using CreativeCoders.Git.GitCommands;
 using CreativeCoders.Git.References;
 using CreativeCoders.Git.Remotes;
 using CreativeCoders.Git.Tags;
@@ -39,6 +41,7 @@ internal class DefaultGitRepository : IGitRepository
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
         Differ = new GitDiffer(_repo.Diff);
+        Commands = new GitCommands.GitCommands(_repo, GetCredentialsHandler, GetSignature);
     }
 
     public void Dispose()
@@ -57,57 +60,14 @@ internal class DefaultGitRepository : IGitRepository
             throw new GitBranchNotExistsException(branchName);
         }
 
-        var checkedOutBranch = Commands.Checkout(_repo, _repo.Branches[branchName]);
+        var checkedOutBranch = LibGit2Sharp.Commands.Checkout(_repo, _repo.Branches[branchName]);
 
         return GitBranch.From(checkedOutBranch);
     }
 
     public GitMergeResult Pull()
     {
-        var options = new PullOptions
-        {
-            FetchOptions = new FetchOptions
-            {
-                CredentialsProvider = GetCredentialsHandler(),
-                OnTransferProgress = OnTransferProgress
-            },
-            MergeOptions = new MergeOptions
-            {
-                FastForwardStrategy = FastForwardStrategy.Default,
-                CheckoutNotifyFlags = CheckoutNotifyFlags.Conflict
-                                      | CheckoutNotifyFlags.Dirty
-                                      | CheckoutNotifyFlags.Ignored
-                                      | CheckoutNotifyFlags.Untracked
-                                      | CheckoutNotifyFlags.Updated,
-                OnCheckoutNotify = OnCheckoutNotify,
-                OnCheckoutProgress = OnCheckoutProgress
-            }
-        };
-
-        var signature = GetSignature();
-
-        var mergeResult = Commands.Pull(_repo, signature, options);
-
-        return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
-    }
-
-    private void OnCheckoutProgress(string path, int completedSteps, int totalSteps)
-    {
-        
-    }
-
-    private bool OnTransferProgress(TransferProgress progress)
-    {
-        //throw new NotImplementedException();
-
-        return true;
-    }
-
-    private bool OnCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
-    {
-        Console.WriteLine($"{notifyFlags}: {path}");
-
-        return true;
+        return new PullCommand(_repo, GetCredentialsHandler, GetSignature).Run();
     }
 
     public IGitBranch? CreateBranch(string branchName)
@@ -190,7 +150,7 @@ internal class DefaultGitRepository : IGitRepository
 
         var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification).ToArray();
 
-        Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null);
+        LibGit2Sharp.Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null);
     }
 
     public void DeleteLocalBranch(string branchName)
@@ -253,4 +213,6 @@ internal class DefaultGitRepository : IGitRepository
     public IGitRemoteCollection Remotes { get; }
 
     public IGitDiffer Differ { get; }
+
+    public IGitCommands Commands { get; }
 }
