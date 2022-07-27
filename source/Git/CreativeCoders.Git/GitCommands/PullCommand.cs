@@ -1,4 +1,5 @@
 ﻿using CreativeCoders.Git.Abstractions.Commits;
+using CreativeCoders.Git.Abstractions.Fetches;
 using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.Merges;
 using CreativeCoders.Git.Commits;
@@ -16,9 +17,13 @@ internal class PullCommand : IPullCommand
     
     private readonly Func<Signature> _getSignature;
 
-    private Func<string, GitCheckoutNotifyFlags, bool>? _checkoutNotify;
+    private GitCheckoutNotifyHandler? _checkoutNotify;
 
     private GitCheckoutNotifyFlags _checkoutNotifyFlags;
+
+    private GitCheckoutProgressHandler? _checkoutProgress;
+
+    private Action<GitTransferProgress>? _transferProgress;
 
     public PullCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature)
@@ -28,22 +33,48 @@ internal class PullCommand : IPullCommand
         _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
     }
 
-    public IPullCommand CheckoutNotify(Action<string, GitCheckoutNotifyFlags> notify)
+    public IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
     {
         return CheckoutNotify(notify, GitCheckoutNotifyFlags.All);
     }
 
-    public IPullCommand CheckoutNotify(Action<string, GitCheckoutNotifyFlags> notify, GitCheckoutNotifyFlags notifyFlags)
+    public IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
+    {
+        return CheckoutNotify((path, checkoutNotifyFlag) =>
+            {
+                notify(path, checkoutNotifyFlag);
+
+                return true;
+            },
+            notifyFlags);
+    }
+
+    public IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify)
+    {
+        return CheckoutNotify(notify, GitCheckoutNotifyFlags.All);
+    }
+
+    public IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
         Ensure.NotNull(notify, nameof(notify));
 
-        _checkoutNotify = (path, checkoutNotifyFlag) =>
-        {
-            notify(path, checkoutNotifyFlag);
+        _checkoutNotify = notify;
 
-            return true;
-        };
         _checkoutNotifyFlags = notifyFlags;
+
+        return this;
+    }
+
+    public IPullCommand CheckoutProgress(GitCheckoutProgressHandler progress)
+    {
+        _checkoutProgress = Ensure.NotNull(progress, nameof(progress));
+
+        return this;
+    }
+
+    public IPullCommand TransferProgress(Action<GitTransferProgress> progress)
+    {
+        _transferProgress = Ensure.NotNull(progress, nameof(progress));
 
         return this;
     }
@@ -55,14 +86,14 @@ internal class PullCommand : IPullCommand
             FetchOptions = new FetchOptions
             {
                 CredentialsProvider = _getCredentialsHandler(),
-                //OnTransferProgress = OnTransferProgress
+                OnTransferProgress = OnTransferProgress
             },
             MergeOptions = new MergeOptions
             {
                 FastForwardStrategy = FastForwardStrategy.Default,
                 CheckoutNotifyFlags = _checkoutNotifyFlags.ToCheckoutNotifyFlags(),
                 OnCheckoutNotify = OnCheckoutNotify,
-                //OnCheckoutProgress = OnCheckoutProgress
+                OnCheckoutProgress = OnCheckoutProgress
             }
         };
 
@@ -75,13 +106,19 @@ internal class PullCommand : IPullCommand
 
     private void OnCheckoutProgress(string path, int completedSteps, int totalSteps)
     {
-
+        _checkoutProgress?.Invoke(path, completedSteps, totalSteps);
     }
 
     private bool OnTransferProgress(TransferProgress progress)
     {
-        //throw new NotImplementedException();
-
+        _transferProgress?.Invoke(new GitTransferProgress
+        {
+            IndexedObjects = progress.IndexedObjects,
+            ReceivedBytes = progress.ReceivedBytes,
+            ReceivedObjects = progress.ReceivedObjects,
+            TotalObjects = progress.TotalObjects
+        });
+        
         return true;
     }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
