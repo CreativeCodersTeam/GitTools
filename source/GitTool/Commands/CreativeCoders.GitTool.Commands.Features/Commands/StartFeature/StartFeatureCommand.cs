@@ -4,6 +4,7 @@ using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
+using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
 namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature;
@@ -16,23 +17,22 @@ public class StartFeatureCommand : IStartFeatureCommand
 
     private readonly IGitRepositoryFactory _gitRepositoryFactory;
 
+    private readonly IGitToolPullCommand _pullCommand;
+
     public StartFeatureCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole,
-        IRepositoryConfigurations repositoryConfigurations)
+        IRepositoryConfigurations repositoryConfigurations,
+        IGitToolPullCommand pullCommand)
     {
-        _repositoryConfigurations = Ensure
-            .Argument(repositoryConfigurations, nameof(repositoryConfigurations))
-            .NotNull()
-            .Value;
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
 
-        _gitRepositoryFactory = Ensure
-            .Argument(gitRepositoryFactory, nameof(gitRepositoryFactory))
-            .NotNull()
-            .Value;
+        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
 
-        _sysConsole = Ensure.Argument(sysConsole, nameof(sysConsole)).NotNull().Value;
+        _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
+
+        _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 
-    public Task<int> StartFeatureAsync(StartFeatureOptions options)
+    public async Task<int> StartFeatureAsync(StartFeatureOptions options)
     {
         using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
 
@@ -44,7 +44,7 @@ public class StartFeatureCommand : IStartFeatureCommand
 
         CheckIfFeatureBranchExists(data);
 
-        CheckOutAndUpdateBaseBranch(repository, configuration);
+        await CheckOutAndUpdateBaseBranch(repository, configuration).ConfigureAwait(false);
 
         CreateAndCheckOutFeatureBranch(repository, options, configuration);
 
@@ -59,7 +59,7 @@ public class StartFeatureCommand : IStartFeatureCommand
                 .WriteLine();
         }
 
-        return Task.FromResult(ReturnCodes.Success);
+        return ReturnCodes.Success;
     }
 
     private void PrintStartFeatureData(StartFeatureData data)
@@ -117,7 +117,7 @@ public class StartFeatureCommand : IStartFeatureCommand
             .WriteLine();
     }
 
-    private void CheckOutAndUpdateBaseBranch(IGitRepository repository,
+    private async Task CheckOutAndUpdateBaseBranch(IGitRepository repository,
         RepositoryConfiguration repositoryConfiguration)
     {
         var baseBranchName = repositoryConfiguration.GetDefaultBranchName(repository.Info.MainBranch);
@@ -144,7 +144,7 @@ public class StartFeatureCommand : IStartFeatureCommand
             .WriteLine()
             .WriteLine("Pulling from origin");
 
-        repository.Pull();
+        await _pullCommand.ExecuteAsync(repository).ConfigureAwait(false);
 
         repository.Fetch("origin", new GitFetchOptions { TagFetchMode = GitTagFetchMode.All });
     }

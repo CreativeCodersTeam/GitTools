@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.NukeBuild" Version="0.28.0-alphacreatesetup0001" />
-    <PackageReference Include="Nuke.Common" Version="6.0.1" />
-    <PackageReference Include="ReportGenerator" Version="5.0.4" />
+    <PackageReference Include="CreativeCoders.NukeBuild" Version="0.61.0" />
+    <PackageReference Include="Nuke.Common" Version="6.1.2" />
+    <PackageReference Include="ReportGenerator" Version="5.1.9" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.8.0]" />
   </ItemGroup>
 

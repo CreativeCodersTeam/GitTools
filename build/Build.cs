@@ -3,14 +3,12 @@ using System.IO.Compression;
 using CreativeCoders.NukeBuild;
 using CreativeCoders.NukeBuild.BuildActions;
 using Nuke.Common;
-using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.InnoSetup;
 
-[CheckBuildProjectConfigurations]
 class Build : NukeBuild, IBuildInfo
 {
     public static int Main () => Execute<Build>(x => x.RunBuild);

@@ -30,25 +30,17 @@ public class Startup : ICliStartup
 
         services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
 
-        services.AddTransient<IStartFeatureCommand, StartFeatureCommand>();
-        services.AddTransient<IFinishFeatureCommand, FinishFeatureCommand>();
-        services.AddTransient<IFinishFeatureSteps, FinishFeatureSteps>();
-
-        services.AddTransient<IListBranchesCommand, ListBranchesCommand>();
-
         services.AddTransient<ICreateReleaseCommand, CreateReleaseCommand>();
 
-        services.AddTransient<IUpdateBranchesCommand, UpdateBranchesCommand>();
+        services.AddGitBranchesCommand();
 
-        services.AddTransient<IInfoBranchesCommand, InfoBranchesCommand>();
-
-        services.AddTransient<IPullBranchCommand, PullBranchCommand>();
+        services.AddGitFeatureCommands();
 
         services.AddGitTools();
         services.AddGitHubTools(configuration);
         services.AddGitLabTools(configuration);
 
-        services.AddSingleton(_ => new AnsiConsoleFactory().Create(new AnsiConsoleSettings()));
+        services.AddSingleton(_ => AnsiConsole.Create(new AnsiConsoleSettings()));
 
         services.AddSingleton<ICml, Cml>();
     }

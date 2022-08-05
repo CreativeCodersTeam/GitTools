@@ -6,14 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.28.0" />
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.28.0" />
-    <PackageReference Include="Spectre.Console" Version="0.43.0" />
+    <PackageReference Include="CreativeCoders.DependencyInjection" Version="0.61.0" />
+    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.61.0" />
+    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.61.0" />
+    <PackageReference Include="Spectre.Console" Version="0.44.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
     <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
+    <ProjectReference Include="..\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
