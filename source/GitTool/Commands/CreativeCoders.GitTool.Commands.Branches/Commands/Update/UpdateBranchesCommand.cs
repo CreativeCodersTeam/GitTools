@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using CreativeCoders.Core;
+using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
+using CreativeCoders.GitTool.Commands.Shared;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
@@ -18,17 +21,21 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
     private readonly IGitRepositoryFactory _gitRepositoryFactory;
 
+    private readonly IGitToolPullCommand _pullCommand;
+
     public UpdateBranchesCommand(IGitRepositoryFactory gitRepositoryFactory,
-        IRepositoryConfigurations repositoryConfigurations,
+        IRepositoryConfigurations repositoryConfigurations, IGitToolPullCommand pullCommand,
         IAnsiConsole ansiConsole, ICml cml)
     {
         _cml = Ensure.NotNull(cml, nameof(cml));
         _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
         _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
         _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
+        _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 
-    public Task<int> ExecuteAsync(UpdateBranchesOptions options)
+    [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+    public async Task<int> ExecuteAsync(UpdateBranchesOptions options)
     {
         _ansiConsole
             .EmptyLine()
@@ -56,8 +63,8 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
         repository.FetchPruneFromOrigin();
 
-        updateBranchNames
-            .ForEach(branchName =>
+        await updateBranchNames
+            .ForEachAsync(async branchName =>
             {
                 if (repository.Branches[branchName] == null)
                 {
@@ -68,8 +75,9 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
                 repository.CheckOut(branchName);
 
-                repository.Pull();
-            });
+                await _pullCommand.ExecuteAsync(repository).ConfigureAwait(false);
+            })
+            .ConfigureAwait(false);
 
         if (!repository.Head.Equals(currentBranch))
         {
@@ -81,6 +89,6 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
         _ansiConsole.EmptyLine();
 
-        return Task.FromResult(0);
+        return 0;
     }
 }
