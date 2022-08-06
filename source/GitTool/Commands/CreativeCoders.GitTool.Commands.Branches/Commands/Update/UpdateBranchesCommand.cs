@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
@@ -34,9 +35,10 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
         _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 
-    [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public async Task<int> ExecuteAsync(UpdateBranchesOptions options)
     {
+        Ensure.NotNull(options, nameof(options));
+
         _ansiConsole
             .EmptyLine()
             .WriteMarkupLine(_cml.Caption("Update permanent local branches"))
@@ -63,6 +65,23 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
         repository.FetchPruneFromOrigin();
 
+        await UpdateBranchesAsync(repository, updateBranchNames).ConfigureAwait(false);
+
+        if (!repository.Head.Equals(currentBranch))
+        {
+            _ansiConsole.WriteMarkupLine(
+                $"Switch back to working branch {_cml.HighLight($"'{currentBranch.Name.Friendly}'")}");
+
+            repository.CheckOut(currentBranch.Name.Friendly);
+        }
+
+        _ansiConsole.EmptyLine();
+
+        return 0;
+    }
+
+    private async Task UpdateBranchesAsync(IGitRepository repository, IEnumerable<string> updateBranchNames)
+    {
         await updateBranchNames
             .ForEachAsync(async branchName =>
             {
@@ -78,17 +97,5 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
                 await _pullCommand.ExecuteAsync(repository).ConfigureAwait(false);
             })
             .ConfigureAwait(false);
-
-        if (!repository.Head.Equals(currentBranch))
-        {
-            _ansiConsole.WriteMarkupLine(
-                $"Switch back to working branch {_cml.HighLight($"'{currentBranch.Name.Friendly}'")}");
-            
-            repository.CheckOut(currentBranch.Name.Friendly);
-        }
-
-        _ansiConsole.EmptyLine();
-
-        return 0;
     }
 }
