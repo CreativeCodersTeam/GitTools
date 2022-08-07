@@ -15,20 +15,10 @@ namespace CreativeCoders.GitTool.Commands.Branches;
 [CliController("branch")]
 public class BranchesController
 {
-    private readonly IUpdateBranchesCommand _updateBranchesCommand;
-
-    private readonly IPullBranchCommand _pullBranchCommand;
-
-    private readonly IPushBranchCommand _pushBranchCommand;
-
     private readonly IGitToolCommandExecutor _commandExecutor;
 
-    public BranchesController(IUpdateBranchesCommand updateBranchesCommand,
-        IPullBranchCommand pullBranchCommand, IPushBranchCommand pushBranchCommand, IGitToolCommandExecutor commandExecutor)
+    public BranchesController(IGitToolCommandExecutor commandExecutor)
     {
-        _updateBranchesCommand = Ensure.NotNull(updateBranchesCommand, nameof(updateBranchesCommand));
-        _pullBranchCommand = Ensure.NotNull(pullBranchCommand, nameof(pullBranchCommand));
-        _pushBranchCommand = Ensure.NotNull(pushBranchCommand, nameof(pushBranchCommand));
         _commandExecutor = Ensure.NotNull(commandExecutor, nameof(commandExecutor));
     }
 
@@ -41,7 +31,7 @@ public class BranchesController
     [UsedImplicitly]
     [CliAction("update", HelpText = "Update all permanent local branches by pulling from remote branches")]
     public async Task<CliActionResult> UpdateAsync(UpdateBranchesOptions options)
-        => new(await _updateBranchesCommand.ExecuteAsync(options));
+        => new(await _commandExecutor.ExecuteAsync<UpdateBranchesCommand, UpdateBranchesOptions>(options));
 
     [UsedImplicitly]
     [CliAction("info", HelpText = "Show infos of current branch")]
@@ -51,10 +41,10 @@ public class BranchesController
     [UsedImplicitly]
     [CliAction("pull", HelpText = "Pulls updates for current branch from remote")]
     public async Task<CliActionResult> PullAsync(PullBranchOptions options)
-        => new(await _pullBranchCommand.ExecuteAsync(options));
+        => new(await _commandExecutor.ExecuteAsync<PullBranchCommand, PullBranchOptions>(options));
 
     [UsedImplicitly]
     [CliAction("push", HelpText = "Pushes updates from current branch to remote")]
-    public async Task<CliActionResult> PushAsync()
-        => new(await _pushBranchCommand.ExecuteAsync());
+    public async Task<CliActionResult> PushAsync(PushBranchOptions options)
+        => new(await _commandExecutor.ExecuteAsync<PushBranchCommand, PushBranchOptions>(options));
 }

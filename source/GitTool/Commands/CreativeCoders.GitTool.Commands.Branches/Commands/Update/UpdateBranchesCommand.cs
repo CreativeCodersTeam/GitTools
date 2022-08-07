@@ -7,11 +7,12 @@ using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
 
-public class UpdateBranchesCommand : IUpdateBranchesCommand
+public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOptions>
 {
     private readonly ICml _cml;
 
@@ -34,7 +35,7 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
         _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 
-    public async Task<int> ExecuteAsync(UpdateBranchesOptions options)
+    public async Task<int> ExecuteAsync(IGitRepository gitRepository, UpdateBranchesOptions options)
     {
         Ensure.NotNull(options, nameof(options));
 
@@ -43,16 +44,14 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
             .WriteMarkupLine(_cml.Caption("Update permanent local branches"))
             .EmptyLine();
 
-        using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
 
-        var configuration = _repositoryConfigurations.GetConfiguration(repository);
-
-        var currentBranch = repository.Head;
+        var currentBranch = gitRepository.Head;
 
         var updateBranchNames = new List<string>
         {
             "production",
-            GitBranchNames.Local.GetFriendlyName(repository.Info.MainBranch)
+            GitBranchNames.Local.GetFriendlyName(gitRepository.Info.MainBranch)
         };
 
         if (configuration.HasDevelopBranch)
@@ -62,16 +61,16 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
         _ansiConsole.WriteLine("Fetch prune to remove remote branch refs if already deleted");
 
-        repository.FetchPruneFromOrigin();
+        gitRepository.FetchPruneFromOrigin();
 
-        await UpdateBranchesAsync(repository, updateBranchNames).ConfigureAwait(false);
+        await UpdateBranchesAsync(gitRepository, updateBranchNames).ConfigureAwait(false);
 
-        if (!repository.Head.Equals(currentBranch))
+        if (!gitRepository.Head.Equals(currentBranch))
         {
             _ansiConsole.WriteMarkupLine(
                 $"Switch back to working branch {_cml.HighLight($"'{currentBranch.Name.Friendly}'")}");
 
-            repository.CheckOut(currentBranch.Name.Friendly);
+            gitRepository.CheckOut(currentBranch.Name.Friendly);
         }
 
         _ansiConsole.EmptyLine();

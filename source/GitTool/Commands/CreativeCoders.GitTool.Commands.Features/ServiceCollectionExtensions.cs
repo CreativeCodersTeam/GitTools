@@ -9,10 +9,6 @@ public static class ServiceCollectionExtensions
 {
     public static void AddGitFeatureCommands(this IServiceCollection services)
     {
-        services.TryAddTransient<IFinishFeatureCommand, FinishFeatureCommand>();
-
         services.TryAddTransient<IFinishFeatureSteps, FinishFeatureSteps>();
-
-        services.TryAddTransient<IStartFeatureCommand, StartFeatureCommand>();
     }
 }

@@ -5,54 +5,49 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Commands.Shared;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
 namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature;
 
-public class StartFeatureCommand : IStartFeatureCommand
+public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOptions>
 {
     private readonly IRepositoryConfigurations _repositoryConfigurations;
 
     private readonly ISysConsole _sysConsole;
 
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
     private readonly IGitToolPullCommand _pullCommand;
 
-    public StartFeatureCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole,
+    public StartFeatureCommand(ISysConsole sysConsole,
         IRepositoryConfigurations repositoryConfigurations,
         IGitToolPullCommand pullCommand)
     {
         _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
 
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
 
         _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 
-    public async Task<int> StartFeatureAsync(StartFeatureOptions options)
+    public async Task<int> ExecuteAsync(IGitRepository gitRepository, StartFeatureOptions options)
     {
-        using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
 
-        var configuration = _repositoryConfigurations.GetConfiguration(repository);
-
-        var data = CreateData(repository, options);
+        var data = CreateData(gitRepository, options);
 
         PrintStartFeatureData(data);
 
         CheckIfFeatureBranchExists(data);
 
-        await CheckOutAndUpdateBaseBranch(repository, configuration).ConfigureAwait(false);
+        await CheckOutAndUpdateBaseBranch(gitRepository, configuration).ConfigureAwait(false);
 
-        CreateAndCheckOutFeatureBranch(repository, options, configuration);
+        CreateAndCheckOutFeatureBranch(gitRepository, options, configuration);
 
         if (options.PushAfterCreate)
         {
             _sysConsole.WriteLine("Pushing feature branch to remote...");
 
-            repository.Push(new GitPushOptions());
+            gitRepository.Push(new GitPushOptions());
 
             _sysConsole
                 .WriteLine("Feature branch pushed")

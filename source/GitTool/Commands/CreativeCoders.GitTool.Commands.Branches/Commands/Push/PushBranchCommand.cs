@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
+using CreativeCoders.Git.Abstractions;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Push;
 
-public class PushBranchCommand : IPushBranchCommand
+public class PushBranchCommand : IGitToolCommandWithOptions<PushBranchOptions>
 {
-    public Task<int> ExecuteAsync()
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, PushBranchOptions options)
     {
         
 

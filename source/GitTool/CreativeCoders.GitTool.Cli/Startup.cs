@@ -4,6 +4,7 @@ using CreativeCoders.GitTool.Commands.Branches;
 using CreativeCoders.GitTool.Commands.Features;
 using CreativeCoders.GitTool.Commands.Releases;
 using CreativeCoders.GitTool.Commands.Releases.Commands.Create;
+using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Tool;
 using CreativeCoders.GitTool.GitHub;
 using CreativeCoders.GitTool.GitLab;
@@ -26,9 +27,9 @@ public class Startup : ICliStartup
 
         services.AddTransient<ICreateReleaseCommand, CreateReleaseCommand>();
 
-        services.AddGitBranchesCommand();
-
         services.AddGitFeatureCommands();
+
+        services.AddGitSharedCommands();
 
         services.AddGitTools();
         services.AddGitHubTools(configuration);
