@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using CreativeCoders.NukeBuild;
 using CreativeCoders.NukeBuild.BuildActions;
+using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
@@ -9,6 +11,10 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.InnoSetup;
 
+[PublicAPI]
+[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+[SuppressMessage("Performance", "CA1822:Mark members as static")]
+[SuppressMessage("Style", "IDE0044:Add readonly modifier")]
 class Build : NukeBuild, IBuildInfo
 {
     public static int Main () => Execute<Build>(x => x.RunBuild);

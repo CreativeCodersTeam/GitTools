@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
@@ -50,7 +49,7 @@ public class UpdateBranchesCommand : IUpdateBranchesCommand
 
         var currentBranch = repository.Head;
 
-        var updateBranchNames = new System.Collections.Generic.List<string>
+        var updateBranchNames = new List<string>
         {
             "production",
             GitBranchNames.Local.GetFriendlyName(repository.Info.MainBranch)

@@ -4,5 +4,5 @@ namespace CreativeCoders.GitTool.Commands.Branches.Commands.Pull;
 
 public interface IPullBranchCommand
 {
-    Task<int> ExecuteAsync();
+    Task<int> ExecuteAsync(PullBranchOptions options);
 }

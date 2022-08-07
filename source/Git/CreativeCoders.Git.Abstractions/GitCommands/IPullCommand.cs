@@ -2,9 +2,11 @@
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Fetches;
 using CreativeCoders.Git.Abstractions.Merges;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.GitCommands;
 
+[PublicAPI]
 public interface IPullCommand
 {
     IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify);

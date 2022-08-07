@@ -1,8 +1,10 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Merges;
 
 /// <summary>Flags controlling checkout notification behavior.</summary>
+[PublicAPI]
 [Flags]
 public enum GitCheckoutNotifyFlags
 {

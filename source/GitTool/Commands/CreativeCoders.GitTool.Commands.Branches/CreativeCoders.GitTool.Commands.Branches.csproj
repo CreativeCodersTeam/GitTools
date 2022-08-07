@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Commands\Info\" />
+    <Folder Include="Commands\Push\" />
     <Folder Include="Commands\Update\" />
   </ItemGroup>
 

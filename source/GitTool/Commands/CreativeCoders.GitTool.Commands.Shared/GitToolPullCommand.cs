@@ -21,11 +21,22 @@ public class GitToolPullCommand : IGitToolPullCommand
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository)
     {
+        return ExecuteAsync(gitRepository, false);
+    }
+
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, bool verbose)
+    {
         _ansiConsole
             .WriteMarkupLine($"Pull branch '{_cml.Text(gitRepository.Head.Name.Friendly)}' updates from remote origin")
             .WriteLine();
 
         var pullCommand = gitRepository.Commands.CreatePullCommand();
+
+        if (verbose)
+        {
+            pullCommand = pullCommand
+                .CheckoutProgress(CheckoutProgress);
+        }
 
         var mergeResult = pullCommand
             .CheckoutNotify(CheckoutNotify)
@@ -36,6 +47,11 @@ public class GitToolPullCommand : IGitToolPullCommand
         _ansiConsole.WriteLine();
 
         return Task.FromResult(0);
+    }
+
+    private void CheckoutProgress(string path, int completedSteps, int totalSteps)
+    {
+        _ansiConsole.MarkupLine($"{_cml.HighLight(path)} {completedSteps/totalSteps}");
     }
 
     private void PrintMergeResultStatus(GitMergeStatus mergeResultStatus)

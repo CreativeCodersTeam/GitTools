@@ -3,6 +3,7 @@ using CreativeCoders.Core;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 using CreativeCoders.GitTool.Commands.Branches.Commands.List;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Pull;
+using CreativeCoders.GitTool.Commands.Branches.Commands.Push;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Update;
 using CreativeCoders.SysConsole.Cli.Actions;
 using CreativeCoders.SysConsole.Cli.Actions.Definition;
@@ -21,14 +22,17 @@ public class BranchesController
 
     private readonly IPullBranchCommand _pullBranchCommand;
 
+    private readonly IPushBranchCommand _pushBranchCommand;
+
     public BranchesController(IListBranchesCommand listBranchesCommand,
         IUpdateBranchesCommand updateBranchesCommand, IInfoBranchesCommand infoBranchesCommand,
-        IPullBranchCommand pullBranchCommand)
+        IPullBranchCommand pullBranchCommand, IPushBranchCommand pushBranchCommand)
     {
         _listBranchesCommand = Ensure.NotNull(listBranchesCommand, nameof(listBranchesCommand));
         _updateBranchesCommand = Ensure.NotNull(updateBranchesCommand, nameof(updateBranchesCommand));
         _infoBranchesCommand = Ensure.NotNull(infoBranchesCommand, nameof(infoBranchesCommand));
         _pullBranchCommand = Ensure.NotNull(pullBranchCommand, nameof(pullBranchCommand));
+        _pushBranchCommand = Ensure.NotNull(pushBranchCommand, nameof(pushBranchCommand));
     }
 
     [UsedImplicitly]
@@ -49,6 +53,11 @@ public class BranchesController
 
     [UsedImplicitly]
     [CliAction("pull", HelpText = "Pulls updates for current branch from remote")]
-    public async Task<CliActionResult> PullAsync()
-        => new(await _pullBranchCommand.ExecuteAsync());
+    public async Task<CliActionResult> PullAsync(PullBranchOptions options)
+        => new(await _pullBranchCommand.ExecuteAsync(options));
+
+    [UsedImplicitly]
+    [CliAction("push", HelpText = "Pushes updates from current branch to remote")]
+    public async Task<CliActionResult> PushAsync()
+        => new(await _pushBranchCommand.ExecuteAsync());
 }
