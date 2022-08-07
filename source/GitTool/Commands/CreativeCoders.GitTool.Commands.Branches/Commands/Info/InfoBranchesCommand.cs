@@ -4,30 +4,26 @@ using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 
-public class InfoBranchesCommand : IInfoBranchesCommand
+public class InfoBranchesCommand : IGitToolCommandWithOptions<InfoBranchesOptions>
 {
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
     private readonly ISysConsole _sysConsole;
 
     private readonly IAnsiConsole _ansiConsole;
 
-    public InfoBranchesCommand(IGitRepositoryFactory gitRepositoryFactory, IAnsiConsole ansiConsole, ISysConsole sysConsole)
+    public InfoBranchesCommand(IAnsiConsole ansiConsole, ISysConsole sysConsole)
     {
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
         _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
     }
 
-    public Task<int> ExecuteAsync(InfoBranchesOptions options)
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, InfoBranchesOptions options)
     {
-        using var gitRepository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
-
         _sysConsole
             .WriteLine("Branch info")
             .WriteLine();

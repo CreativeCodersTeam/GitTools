@@ -5,26 +5,22 @@ using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.List;
 
-public class ListBranchesCommand : IListBranchesCommand
+public class ListBranchesCommand : IGitToolCommandWithOptions<ListBranchesOptions>
 {
     private readonly ISysConsole _sysConsole;
 
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
-    public ListBranchesCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole)
+    public ListBranchesCommand(ISysConsole sysConsole)
     {
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
     }
 
-    public Task<int> ExecuteAsync(ListBranchesOptions options)
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, ListBranchesOptions options)
     {
-        using var gitRepository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
-
         _sysConsole
             .WriteLine()
             .WriteLine("List all branches:")

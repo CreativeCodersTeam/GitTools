@@ -13,10 +13,6 @@ public static class ServiceCollectionExtensions
 {
     public static void AddGitBranchesCommand(this IServiceCollection services)
     {
-        services.TryAddTransient<IInfoBranchesCommand, InfoBranchesCommand>();
-
-        services.TryAddTransient<IListBranchesCommand, ListBranchesCommand>();
-
         services.TryAddTransient<IPullBranchCommand, PullBranchCommand>();
 
         services.TryAddTransient<IUpdateBranchesCommand, UpdateBranchesCommand>();
