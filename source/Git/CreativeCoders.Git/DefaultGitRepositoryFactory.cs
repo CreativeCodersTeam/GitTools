@@ -1,6 +1,7 @@
 ﻿using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Exceptions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CreativeCoders.Git;
 
@@ -10,11 +11,14 @@ internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
 
     private readonly IGitRepositoryUtils _repositoryUtils;
 
+    private readonly IServiceProvider _serviceProvider;
+
     public DefaultGitRepositoryFactory(IGitCredentialProviders credentialProviders,
-        IGitRepositoryUtils repositoryUtils)
+        IGitRepositoryUtils repositoryUtils, IServiceProvider serviceProvider)
     {
         _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
         _repositoryUtils = Ensure.NotNull(repositoryUtils, nameof(repositoryUtils));
+        _serviceProvider = Ensure.NotNull(serviceProvider, nameof(serviceProvider));
     }
 
     public IGitRepository OpenRepository(string? path)
@@ -24,7 +28,8 @@ internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
             : new Repository(_repositoryUtils.DiscoverGitPath(path)
                              ?? throw new GitNoRepositoryPathException(path));
 
-        return new DefaultGitRepository(repo, _credentialProviders);
+        return new DefaultGitRepository(repo, _credentialProviders,
+            _serviceProvider.GetRequiredService<ILibGitCaller>());
     }
 
     public IGitRepository OpenRepositoryFromCurrentDir()

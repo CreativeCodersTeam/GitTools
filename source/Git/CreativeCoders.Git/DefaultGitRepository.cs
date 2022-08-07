@@ -27,9 +27,13 @@ internal class DefaultGitRepository : IGitRepository
 
     private readonly Repository _repo;
 
-    public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders)
+    private readonly ILibGitCaller _libGitCaller;
+
+    public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders,
+        ILibGitCaller libGitCaller)
     {
         _repo = Ensure.NotNull(repo, nameof(repo));
+        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
 
         _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
 
@@ -60,7 +64,7 @@ internal class DefaultGitRepository : IGitRepository
             throw new GitBranchNotExistsException(branchName);
         }
 
-        var checkedOutBranch = LibGit2Sharp.Commands.Checkout(_repo, _repo.Branches[branchName]);
+        var checkedOutBranch = _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Checkout(_repo, _repo.Branches[branchName]));
 
         return GitBranch.From(checkedOutBranch);
     }
