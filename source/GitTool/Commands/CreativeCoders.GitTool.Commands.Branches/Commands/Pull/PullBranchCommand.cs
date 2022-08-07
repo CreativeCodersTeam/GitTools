@@ -8,13 +8,10 @@ namespace CreativeCoders.GitTool.Commands.Branches.Commands.Pull;
 
 public class PullBranchCommand : IGitToolCommandWithOptions<PullBranchOptions>
 {
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
     private readonly IGitToolPullCommand _pullCommand;
 
-    public PullBranchCommand(IGitRepositoryFactory gitRepositoryFactory, IGitToolPullCommand pullCommand)
+    public PullBranchCommand(IGitToolPullCommand pullCommand)
     {
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
         _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 

@@ -20,18 +20,14 @@ public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOp
 
     private readonly IRepositoryConfigurations _repositoryConfigurations;
 
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
     private readonly IGitToolPullCommand _pullCommand;
 
-    public UpdateBranchesCommand(IGitRepositoryFactory gitRepositoryFactory,
-        IRepositoryConfigurations repositoryConfigurations, IGitToolPullCommand pullCommand,
+    public UpdateBranchesCommand(IRepositoryConfigurations repositoryConfigurations, IGitToolPullCommand pullCommand,
         IAnsiConsole ansiConsole, ICml cml)
     {
         _cml = Ensure.NotNull(cml, nameof(cml));
         _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
         _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
         _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
     }
 

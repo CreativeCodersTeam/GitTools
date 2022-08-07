@@ -1,5 +1,4 @@
 ﻿using CreativeCoders.GitTool.Commands.Features.Commands.FinishFeature;
-using CreativeCoders.GitTool.Commands.Features.Commands.StartFeature;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

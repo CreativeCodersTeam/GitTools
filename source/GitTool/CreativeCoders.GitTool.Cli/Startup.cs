@@ -25,8 +25,6 @@ public class Startup : ICliStartup
 
         services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
 
-        services.AddTransient<ICreateReleaseCommand, CreateReleaseCommand>();
-
         services.AddGitFeatureCommands();
 
         services.AddGitSharedCommands();
