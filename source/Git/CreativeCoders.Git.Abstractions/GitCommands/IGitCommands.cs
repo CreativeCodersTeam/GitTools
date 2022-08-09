@@ -3,4 +3,6 @@
 public interface IGitCommands
 {
     IPullCommand CreatePullCommand();
+
+    IPushCommand CreatePushCommand();
 }

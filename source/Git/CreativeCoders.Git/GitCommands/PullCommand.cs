@@ -17,6 +17,8 @@ internal class PullCommand : IPullCommand
     
     private readonly Func<Signature> _getSignature;
 
+    private readonly ILibGitCaller _libGitCaller;
+
     private GitCheckoutNotifyHandler? _checkoutNotify;
 
     private GitCheckoutNotifyFlags _checkoutNotifyFlags;
@@ -26,11 +28,12 @@ internal class PullCommand : IPullCommand
     private Action<GitTransferProgress>? _transferProgress;
 
     public PullCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
-        Func<Signature> getSignature)
+        Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
         _repository = Ensure.NotNull(repository, nameof(repository));
         _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
         _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
+        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
     }
 
     public IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
@@ -99,7 +102,7 @@ internal class PullCommand : IPullCommand
 
         var signature = _getSignature();
 
-        var mergeResult = Commands.Pull(_repository, signature, options);
+        var mergeResult = _libGitCaller.Invoke(() => Commands.Pull(_repository, signature, options));
 
         return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
     }

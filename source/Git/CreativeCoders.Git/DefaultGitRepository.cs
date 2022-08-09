@@ -13,7 +13,6 @@ using CreativeCoders.Git.Branches;
 using CreativeCoders.Git.Commits;
 using CreativeCoders.Git.Common;
 using CreativeCoders.Git.Diffs;
-using CreativeCoders.Git.GitCommands;
 using CreativeCoders.Git.References;
 using CreativeCoders.Git.Remotes;
 using CreativeCoders.Git.Tags;
@@ -45,7 +44,7 @@ internal class DefaultGitRepository : IGitRepository
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
         Differ = new GitDiffer(_repo.Diff);
-        Commands = new GitCommands.GitCommands(_repo, GetCredentialsHandler, GetSignature);
+        Commands = new GitCommands.GitCommands(_repo, GetCredentialsHandler, GetSignature, libGitCaller);
     }
 
     public void Dispose()
@@ -71,7 +70,7 @@ internal class DefaultGitRepository : IGitRepository
 
     public GitMergeResult Pull()
     {
-        return new PullCommand(_repo, GetCredentialsHandler, GetSignature).Run();
+        return Commands.CreatePullCommand().Run();
     }
 
     public IGitBranch? CreateBranch(string branchName)
@@ -103,32 +102,9 @@ internal class DefaultGitRepository : IGitRepository
 
     public void Push(GitPushOptions gitPushOptions)
     {
-        _libGitCaller.Invoke(() =>
-        {
-            var pushBranch = _repo.Head;
-
-            if (pushBranch.TrackedBranch == null)
-            {
-                if (!gitPushOptions.CreateRemoteBranchIfNotExists)
-                {
-                    throw new GitPushFailedException(
-                        $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
-                }
-
-                var remoteOrigin = _repo.Network.Remotes[GitRemotes.Origin];
-
-                _repo.Branches.Update(pushBranch,
-                    b => b.Remote = remoteOrigin.Name,
-                    b => b.UpstreamBranch = pushBranch.CanonicalName);
-            }
-
-            var pushOptions = new PushOptions
-            {
-                CredentialsProvider = GetCredentialsHandler()
-            };
-
-            _repo.Network.Push(pushBranch, pushOptions);
-        });
+        Commands.CreatePushCommand()
+            .CreateRemoteBranchIfNotExists(gitPushOptions.CreateRemoteBranchIfNotExists)
+            .Run();
     }
 
     public void PushTag(IGitTag tag)

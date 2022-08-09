@@ -11,16 +11,24 @@ public class GitCommands : IGitCommands
 
     private readonly Func<Signature> _getSignature;
 
+    private readonly ILibGitCaller _libGitCaller;
+
     public GitCommands(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
-        Func<Signature> getSignature)
+        Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
         _repository = Ensure.NotNull(repository, nameof(repository));
         _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
         _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
+        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
     }
 
     public IPullCommand CreatePullCommand()
     {
-        return new PullCommand(_repository, _getCredentialsHandler, _getSignature);
+        return new PullCommand(_repository, _getCredentialsHandler, _getSignature, _libGitCaller);
+    }
+
+    public IPushCommand CreatePushCommand()
+    {
+        return new PushCommand(_repository, _getCredentialsHandler, _libGitCaller);
     }
 }
