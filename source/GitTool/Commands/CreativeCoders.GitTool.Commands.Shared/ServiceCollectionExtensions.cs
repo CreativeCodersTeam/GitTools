@@ -10,6 +10,8 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddTransient<IGitToolPullCommand, GitToolPullCommand>();
 
+        services.TryAddTransient<IGitToolPushCommand, GitToolPushCommand>();
+
         services.TryAddTransient<IGitToolCommandExecutor, GitToolCommandExecutor>();
     }
 }

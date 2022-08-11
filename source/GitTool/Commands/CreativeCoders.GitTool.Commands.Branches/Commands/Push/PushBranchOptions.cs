@@ -6,4 +6,7 @@ public class PushBranchOptions
 {
     [OptionParameter('c', "createremote")]
     public bool CreateRemoteBranchIfNotExists { get; set; }
+
+    [OptionParameter('v', "verbose")]
+    public bool Verbose { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿using CreativeCoders.Core.Collections;
-using CreativeCoders.Git.Abstractions.Branches;
+﻿using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Exceptions;
-using CreativeCoders.Git.Abstractions.Fetches;
 using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.Pushes;
+using CreativeCoders.Git.Objects;
 using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.GitCommands;
@@ -25,6 +24,8 @@ public class PushCommand : IPushCommand
     private Func<GitPackBuilderProgress, bool>? _packBuilderProgress;
 
     private Func<GitPushTransferProgress, bool>? _transferProgress;
+
+    private Func<IEnumerable<GitPushUpdate>, bool>? _negotiationCompletedBeforePush;
 
     public PushCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
         ILibGitCaller libGitCaller)
@@ -92,6 +93,23 @@ public class PushCommand : IPushCommand
         return this;
     }
 
+    public IPushCommand OnNegotiationCompletedBeforePush(Action<IEnumerable<GitPushUpdate>> negotiationCompletedBeforePush)
+    {
+        return OnNegotiationCompletedBeforePush(x =>
+        {
+            negotiationCompletedBeforePush(x);
+
+            return true;
+        });
+    }
+
+    public IPushCommand OnNegotiationCompletedBeforePush(Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush)
+    {
+        _negotiationCompletedBeforePush = negotiationCompletedBeforePush;
+
+        return this;
+    }
+
     public void Run()
     {
         _libGitCaller.Invoke(() =>
@@ -143,9 +161,14 @@ public class PushCommand : IPushCommand
 
     private bool OnGitNegotiationCompletedBeforePush(IEnumerable<PushUpdate> updates)
     {
-        updates.ForEach(x => Console.WriteLine($"{x.SourceObjectId}:{x.SourceRefName} -> {x.DestinationObjectId}:{x.DestinationRefName}"));
-
-        return true;
+        return _negotiationCompletedBeforePush?
+                   .Invoke(
+                       updates.Select(x =>
+                               new GitPushUpdate(
+                                   new GitObjectId(x.SourceObjectId), x.SourceRefName,
+                                   new GitObjectId(x.DestinationObjectId), x.DestinationRefName))
+                           .ToArray())
+               ?? true;
     }
 
     private bool OnGitPushTransferProgress(int current, int total, long bytes)
