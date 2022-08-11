@@ -1,6 +1,6 @@
 ﻿namespace CreativeCoders.Git.Abstractions.Fetches;
 
-public class GitTransferProgress
+public class GitFetchTransferProgress
 {
     public int IndexedObjects { get; init; }
 

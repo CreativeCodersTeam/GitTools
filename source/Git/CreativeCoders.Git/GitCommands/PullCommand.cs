@@ -25,7 +25,7 @@ internal class PullCommand : IPullCommand
 
     private GitCheckoutProgressHandler? _checkoutProgress;
 
-    private Action<GitTransferProgress>? _transferProgress;
+    private Action<GitFetchTransferProgress>? _transferProgress;
 
     public PullCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature, ILibGitCaller libGitCaller)
@@ -36,14 +36,14 @@ internal class PullCommand : IPullCommand
         _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
     }
 
-    public IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
+    public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
     {
-        return CheckoutNotify(notify, GitCheckoutNotifyFlags.All);
+        return OnCheckoutNotify(notify, GitCheckoutNotifyFlags.All);
     }
 
-    public IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
+    public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
-        return CheckoutNotify((path, checkoutNotifyFlag) =>
+        return OnCheckoutNotify((path, checkoutNotifyFlag) =>
             {
                 notify(path, checkoutNotifyFlag);
 
@@ -52,12 +52,12 @@ internal class PullCommand : IPullCommand
             notifyFlags);
     }
 
-    public IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify)
+    public IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify)
     {
-        return CheckoutNotify(notify, GitCheckoutNotifyFlags.All);
+        return OnCheckoutNotify(notify, GitCheckoutNotifyFlags.All);
     }
 
-    public IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
+    public IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
         Ensure.NotNull(notify, nameof(notify));
 
@@ -68,14 +68,14 @@ internal class PullCommand : IPullCommand
         return this;
     }
 
-    public IPullCommand CheckoutProgress(GitCheckoutProgressHandler progress)
+    public IPullCommand OnCheckoutProgress(GitCheckoutProgressHandler progress)
     {
         _checkoutProgress = Ensure.NotNull(progress, nameof(progress));
 
         return this;
     }
 
-    public IPullCommand TransferProgress(Action<GitTransferProgress> progress)
+    public IPullCommand OnTransferProgress(Action<GitFetchTransferProgress> progress)
     {
         _transferProgress = Ensure.NotNull(progress, nameof(progress));
 
@@ -89,14 +89,14 @@ internal class PullCommand : IPullCommand
             FetchOptions = new FetchOptions
             {
                 CredentialsProvider = _getCredentialsHandler(),
-                OnTransferProgress = OnTransferProgress
+                OnTransferProgress = OnGitTransferProgress
             },
             MergeOptions = new MergeOptions
             {
                 FastForwardStrategy = FastForwardStrategy.Default,
                 CheckoutNotifyFlags = _checkoutNotifyFlags.ToCheckoutNotifyFlags(),
-                OnCheckoutNotify = OnCheckoutNotify,
-                OnCheckoutProgress = OnCheckoutProgress
+                OnCheckoutNotify = OnGitCheckoutNotify,
+                OnCheckoutProgress = OnGitCheckoutProgress
             }
         };
 
@@ -107,14 +107,14 @@ internal class PullCommand : IPullCommand
         return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
     }
 
-    private void OnCheckoutProgress(string path, int completedSteps, int totalSteps)
+    private void OnGitCheckoutProgress(string path, int completedSteps, int totalSteps)
     {
         _checkoutProgress?.Invoke(path, completedSteps, totalSteps);
     }
 
-    private bool OnTransferProgress(TransferProgress progress)
+    private bool OnGitTransferProgress(TransferProgress progress)
     {
-        _transferProgress?.Invoke(new GitTransferProgress
+        _transferProgress?.Invoke(new GitFetchTransferProgress
         {
             IndexedObjects = progress.IndexedObjects,
             ReceivedBytes = progress.ReceivedBytes,
@@ -125,7 +125,7 @@ internal class PullCommand : IPullCommand
         return true;
     }
 
-    private bool OnCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
+    private bool OnGitCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
     {
         return _checkoutNotify == null || _checkoutNotify(path, notifyFlags.ToGitCheckoutNotifyFlags());
     }

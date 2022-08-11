@@ -9,17 +9,17 @@ namespace CreativeCoders.Git.Abstractions.GitCommands;
 [PublicAPI]
 public interface IPullCommand
 {
-    IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify);
+    IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify);
 
-    IPullCommand CheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags);
+    IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags);
 
-    IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify);
+    IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify);
 
-    IPullCommand CheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags);
+    IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags);
 
-    IPullCommand CheckoutProgress(GitCheckoutProgressHandler progress);
+    IPullCommand OnCheckoutProgress(GitCheckoutProgressHandler progress);
 
-    IPullCommand TransferProgress(Action<GitTransferProgress> progress);
+    IPullCommand OnTransferProgress(Action<GitFetchTransferProgress> progress);
 
     GitMergeResult Run();
 }

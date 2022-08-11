@@ -35,11 +35,11 @@ public class GitToolPullCommand : IGitToolPullCommand
         if (verbose)
         {
             pullCommand = pullCommand
-                .CheckoutProgress(CheckoutProgress);
+                .OnCheckoutProgress(CheckoutProgress);
         }
 
         var mergeResult = pullCommand
-            .CheckoutNotify(CheckoutNotify)
+            .OnCheckoutNotify(CheckoutNotify)
             .Run();
 
         PrintMergeResultStatus(mergeResult.MergeStatus);
