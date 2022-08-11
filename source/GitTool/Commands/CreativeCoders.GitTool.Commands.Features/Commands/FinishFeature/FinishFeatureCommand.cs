@@ -28,7 +28,7 @@ public class FinishFeatureCommand : IGitToolCommandWithOptions<FinishFeatureOpti
 
         _finishFeatureSteps.MergeDefaultBranch(data);
 
-        _finishFeatureSteps.PushFeatureBranch(data);
+        await _finishFeatureSteps.PushFeatureBranch(data).ConfigureAwait(false);
 
         // Ensure remote branch creation and use it for pull request
 

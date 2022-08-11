@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CreativeCoders.Git.Abstractions.Branches;
-using CreativeCoders.Git.Abstractions.Fetches;
 using CreativeCoders.Git.Abstractions.Pushes;
 using JetBrains.Annotations;
 

@@ -6,7 +6,7 @@ public interface IFinishFeatureSteps
 {
     void UpdateFeatureBranch(FinishFeatureData data);
 
-    void PushFeatureBranch(FinishFeatureData data);
+    Task PushFeatureBranch(FinishFeatureData data);
 
     void MergeDefaultBranch(FinishFeatureData data);
 

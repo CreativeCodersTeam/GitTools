@@ -4,6 +4,7 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Exceptions;
+using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.SysConsole.App;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
@@ -15,10 +16,14 @@ public class FinishFeatureSteps : IFinishFeatureSteps
 
     private readonly ISysConsole _sysConsole;
 
-    public FinishFeatureSteps(ISysConsole sysConsole, IGitServiceProviders gitServiceProviders)
+    private readonly IGitToolPushCommand _pushCommand;
+
+    public FinishFeatureSteps(ISysConsole sysConsole, IGitServiceProviders gitServiceProviders,
+        IGitToolPushCommand pushCommand)
     {
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
         _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
+        _pushCommand = Ensure.NotNull(pushCommand, nameof(pushCommand));
     }
 
     public void UpdateFeatureBranch(FinishFeatureData data)
@@ -110,14 +115,14 @@ public class FinishFeatureSteps : IFinishFeatureSteps
         data.Repository.CheckOut(data.FeatureBranch);
     }
 
-    public void PushFeatureBranch(FinishFeatureData data)
+    public async Task PushFeatureBranch(FinishFeatureData data)
     {
         _sysConsole
             .WriteLine("Push feature branch to remote");
 
         if (!data.Repository.Head.BranchIsPushedToRemote())
         {
-            data.Repository.Push(new GitPushOptions());
+            await _pushCommand.ExecuteAsync(data.Repository, true).ConfigureAwait(false);
         }
 
         _sysConsole
