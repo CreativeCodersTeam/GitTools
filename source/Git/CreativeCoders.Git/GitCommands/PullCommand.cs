@@ -11,7 +11,7 @@ namespace CreativeCoders.Git.GitCommands;
 
 internal class PullCommand : IPullCommand
 {
-    private readonly Repository _repository;
+    private readonly DefaultGitRepository _repository;
 
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
     
@@ -27,7 +27,7 @@ internal class PullCommand : IPullCommand
 
     private Action<GitFetchTransferProgress>? _transferProgress;
 
-    public PullCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
+    public PullCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
         _repository = Ensure.NotNull(repository, nameof(repository));
@@ -102,7 +102,7 @@ internal class PullCommand : IPullCommand
 
         var signature = _getSignature();
 
-        var mergeResult = _libGitCaller.Invoke(() => Commands.Pull(_repository, signature, options));
+        var mergeResult = _libGitCaller.Invoke(() => Commands.Pull(_repository.LibGit2Repository, signature, options));
 
         return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
     }

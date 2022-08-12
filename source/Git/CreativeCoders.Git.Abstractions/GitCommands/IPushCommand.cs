@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CreativeCoders.Git.Abstractions.Branches;
+using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Pushes;
 using JetBrains.Annotations;
 
@@ -28,6 +29,8 @@ public interface IPushCommand
     IPushCommand OnNegotiationCompletedBeforePush(Action<IEnumerable<GitPushUpdate>> negotiationCompletedBeforePush);
 
     IPushCommand OnNegotiationCompletedBeforePush(Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush);
+
+    IPushCommand OnUnPushedCommits(Action<IEnumerable<IGitCommit>> unPushedCommits);
 
     void Run();
 }

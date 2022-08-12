@@ -44,7 +44,7 @@ internal class DefaultGitRepository : IGitRepository
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
         Differ = new GitDiffer(_repo.Diff);
-        Commands = new GitCommands.GitCommands(_repo, GetCredentialsHandler, GetSignature, libGitCaller);
+        Commands = new GitCommands.GitCommands(this, GetCredentialsHandler, GetSignature, libGitCaller);
     }
 
     public void Dispose()
@@ -205,4 +205,6 @@ internal class DefaultGitRepository : IGitRepository
     public IGitDiffer Differ { get; }
 
     public IGitCommands Commands { get; }
+
+    internal Repository LibGit2Repository => _repo;
 }

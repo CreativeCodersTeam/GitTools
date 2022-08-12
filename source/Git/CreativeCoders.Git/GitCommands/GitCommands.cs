@@ -5,7 +5,7 @@ namespace CreativeCoders.Git.GitCommands;
 
 public class GitCommands : IGitCommands
 {
-    private readonly Repository _repository;
+    private readonly DefaultGitRepository _repository;
 
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
 
@@ -13,7 +13,7 @@ public class GitCommands : IGitCommands
 
     private readonly ILibGitCaller _libGitCaller;
 
-    public GitCommands(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
+    internal GitCommands(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
         _repository = Ensure.NotNull(repository, nameof(repository));

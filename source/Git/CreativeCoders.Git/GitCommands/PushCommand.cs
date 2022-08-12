@@ -1,15 +1,18 @@
-﻿using CreativeCoders.Git.Abstractions.Branches;
+﻿using CreativeCoders.Core.Collections;
+using CreativeCoders.Git.Abstractions.Branches;
+using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Exceptions;
 using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.Pushes;
+using CreativeCoders.Git.Branches;
 using CreativeCoders.Git.Objects;
 using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.GitCommands;
 
-public class PushCommand : IPushCommand
+internal class PushCommand : IPushCommand
 {
-    private readonly Repository _repository;
+    private readonly DefaultGitRepository _repository;
 
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
 
@@ -27,7 +30,9 @@ public class PushCommand : IPushCommand
 
     private Func<IEnumerable<GitPushUpdate>, bool>? _negotiationCompletedBeforePush;
 
-    public PushCommand(Repository repository, Func<CredentialsHandler> getCredentialsHandler,
+    private Action<IEnumerable<IGitCommit>>? _unPushedCommits;
+
+    public PushCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         ILibGitCaller libGitCaller)
     {
         _repository = Ensure.NotNull(repository, nameof(repository));
@@ -110,13 +115,20 @@ public class PushCommand : IPushCommand
         return this;
     }
 
+    public IPushCommand OnUnPushedCommits(Action<IEnumerable<IGitCommit>> unPushedCommits)
+    {
+        _unPushedCommits = unPushedCommits;
+
+        return this;
+    }
+
     public void Run()
     {
         _libGitCaller.Invoke(() =>
         {
             var pushBranch = _branch != null
-                ? _repository.Branches[_branch.Name.Canonical]
-                : _repository.Head;
+                ? _repository.LibGit2Repository.Branches[_branch.Name.Canonical]
+                : _repository.LibGit2Repository.Head;
 
             if (pushBranch.TrackedBranch == null)
             {
@@ -126,9 +138,9 @@ public class PushCommand : IPushCommand
                         $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
                 }
 
-                var remoteOrigin = _repository.Network.Remotes[GitRemotes.Origin];
+                var remoteOrigin = _repository.LibGit2Repository.Network.Remotes[GitRemotes.Origin];
 
-                _repository.Branches.Update(pushBranch,
+                _repository.LibGit2Repository.Branches.Update(pushBranch,
                     b => b.Remote = remoteOrigin.Name,
                     b => b.UpstreamBranch = pushBranch.CanonicalName);
             }
@@ -142,7 +154,11 @@ public class PushCommand : IPushCommand
                 OnPushStatusError = OnGitPushStatusError
             };
 
-            _repository.Network.Push(pushBranch, pushOptions);
+            var unPushedCommits = new GitBranch(pushBranch).UnPushedCommits();
+
+            _unPushedCommits?.Invoke(unPushedCommits);
+
+            _repository.LibGit2Repository.Network.Push(pushBranch, pushOptions);
         });
     }
 
