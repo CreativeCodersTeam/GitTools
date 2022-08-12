@@ -154,9 +154,14 @@ internal class PushCommand : IPushCommand
                 OnPushStatusError = OnGitPushStatusError
             };
 
-            var unPushedCommits = new GitBranch(pushBranch).UnPushedCommits();
+            var unPushedCommits = new GitBranch(pushBranch)
+                .UnPushedCommits()
+                .ToArray();
 
-            _unPushedCommits?.Invoke(unPushedCommits);
+            if (unPushedCommits.Length > 0)
+            {
+                _unPushedCommits?.Invoke(unPushedCommits);
+            }
 
             _repository.LibGit2Repository.Network.Push(pushBranch, pushOptions);
         });

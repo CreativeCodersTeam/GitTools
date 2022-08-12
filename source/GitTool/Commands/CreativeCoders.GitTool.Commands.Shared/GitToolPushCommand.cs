@@ -53,6 +53,8 @@ public class GitToolPushCommand : IGitToolPushCommand
 
     private void OnGitUnPushedCommits(IEnumerable<IGitCommit> commits)
     {
+        _ansiConsole.WriteLine("Commits to push to remote:");
+
         var maxMessageWidth = _ansiConsole.Profile.Width - 60;
 
         var commitsTable = new Table()
