@@ -43,15 +43,15 @@ public static class GitRepositoryBranchExtensions
             yield break;
         }
 
-        foreach (var gitCommit in branch.Commits.Reverse())
+        foreach (var gitCommit in branch.Commits)
         {
-            if (gitCommit.Id != branch.TrackedBranch.Tip?.Id)
+            if (gitCommit.Id.Equals(branch.TrackedBranch.Tip?.Id))
             {
-                yield return gitCommit;
+                yield break;
             }
             else
             {
-                yield break;
+                yield return gitCommit;
             }
         }
     }

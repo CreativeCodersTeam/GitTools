@@ -92,6 +92,10 @@ public class GitToolPushCommand : IGitToolPushCommand
             commitsTable
                 .AddRow(whenColumn, messageColumn, authorColumn, shaColumn);
         });
+
+        _ansiConsole.Write(commitsTable);
+
+        _ansiConsole.WriteLine();
     }
 
     private void OnGitPackBuilderProgress(GitPackBuilderProgress packBuilderProgress)
