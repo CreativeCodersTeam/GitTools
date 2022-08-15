@@ -4,6 +4,7 @@ using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
 using CreativeCoders.Git.Abstractions.Exceptions;
+using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.References;
 using CreativeCoders.Git.Abstractions.Remotes;
 using CreativeCoders.Git.Abstractions.Tags;
@@ -25,9 +26,13 @@ internal class DefaultGitRepository : IGitRepository
 
     private readonly Repository _repo;
 
-    public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders)
+    private readonly ILibGitCaller _libGitCaller;
+
+    public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders,
+        ILibGitCaller libGitCaller)
     {
         _repo = Ensure.NotNull(repo, nameof(repo));
+        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
 
         _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
 
@@ -39,6 +44,7 @@ internal class DefaultGitRepository : IGitRepository
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
         Differ = new GitDiffer(_repo.Diff);
+        Commands = new GitCommands.GitCommands(this, GetCredentialsHandler, GetSignature, libGitCaller);
     }
 
     public void Dispose()
@@ -57,82 +63,48 @@ internal class DefaultGitRepository : IGitRepository
             throw new GitBranchNotExistsException(branchName);
         }
 
-        var checkedOutBranch = Commands.Checkout(_repo, _repo.Branches[branchName]);
+        var checkedOutBranch = _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Checkout(_repo, _repo.Branches[branchName]));
 
         return GitBranch.From(checkedOutBranch);
     }
 
     public GitMergeResult Pull()
     {
-        var options = new PullOptions
-        {
-            FetchOptions = new FetchOptions
-            {
-                CredentialsProvider = GetCredentialsHandler()
-            },
-            MergeOptions = new MergeOptions
-            {
-                FastForwardStrategy = FastForwardStrategy.Default
-            }
-        };
-
-        var signature = GetSignature();
-
-        var mergeResult = Commands.Pull(_repo, signature, options);
-
-        return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
+        return Commands.CreatePullCommand().Run();
     }
 
     public IGitBranch? CreateBranch(string branchName)
     {
-        return GitBranch.From(_repo.CreateBranch(branchName));
+        return GitBranch.From(_libGitCaller.Invoke(() => _repo.CreateBranch(branchName)));
     }
 
     public IGitTag CreateTag(string tagName)
     {
-        return new GitTag(_repo.ApplyTag(tagName));
+        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName)));
     }
 
     public IGitTag CreateTag(string tagName, string objectish)
     {
-        return new GitTag(_repo.ApplyTag(tagName, objectish));
+        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName, objectish)));
     }
 
     public IGitTag CreateTagWithMessage(string tagName, string message)
     {
-        return new GitTag(_repo.ApplyTag(tagName, GetSignature(), message));
+        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName, GetSignature(), message)));
     }
 
     public IGitTag CreateTagWithMessage(string tagName, string objectish, string message)
     {
-        return new GitTag(_repo.ApplyTag(tagName, objectish, GetSignature(), message));
+        return new GitTag(
+            _libGitCaller
+                .Invoke(() => _repo.ApplyTag(tagName, objectish, GetSignature(), message)));
     }
 
     public void Push(GitPushOptions gitPushOptions)
     {
-        var pushBranch = _repo.Head;
-
-        if (pushBranch.TrackedBranch == null)
-        {
-            if (!gitPushOptions.CreateRemoteBranchIfNotExists)
-            {
-                throw new GitPushFailedException(
-                    $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
-            }
-
-            var remoteOrigin = _repo.Network.Remotes[GitRemotes.Origin];
-
-            _repo.Branches.Update(pushBranch,
-                b => b.Remote = remoteOrigin.Name,
-                b => b.UpstreamBranch = pushBranch.CanonicalName);
-        }
-
-        var pushOptions = new PushOptions
-        {
-            CredentialsProvider = GetCredentialsHandler()
-        };
-
-        _repo.Network.Push(pushBranch, pushOptions);
+        Commands.CreatePushCommand()
+            .CreateRemoteBranchIfNotExists(gitPushOptions.CreateRemoteBranchIfNotExists)
+            .Run();
     }
 
     public void PushTag(IGitTag tag)
@@ -142,7 +114,8 @@ internal class DefaultGitRepository : IGitRepository
             CredentialsProvider = GetCredentialsHandler()
         };
 
-        _repo.Network.Push(_repo.Network.Remotes[GitRemotes.Origin], tag.Name.Canonical, pushOptions);
+        _libGitCaller.Invoke(() =>
+            _repo.Network.Push(_repo.Network.Remotes[GitRemotes.Origin], tag.Name.Canonical, pushOptions));
     }
 
     public void PushAllTags()
@@ -163,40 +136,44 @@ internal class DefaultGitRepository : IGitRepository
 
         var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification).ToArray();
 
-        Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null);
+        _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null));
     }
 
     public void DeleteLocalBranch(string branchName)
     {
-        var branch = _repo.Branches[branchName];
+        var branch = _libGitCaller.Invoke(() => _repo.Branches[branchName]);
 
         if (branch.IsRemote)
         {
             return;
         }
 
-        _repo.Branches.Remove(branch);
+        _libGitCaller.Invoke(() => _repo.Branches.Remove(branch));
     }
 
     public GitMergeResult Merge(string sourceBranchName, string targetBranchName, GitMergeOptions mergeOptions)
     {
-        var sourceBranch = _repo.Branches[sourceBranchName];
-
-        var targetBranch = CheckOut(targetBranchName);
-
-        if (targetBranch == null)
+        return _libGitCaller.Invoke(() =>
         {
-            throw new GitCheckoutFailedException(targetBranchName);
-        }
+            var sourceBranch = _repo.Branches[sourceBranchName];
 
-        var mergeResult = _repo.Merge(sourceBranch, GetSignature(), mergeOptions.ToMergeOptions());
+            var targetBranch = CheckOut(targetBranchName);
 
-        return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
+            if (targetBranch == null)
+            {
+                throw new GitCheckoutFailedException(targetBranchName);
+            }
+
+            var mergeResult = _repo.Merge(sourceBranch, GetSignature(), mergeOptions.ToMergeOptions());
+
+            return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
+        });
     }
 
     public bool HasUncommittedChanges(bool includeUntracked)
     {
-        using var treeChanges = _repo.Diff.Compare<TreeChanges>(null, includeUntracked);
+        using var treeChanges =
+            _libGitCaller.Invoke(() => _repo.Diff.Compare<TreeChanges>(null, includeUntracked));
 
         return treeChanges.Count > 0;
     }
@@ -206,14 +183,14 @@ internal class DefaultGitRepository : IGitRepository
 
     private Signature GetSignature()
     {
-        return _repo.Config.BuildSignature(DateTimeOffset.Now);
+        return _libGitCaller.Invoke(() => _repo.Config.BuildSignature(DateTimeOffset.Now));
     }
 
     public IGitRepositoryInfo Info { get; }
 
-    public bool IsHeadDetached => _repo.Info.IsHeadDetached;
+    public bool IsHeadDetached => _libGitCaller.Invoke(() => _repo.Info.IsHeadDetached);
 
-    public IGitBranch Head => GitBranch.From(_repo.Head)!;
+    public IGitBranch Head => GitBranch.From(_libGitCaller.Invoke(() => _repo.Head))!;
 
     public IGitTagCollection Tags { get; }
 
@@ -226,4 +203,8 @@ internal class DefaultGitRepository : IGitRepository
     public IGitRemoteCollection Remotes { get; }
 
     public IGitDiffer Differ { get; }
+
+    public IGitCommands Commands { get; }
+
+    internal Repository LibGit2Repository => _repo;
 }

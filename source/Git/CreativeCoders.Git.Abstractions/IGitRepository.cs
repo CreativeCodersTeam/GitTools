@@ -2,6 +2,7 @@
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
+using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.Git.Abstractions.References;
 using CreativeCoders.Git.Abstractions.Remotes;
 using CreativeCoders.Git.Abstractions.Tags;
@@ -57,4 +58,6 @@ public interface IGitRepository : IDisposable
     IGitRemoteCollection Remotes { get; }
 
     IGitDiffer Differ { get; }
+
+    IGitCommands Commands { get; }
 }

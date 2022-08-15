@@ -3,61 +3,57 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
+using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
 
 namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create;
 
-public class CreateReleaseCommand : ICreateReleaseCommand
+public class CreateReleaseCommand : IGitToolCommandWithOptions<CreateReleaseOptions>
 {
     private readonly IGitServiceProviders _gitServiceProviders;
 
     private readonly ISysConsole _sysConsole;
 
-    private readonly IGitRepositoryFactory _gitRepositoryFactory;
-
-    public CreateReleaseCommand(IGitRepositoryFactory gitRepositoryFactory, ISysConsole sysConsole,
+    public CreateReleaseCommand(ISysConsole sysConsole,
         IGitServiceProviders gitServiceProviders)
     {
         _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
         _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
     }
 
-    public async Task<int> ExecuteAsync(CreateReleaseOptions options)
+    public async Task<int> ExecuteAsync(IGitRepository gitRepository, CreateReleaseOptions options)
     {
-        using var repository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+        var mainBranchName = GitBranchNames.Local.GetCanonicalName(gitRepository.Info.MainBranch);
 
-        var mainBranchName = GitBranchNames.Local.GetCanonicalName(repository.Info.MainBranch);
-
-        if (repository.Branches["develop"] != null)
+        if (gitRepository.Branches["develop"] != null)
         {
             _sysConsole.WriteLine(
                 $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
 
-            await MergeDevelopToMain(repository, mainBranchName, options);
+            await MergeDevelopToMain(gitRepository, mainBranchName, options);
         }
 
         var tagName = $"v{options.Version}";
 
         _sysConsole.WriteLine($"Create tag '{tagName}'");
 
-        repository.CheckOut(mainBranchName);
+        gitRepository.CheckOut(mainBranchName);
 
-        repository.Pull();
+        gitRepository.Pull();
 
-        var versionTag = repository.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
+        var versionTag = gitRepository.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
 
         if (options.PushAllTags)
         {
             _sysConsole.WriteLine("Push all tags to remote");
 
-            repository.PushAllTags();
+            gitRepository.PushAllTags();
         }
         else
         {
             _sysConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
 
-            repository.PushTag(versionTag);
+            gitRepository.PushTag(versionTag);
         }
 
         return 0;

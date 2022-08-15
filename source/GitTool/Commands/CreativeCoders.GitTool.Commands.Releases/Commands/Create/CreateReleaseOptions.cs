@@ -7,7 +7,7 @@ public class CreateReleaseOptions
     private const string PushAllTagsLongName = "alltags";
 
     [OptionValue(0, IsRequired = true)]
-    public string Version { get; set; }
+    public string? Version { get; set; }
 
     [OptionParameter('a', PushAllTagsLongName)]
     public bool PushAllTags { get; set; }

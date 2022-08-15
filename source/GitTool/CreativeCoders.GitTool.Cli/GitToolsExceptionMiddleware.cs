@@ -6,7 +6,6 @@ using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.SysConsole.Cli.Actions.Exceptions;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime.Middleware;
-using CreativeCoders.SysConsole.Core.Abstractions;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli;

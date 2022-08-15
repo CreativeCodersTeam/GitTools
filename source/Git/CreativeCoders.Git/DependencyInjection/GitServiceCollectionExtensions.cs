@@ -11,6 +11,8 @@ public static class GitServiceCollectionExtensions
 {
     public static IServiceCollection AddGit(this IServiceCollection services)
     {
+        services.TryAddTransient<ILibGitCaller, LibGitCaller>();
+
         services.TryAddSingleton<IGitRepositoryFactory, DefaultGitRepositoryFactory>();
 
         services.TryAddSingleton<IGitCredentialProviders, DefaultGitCredentialProviders>();

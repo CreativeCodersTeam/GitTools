@@ -19,7 +19,7 @@ public static class GitHubServiceCollectionExtensions
         {
             var credentialStore = sp.GetRequiredService<ICredentialStore>();
 
-            return new GitHubClient(new ProductHeaderValue("git-feature"), credentialStore);
+            return new GitHubClient(new ProductHeaderValue("CreativeCoders.GitTool"), credentialStore);
         });
 
         services.TryAddSingleton<ICredentialStore, GitHubCredentialStore>();

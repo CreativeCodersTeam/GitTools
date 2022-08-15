@@ -2,15 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.28.0" />
+    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.62.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
     <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
+    <ProjectReference Include="..\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj" />
   </ItemGroup>
 
 </Project>
