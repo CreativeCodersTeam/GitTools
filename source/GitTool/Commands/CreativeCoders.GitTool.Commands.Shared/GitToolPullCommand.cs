@@ -39,7 +39,7 @@ public class GitToolPullCommand : IGitToolPullCommand
         }
 
         var mergeResult = pullCommand
-            .OnCheckoutNotify(CheckoutNotify)
+            .OnCheckoutNotify((path, flags) => CheckoutNotify(path, flags, verbose))
             .Run();
 
         PrintMergeResultStatus(mergeResult.MergeStatus);
@@ -75,8 +75,13 @@ public class GitToolPullCommand : IGitToolPullCommand
         }
     }
 
-    private void CheckoutNotify(string path, GitCheckoutNotifyFlags notifyFlags)
+    private void CheckoutNotify(string path, GitCheckoutNotifyFlags notifyFlags, bool verbose)
     {
+        if (!verbose && notifyFlags == GitCheckoutNotifyFlags.Ignored)
+        {
+            return;
+        }
+
         _ansiConsole.MarkupLine($"{_cml.HighLight(notifyFlags.ToString())}: {path}");
     }
 }
