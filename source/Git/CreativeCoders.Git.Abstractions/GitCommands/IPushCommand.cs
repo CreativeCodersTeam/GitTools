@@ -16,6 +16,10 @@ public interface IPushCommand
 
     IPushCommand Branch(IGitBranch branch);
 
+    IPushCommand Confirm();
+
+    IPushCommand Confirm(bool confirm);
+
     IPushCommand OnPushStatusError(Action<GitPushStatusError> pushStatusError);
 
     IPushCommand OnPackBuilderProgress(Action<GitPackBuilderProgress> packBuilderProgress);
@@ -31,6 +35,8 @@ public interface IPushCommand
     IPushCommand OnNegotiationCompletedBeforePush(Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush);
 
     IPushCommand OnUnPushedCommits(Action<IEnumerable<IGitCommit>> unPushedCommits);
+
+    IPushCommand OnConfirm(Func<bool> doConfirm);
 
     void Run();
 }

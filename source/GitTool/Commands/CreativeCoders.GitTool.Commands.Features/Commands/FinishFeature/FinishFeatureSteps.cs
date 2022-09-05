@@ -122,7 +122,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
 
         if (!data.Repository.Head.BranchIsPushedToRemote())
         {
-            await _pushCommand.ExecuteAsync(data.Repository, true).ConfigureAwait(false);
+            await _pushCommand.ExecuteAsync(data.Repository, true, false).ConfigureAwait(false);
         }
 
         _sysConsole

@@ -20,10 +20,11 @@ public class GitToolPushCommand : IGitToolPushCommand
         _cml = Ensure.NotNull(cml, nameof(cml));
     }
 
-    public Task<int> ExecuteAsync(IGitRepository gitRepository, bool createRemoteIsNotExists)
-        => ExecuteAsync(gitRepository, createRemoteIsNotExists, false);
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, bool createRemoteIsNotExists, bool confirmPush)
+        => ExecuteAsync(gitRepository, createRemoteIsNotExists, confirmPush, false);
 
-    public Task<int> ExecuteAsync(IGitRepository gitRepository, bool createRemoteIsNotExists, bool verbose)
+    public Task<int> ExecuteAsync(IGitRepository gitRepository, bool createRemoteIsNotExists, bool verbose,
+        bool confirmPush)
     {
         _ansiConsole
             .WriteMarkupLine("Push updates to remote origin")
@@ -31,10 +32,12 @@ public class GitToolPushCommand : IGitToolPushCommand
 
         var pushCommand = gitRepository.Commands
             .CreatePushCommand()
+            .Confirm(confirmPush)
             .CreateRemoteBranchIfNotExists(createRemoteIsNotExists)
             .OnNegotiationCompletedBeforePush(OnGitNegotiationCompletedBeforePush)
             .OnPushStatusError(OnGitPushStatusError)
-            .OnUnPushedCommits(OnGitUnPushedCommits);
+            .OnUnPushedCommits(OnGitUnPushedCommits)
+            .OnConfirm(DoConfirm);
 
         if (verbose)
         {
@@ -48,6 +51,16 @@ public class GitToolPushCommand : IGitToolPushCommand
         _ansiConsole.WriteLine();
 
         return Task.FromResult(0);
+    }
+
+    private bool DoConfirm()
+    {
+        _ansiConsole.WriteLine();
+        _ansiConsole.MarkupLine("Push commits? (y/n)");
+
+        var key = _ansiConsole.Input.ReadKey(false);
+
+        return key is {KeyChar: 'y'};
     }
 
     private void OnGitUnPushedCommits(IEnumerable<IGitCommit> commits)
