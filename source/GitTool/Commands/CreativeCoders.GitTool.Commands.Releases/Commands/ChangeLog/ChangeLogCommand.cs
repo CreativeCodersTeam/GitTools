@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using Spectre.Console;
@@ -20,6 +23,15 @@ public class ChangeLogCommand : IGitToolCommandWithOptions<ChangeLogOptions>
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository, ChangeLogOptions options)
     {
+        var commitLines = CreateChangeLogLines(gitRepository, options);
+
+        commitLines.ForEach(x => _console.WriteLine(x));
+
+        return Task.FromResult(0);
+    }
+
+    private IEnumerable<string> CreateChangeLogLines(IGitRepository gitRepository, ChangeLogOptions options)
+    {
         var tag = gitRepository.Tags.Reverse().FirstOrDefault();
 
         if (tag != null)
@@ -31,7 +43,17 @@ public class ChangeLogCommand : IGitToolCommandWithOptions<ChangeLogOptions>
                 _console.WriteMarkupLine("New commits");
             }
         }
+        else
+        {
+            return CreateChangeLogLines(gitRepository.Commits);
+        }
 
-        return Task.FromResult(0);
+        return Array.Empty<string>();
+    }
+
+    private static IEnumerable<string> CreateChangeLogLines(IEnumerable<IGitCommit> commits)
+    {
+        return commits
+            .Select(x => $"- {x.Message}");
     }
 }
