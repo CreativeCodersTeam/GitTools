@@ -84,7 +84,7 @@ public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOption
 
         _sysConsole.WriteLine($"Creating feature branch '{featureBranchName}' ...");
 
-        var featureBranch = repository.CreateBranch(featureBranchName);
+        var featureBranch = repository.Branches.CreateBranch(featureBranchName);
 
         if (featureBranch == null)
         {
@@ -98,7 +98,7 @@ public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOption
             .WriteLine()
             .WriteLine("Checking out feature branch...");
 
-        var checkedOutBranch = repository.CheckOut(featureBranch.Name.Canonical);
+        var checkedOutBranch = repository.Branches.CheckOut(featureBranch.Name.Canonical);
 
         if (checkedOutBranch == null)
         {
@@ -132,7 +132,7 @@ public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOption
 
         _sysConsole.WriteLine($"Checkout base branch '{baseBranchName}'");
 
-        repository.CheckOut(baseBranchName);
+        repository.Branches.CheckOut(baseBranchName);
 
         _sysConsole
             .WriteLine("Base branch checked out")

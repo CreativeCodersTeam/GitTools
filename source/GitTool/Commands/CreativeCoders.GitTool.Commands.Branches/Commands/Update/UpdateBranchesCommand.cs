@@ -66,7 +66,7 @@ public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOp
             _ansiConsole.WriteMarkupLine(
                 $"Switch back to working branch {_cml.HighLight($"'{currentBranch.Name.Friendly}'")}");
 
-            gitRepository.CheckOut(currentBranch.Name.Friendly);
+            gitRepository.Branches.CheckOut(currentBranch.Name.Friendly);
         }
 
         _ansiConsole.EmptyLine();
@@ -86,7 +86,7 @@ public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOp
 
                 _ansiConsole.WriteMarkupLine($"Update local branch {_cml.HighLight($"'{branchName}'")}");
 
-                repository.CheckOut(branchName);
+                repository.Branches.CheckOut(branchName);
 
                 await _pullCommand.ExecuteAsync(repository).ConfigureAwait(false);
             })

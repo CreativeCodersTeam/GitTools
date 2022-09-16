@@ -34,9 +34,9 @@ public class FinishFeatureCommand : IGitToolCommandWithOptions<FinishFeatureOpti
 
         await _finishFeatureSteps.CreatePullRequest(data).ConfigureAwait(false);
 
-        gitRepository.CheckOut(data.DefaultBranch);
+        gitRepository.Branches.CheckOut(data.DefaultBranch);
 
-        gitRepository.DeleteLocalBranch(data.FeatureBranch);
+        gitRepository.Branches.DeleteLocalBranch(data.FeatureBranch);
 
         return ReturnCodes.Success;
     }

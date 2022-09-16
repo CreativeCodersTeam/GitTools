@@ -14,7 +14,7 @@ public static class GitRepositoryBranchExtensions
     public static IGitBranch? CreateBranch(this IGitRepository gitRepository, string sourceBranchName,
         string newBranchName, bool updateSourceBranchBefore)
     {
-        var sourceBranch = gitRepository.CheckOut(sourceBranchName);
+        var sourceBranch = gitRepository.Branches.CheckOut(sourceBranchName);
 
         if (sourceBranch == null)
         {
@@ -28,7 +28,7 @@ public static class GitRepositoryBranchExtensions
             gitRepository.Pull();
         }
 
-        return gitRepository.CreateBranch(newBranchName);
+        return gitRepository.Branches.CreateBranch(newBranchName);
     }
 
     public static bool BranchIsPushedToRemote(this IGitBranch branch)

@@ -30,7 +30,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
     {
         _sysConsole.WriteLine($"Checkout feature branch '{data.FeatureBranch}'");
 
-        data.Repository.CheckOut(data.FeatureBranch);
+        data.Repository.Branches.CheckOut(data.FeatureBranch);
 
         if (data.Repository.HasUncommittedChanges(true))
         {
@@ -77,7 +77,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
     {
         _sysConsole.WriteLine("Checkout Default branch");
 
-        data.Repository.CheckOut(data.DefaultBranch);
+        data.Repository.Branches.CheckOut(data.DefaultBranch);
 
         _sysConsole
             .WriteLine("Default branch checked out")
@@ -112,7 +112,7 @@ public class FinishFeatureSteps : IFinishFeatureSteps
                 "Merge default branch to feature branch caused merge conflicts");
         }
 
-        data.Repository.CheckOut(data.FeatureBranch);
+        data.Repository.Branches.CheckOut(data.FeatureBranch);
     }
 
     public async Task PushFeatureBranch(FinishFeatureData data)
