@@ -1,5 +1,4 @@
-﻿using CreativeCoders.Core.Collections;
-using CreativeCoders.Git.Abstractions.Branches;
+﻿using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Exceptions;
 using CreativeCoders.Git.Abstractions.GitCommands;
