@@ -18,7 +18,7 @@ public class PushBranchCommand : IGitToolCommandWithOptions<PushBranchOptions>
     public async Task<int> ExecuteAsync(IGitRepository gitRepository, PushBranchOptions options)
     {
         return await _pushCommand
-            .ExecuteAsync(gitRepository, options.CreateRemoteBranchIfNotExists, options.Verbose)
+            .ExecuteAsync(gitRepository, options.CreateRemoteBranchIfNotExists, options.ConfirmPush, options.Verbose)
             .ConfigureAwait(false);
     }
 }

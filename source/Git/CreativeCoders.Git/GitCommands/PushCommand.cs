@@ -22,6 +22,8 @@ internal class PushCommand : IPushCommand
 
     private IGitBranch? _branch;
 
+    private bool _confirm;
+
     private Action<GitPushStatusError>? _pushStatusError;
 
     private Func<GitPackBuilderProgress, bool>? _packBuilderProgress;
@@ -31,6 +33,8 @@ internal class PushCommand : IPushCommand
     private Func<IEnumerable<GitPushUpdate>, bool>? _negotiationCompletedBeforePush;
 
     private Action<IEnumerable<IGitCommit>>? _unPushedCommits;
+
+    private Func<bool>? _doConfirm;
 
     public PushCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         ILibGitCaller libGitCaller)
@@ -53,6 +57,18 @@ internal class PushCommand : IPushCommand
     public IPushCommand Branch(IGitBranch branch)
     {
         _branch = branch;
+
+        return this;
+    }
+
+    public IPushCommand Confirm()
+    {
+        return Confirm(true);
+    }
+
+    public IPushCommand Confirm(bool confirm)
+    {
+        _confirm = confirm;
 
         return this;
     }
@@ -122,6 +138,13 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    public IPushCommand OnConfirm(Func<bool> doConfirm)
+    {
+        _doConfirm = doConfirm;
+
+        return this;
+    }
+
     public void Run()
     {
         _libGitCaller.Invoke(() =>
@@ -161,6 +184,16 @@ internal class PushCommand : IPushCommand
             if (unPushedCommits.Length > 0)
             {
                 _unPushedCommits?.Invoke(unPushedCommits);
+
+                if (_confirm && _doConfirm != null)
+                {
+                    var confirmed = _doConfirm.Invoke();
+
+                    if (!confirmed)
+                    {
+                        return;
+                    }
+                }
             }
 
             _repository.LibGit2Repository.Network.Push(pushBranch, pushOptions);
