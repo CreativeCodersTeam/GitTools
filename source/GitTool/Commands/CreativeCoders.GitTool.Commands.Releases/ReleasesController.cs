@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CreativeCoders.Core;
+using CreativeCoders.GitTool.Commands.Releases.Commands.ChangeLog;
 using CreativeCoders.GitTool.Commands.Releases.Commands.Create;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Cli.Actions;
@@ -22,4 +23,8 @@ public class ReleasesController
     [CliAction("create")]
     public async Task<CliActionResult> CreateAsync(CreateReleaseOptions options)
         => new(await _commandExecutor.ExecuteAsync<CreateReleaseCommand, CreateReleaseOptions>(options));
+
+    [CliAction("changelog")]
+    public async Task<CliActionResult> ChangeLogAsync(ChangeLogOptions options)
+        => new(await _commandExecutor.ExecuteAsync<ChangeLogCommand, ChangeLogOptions>(options));
 }

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\ChangeLog\" />
+  </ItemGroup>
+
 </Project>
