@@ -37,23 +37,23 @@ public class CreateReleaseCommand : IGitToolCommandWithOptions<CreateReleaseOpti
 
         _sysConsole.WriteLine($"Create tag '{tagName}'");
 
-        gitRepository.CheckOut(mainBranchName);
+        gitRepository.Branches.CheckOut(mainBranchName);
 
         gitRepository.Pull();
 
-        var versionTag = gitRepository.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
+        var versionTag = gitRepository.Tags.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
 
         if (options.PushAllTags)
         {
             _sysConsole.WriteLine("Push all tags to remote");
 
-            gitRepository.PushAllTags();
+            gitRepository.Tags.PushAllTags();
         }
         else
         {
             _sysConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
 
-            gitRepository.PushTag(versionTag);
+            gitRepository.Tags.PushTag(versionTag);
         }
 
         return 0;

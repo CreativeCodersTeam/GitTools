@@ -1,5 +1,4 @@
-﻿using CreativeCoders.Core.Collections;
-using CreativeCoders.Git.Abstractions.Auth;
+﻿using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
@@ -36,10 +35,12 @@ internal class DefaultGitRepository : IGitRepository
 
         _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
 
+        var context = new RepositoryContext(repo, libGitCaller, GetSignature, GetCredentialsHandler);
+
         Info = new GitRepositoryInfo(_repo);
 
-        Branches = new GitBranchCollection(_repo.Branches);
-        Tags = new GitTagCollection(_repo.Tags);
+        Branches = new GitBranchCollection(context);
+        Tags = new GitTagCollection(context);
         Commits = new GitCommitLog(_repo.Commits);
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
@@ -52,52 +53,9 @@ internal class DefaultGitRepository : IGitRepository
         _repo.Dispose();
     }
 
-    public IGitBranch? CheckOut(string branchName)
-    {
-        Ensure.Argument(branchName, nameof(branchName)).NotNullOrEmpty();
-
-        var branch = Branches[branchName];
-
-        if (branch == null)
-        {
-            throw new GitBranchNotExistsException(branchName);
-        }
-
-        var checkedOutBranch = _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Checkout(_repo, _repo.Branches[branchName]));
-
-        return GitBranch.From(checkedOutBranch);
-    }
-
     public GitMergeResult Pull()
     {
         return Commands.CreatePullCommand().Run();
-    }
-
-    public IGitBranch? CreateBranch(string branchName)
-    {
-        return GitBranch.From(_libGitCaller.Invoke(() => _repo.CreateBranch(branchName)));
-    }
-
-    public IGitTag CreateTag(string tagName)
-    {
-        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName)));
-    }
-
-    public IGitTag CreateTag(string tagName, string objectish)
-    {
-        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName, objectish)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string message)
-    {
-        return new GitTag(_libGitCaller.Invoke(() => _repo.ApplyTag(tagName, GetSignature(), message)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string objectish, string message)
-    {
-        return new GitTag(
-            _libGitCaller
-                .Invoke(() => _repo.ApplyTag(tagName, objectish, GetSignature(), message)));
     }
 
     public void Push(GitPushOptions gitPushOptions)
@@ -105,22 +63,6 @@ internal class DefaultGitRepository : IGitRepository
         Commands.CreatePushCommand()
             .CreateRemoteBranchIfNotExists(gitPushOptions.CreateRemoteBranchIfNotExists)
             .Run();
-    }
-
-    public void PushTag(IGitTag tag)
-    {
-        var pushOptions = new PushOptions
-        {
-            CredentialsProvider = GetCredentialsHandler()
-        };
-
-        _libGitCaller.Invoke(() =>
-            _repo.Network.Push(_repo.Network.Remotes[GitRemotes.Origin], tag.Name.Canonical, pushOptions));
-    }
-
-    public void PushAllTags()
-    {
-        Tags.ForEach(PushTag);
     }
 
     public void Fetch(string remoteName, GitFetchOptions gitFetchOptions)
@@ -139,25 +81,13 @@ internal class DefaultGitRepository : IGitRepository
         _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null));
     }
 
-    public void DeleteLocalBranch(string branchName)
-    {
-        var branch = _libGitCaller.Invoke(() => _repo.Branches[branchName]);
-
-        if (branch.IsRemote)
-        {
-            return;
-        }
-
-        _libGitCaller.Invoke(() => _repo.Branches.Remove(branch));
-    }
-
     public GitMergeResult Merge(string sourceBranchName, string targetBranchName, GitMergeOptions mergeOptions)
     {
         return _libGitCaller.Invoke(() =>
         {
             var sourceBranch = _repo.Branches[sourceBranchName];
 
-            var targetBranch = CheckOut(targetBranchName);
+            var targetBranch = Branches.CheckOut(targetBranchName);
 
             if (targetBranch == null)
             {
