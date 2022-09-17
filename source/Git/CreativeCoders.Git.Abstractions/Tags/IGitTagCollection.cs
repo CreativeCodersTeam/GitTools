@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CreativeCoders.Git.Abstractions.Branches;
 
 namespace CreativeCoders.Git.Abstractions.Tags;
 
@@ -15,4 +16,6 @@ public interface IGitTagCollection : IEnumerable<IGitTag>
     void PushTag(IGitTag tag);
 
     void PushAllTags();
+
+    IEnumerable<IGitTag> GetAllTagsForBranch(IGitBranch branch);
 }

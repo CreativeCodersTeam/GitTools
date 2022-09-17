@@ -61,4 +61,7 @@ public class GitBranchCollection : IGitBranchCollection
     }
 
     public IGitBranch? this[string name] => GitBranch.From(_branchCollection[name]);
+
+    public IGitBranch? LocalMainBranch
+        => this[GitBranchNames.Local.GetCanonicalName(_context.GitRepository.Info.MainBranch)];
 }

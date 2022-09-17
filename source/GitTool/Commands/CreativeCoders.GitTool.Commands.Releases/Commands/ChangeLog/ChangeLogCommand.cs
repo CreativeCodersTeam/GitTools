@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
+using CreativeCoders.SysConsole.Cli.Actions.Exceptions;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Releases.Commands.ChangeLog;
@@ -32,23 +35,26 @@ public class ChangeLogCommand : IGitToolCommandWithOptions<ChangeLogOptions>
 
     private IEnumerable<string> CreateChangeLogLines(IGitRepository gitRepository, ChangeLogOptions options)
     {
-        var tag = gitRepository.Tags.Reverse().FirstOrDefault();
+        var mainBranch = gitRepository.Branches.LocalMainBranch;
 
-        if (tag != null)
+        if (mainBranch == null || mainBranch.Commits == null)
         {
-            _console.WriteMarkupLine(tag.Name.Friendly);
-
-            if (tag.TargetSha != gitRepository.Head.Tip.Sha)
-            {
-                _console.WriteMarkupLine("New commits");
-            }
-        }
-        else
-        {
-            return CreateChangeLogLines(gitRepository.Commits);
+            throw new CliActionException("No main branch found");
         }
 
-        return Array.Empty<string>();
+        //if (versionTag != null)
+        //{
+        //    versionTag.PeeledTargetCommit();
+
+        //    _console.WriteMarkupLine($"Changelog for version {versionTag.Name.Friendly}");
+
+        //    if (versionTag.TargetSha != gitRepository.Head.Tip?.Sha)
+        //    {
+        //        _console.WriteMarkupLine("New commits");
+        //    }
+        //}
+
+        return CreateChangeLogLines(mainBranch.Commits);
     }
 
     private static IEnumerable<string> CreateChangeLogLines(IEnumerable<IGitCommit> commits)

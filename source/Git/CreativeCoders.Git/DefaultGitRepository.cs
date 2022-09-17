@@ -35,7 +35,7 @@ internal class DefaultGitRepository : IGitRepository
 
         _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
 
-        var context = new RepositoryContext(repo, libGitCaller, GetSignature, GetCredentialsHandler);
+        var context = new RepositoryContext(this, repo, libGitCaller, GetSignature, GetCredentialsHandler);
 
         Info = new GitRepositoryInfo(_repo);
 

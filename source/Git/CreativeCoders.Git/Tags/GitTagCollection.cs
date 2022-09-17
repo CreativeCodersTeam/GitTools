@@ -57,6 +57,24 @@ public class GitTagCollection : IGitTagCollection
         this.ForEach(PushTag);
     }
 
+    public IEnumerable<IGitTag> GetAllTagsForBranch(IGitBranch branch)
+    {
+        var commits = branch.Commits?.ToArray();
+
+        if (commits == null)
+        {
+            yield break;
+        }
+
+        foreach (var tag in this)
+        {
+            if (commits.Any(x => x.Sha == tag.TargetSha))
+            {
+                yield return tag;
+            }
+        }
+    }
+
     public IEnumerator<IGitTag> GetEnumerator()
         => _repository.Tags.Select(x => new GitTag(x)).GetEnumerator();
 
