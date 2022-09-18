@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Branches\CreativeCoders.GitTool.Commands.Branches.csproj" />
     <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Features\CreativeCoders.GitTool.Commands.Features.csproj" />
     <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Releases\CreativeCoders.GitTool.Commands.Releases.csproj" />
+    <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Tags\CreativeCoders.GitTool.Commands.Tags.csproj" />
     <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj" />
     <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
     <ProjectReference Include="..\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj" />

@@ -4,6 +4,7 @@ using CreativeCoders.GitTool.Commands.Branches;
 using CreativeCoders.GitTool.Commands.Features;
 using CreativeCoders.GitTool.Commands.Releases;
 using CreativeCoders.GitTool.Commands.Shared;
+using CreativeCoders.GitTool.Commands.Tags;
 using CreativeCoders.GitTool.Commands.Tool;
 using CreativeCoders.GitTool.GitHub;
 using CreativeCoders.GitTool.GitLab;
@@ -43,6 +44,7 @@ public class Startup : ICliStartup
         runtimeBuilder.AddController<BranchesController>();
         runtimeBuilder.AddController<ReleasesController>();
         runtimeBuilder.AddController<ToolController>();
+        runtimeBuilder.AddController<TagsController>();
 
         runtimeBuilder.UseMiddleware<GitToolsExceptionMiddleware>();
 
