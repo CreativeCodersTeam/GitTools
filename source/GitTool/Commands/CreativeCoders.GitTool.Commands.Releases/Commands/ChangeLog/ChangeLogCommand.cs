@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
+using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.Git.Abstractions.Commits;
-using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Cli.Actions.Exceptions;
 using Spectre.Console;
@@ -33,33 +32,59 @@ public class ChangeLogCommand : IGitToolCommandWithOptions<ChangeLogOptions>
         return Task.FromResult(0);
     }
 
-    private IEnumerable<string> CreateChangeLogLines(IGitRepository gitRepository, ChangeLogOptions options)
+    private static IEnumerable<string> CreateChangeLogLines(IGitRepository gitRepository, ChangeLogOptions options)
     {
         var mainBranch = gitRepository.Branches.LocalMainBranch;
 
-        if (mainBranch == null || mainBranch.Commits == null)
+        if (mainBranch?.Commits == null)
         {
             throw new CliActionException("No main branch found");
         }
 
-        //if (versionTag != null)
-        //{
-        //    versionTag.PeeledTargetCommit();
+        return CreateChangeLogLines(GetCommits(gitRepository, mainBranch));
+    }
 
-        //    _console.WriteMarkupLine($"Changelog for version {versionTag.Name.Friendly}");
+    private static IEnumerable<IGitCommit> GetCommits(IGitRepository gitRepository, IGitBranch branch)
+    {
+        var tags = gitRepository.Tags.GetAllTagsForBranch(branch).Reverse().ToArray();
 
-        //    if (versionTag.TargetSha != gitRepository.Head.Tip?.Sha)
-        //    {
-        //        _console.WriteMarkupLine("New commits");
-        //    }
-        //}
+        if (tags.Length > 0)
+        {
+            var firstTag = tags.First();
 
-        return CreateChangeLogLines(mainBranch.Commits);
+            if (firstTag.TargetSha != branch.Commits?.First().Sha)
+            {
+                var commits = branch.Commits.TakeUntil(x => x.Sha == firstTag.TargetSha).ToArray();
+
+                return commits.Take(commits.Length - 1);
+            }
+
+            if (tags.Length > 1)
+            {
+
+            }
+
+            return Array.Empty<IGitCommit>();
+        }
+
+        return branch.Commits?.ToArray() ?? Array.Empty<IGitCommit>();
     }
 
     private static IEnumerable<string> CreateChangeLogLines(IEnumerable<IGitCommit> commits)
     {
         return commits
-            .Select(x => $"- {x.Message}");
+            .Select(x => $"- {FormatCommitMessage(x)}");
+    }
+
+    private static string FormatCommitMessage(IGitCommit commit)
+    {
+        var lines = commit.Message.Split("\n").Select(x => x.TrimEnd()).ToArray();
+
+        for (var i = 1; i < lines.Length; i++)
+        {
+            lines[i] = $"  {lines[i]}";
+        }
+
+        return string.Join(Env.NewLine, lines);
     }
 }

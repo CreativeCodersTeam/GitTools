@@ -2,6 +2,7 @@
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.Git.Abstractions.Exceptions;
 using CreativeCoders.Git.Abstractions.Tags;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
@@ -20,9 +21,28 @@ public class ListTagsCommand : IGitToolCommandWithOptions<ListTagsOptions>
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository, ListTagsOptions options)
     {
-        gitRepository.Tags.ForEach(PrintTag);
+        var tags = GetTags(gitRepository, options);
+
+        tags.ForEach(PrintTag);
 
         return Task.FromResult(0);
+    }
+
+    private static IEnumerable<IGitTag> GetTags(IGitRepository gitRepository, ListTagsOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(options.Branch))
+        {
+            return gitRepository.Tags;
+        }
+
+        var branch = gitRepository.Branches[options.Branch];
+
+        if (branch == null)
+        {
+            throw new GitBranchNotExistsException();
+        }
+
+        return gitRepository.Tags.GetAllTagsForBranch(branch);
     }
 
     public void PrintTag(IGitTag tag)
