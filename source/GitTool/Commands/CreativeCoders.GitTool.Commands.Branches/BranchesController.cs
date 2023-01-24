@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CreativeCoders.Core;
+using CreativeCoders.GitTool.Commands.Branches.Commands.CheckOut;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 using CreativeCoders.GitTool.Commands.Branches.Commands.List;
 using CreativeCoders.GitTool.Commands.Branches.Commands.Pull;
@@ -47,4 +48,9 @@ public class BranchesController
     [CliAction("push", HelpText = "Pushes updates from current branch to remote")]
     public async Task<CliActionResult> PushAsync(PushBranchOptions options)
         => new(await _commandExecutor.ExecuteAsync<PushBranchCommand, PushBranchOptions>(options));
+
+    [UsedImplicitly]
+    [CliAction("checkout", HelpText = "Check out existing branch")]
+    public async Task<CliActionResult> CheckOutAsync(CheckOutBranchesOptions options)
+        => new(await _commandExecutor.ExecuteAsync<CheckOutBranchesCommand, CheckOutBranchesOptions>(options));
 }

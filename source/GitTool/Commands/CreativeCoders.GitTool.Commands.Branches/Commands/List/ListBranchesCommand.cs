@@ -7,9 +7,11 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.List;
 
+[UsedImplicitly]
 public class ListBranchesCommand : IGitToolCommandWithOptions<ListBranchesOptions>
 {
     private readonly ISysConsole _sysConsole;

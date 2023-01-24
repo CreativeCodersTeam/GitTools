@@ -1,5 +1,8 @@
-﻿namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
+﻿using JetBrains.Annotations;
 
+namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
+
+[UsedImplicitly]
 public class UpdateBranchesOptions
 {
         

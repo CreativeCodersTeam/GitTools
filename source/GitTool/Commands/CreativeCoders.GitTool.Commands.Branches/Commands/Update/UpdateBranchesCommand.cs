@@ -8,10 +8,12 @@ using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
 
+[UsedImplicitly]
 public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOptions>
 {
     private readonly ICml _cml;
