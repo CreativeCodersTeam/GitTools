@@ -30,7 +30,7 @@ public class GitBranchCollection : IGitBranchCollection
         }
 
         var checkedOutBranch = _libGitCaller.Invoke(
-            () => Commands.Checkout(_context.Repository, _context.Repository.Branches[branchName]));
+            () => Commands.Checkout(_context.Repository, _branchCollection[branchName]));
 
         return GitBranch.From(checkedOutBranch);
     }
