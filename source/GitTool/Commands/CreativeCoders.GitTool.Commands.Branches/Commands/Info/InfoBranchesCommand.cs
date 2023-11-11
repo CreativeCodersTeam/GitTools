@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using CreativeCoders.Core;
+using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
@@ -49,6 +50,16 @@ public class InfoBranchesCommand : IGitToolCommandWithOptions<InfoBranchesOption
             _ansiConsole.PrintCommitLog(commits);
         }
 
+        _ansiConsole.WriteLine();
+        
+        _ansiConsole.WriteLine($"Tags ({gitRepository.Tags.Count()})");
+        
+        gitRepository.Tags
+            .OrderBy(x => x.PeeledTargetCommit()?.Committer.When)
+            .Reverse()
+            .Take(10)
+            .ForEach(x => _ansiConsole.WriteLine(x.Name.Friendly));
+        
         _ansiConsole.WriteLine();
 
         return Task.FromResult(0);
