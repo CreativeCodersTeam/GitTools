@@ -18,8 +18,4 @@ public class GitPushFailedException : GitException
     public GitPushFailedException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
-
-    protected GitPushFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
 }

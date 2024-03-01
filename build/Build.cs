@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO.Compression;
 using CreativeCoders.NukeBuild;
 using CreativeCoders.NukeBuild.BuildActions;
 using JetBrains.Annotations;
@@ -10,6 +9,9 @@ using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.InnoSetup;
+
+#pragma warning disable S1144 // remove unused private members
+#pragma warning disable S3903 // move class to namespace
 
 [PublicAPI]
 [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
@@ -40,28 +42,28 @@ class Build : NukeBuild, IBuildInfo
 
     AbsolutePath CoverageDirectory => TestBaseDirectory / "coverage";
 
-    const string PackageProjectUrl = "https://github.com/CreativeCodersTeam/GitTools";
+    string PackageProjectUrl => "https://github.com/CreativeCodersTeam/GitTools";
 
     [Parameter] string NuGetSource;
 
     [Parameter] string NuGetApiKey;
 
-    Target Clean => _ => _
+    Target Clean => d => d
         .Before(Restore)
         .UseBuildAction<CleanBuildAction>(this,
             x => x
                 .AddDirectoryForClean(ArtifactsDirectory)
                 .AddDirectoryForClean(TestBaseDirectory));
 
-    Target Restore => _ => _
+    Target Restore => d => d
         .Before(Compile)
         .UseBuildAction<RestoreBuildAction>(this);
 
-    Target Compile => _ => _
+    Target Compile => d => d
         .After(Clean)
         .UseBuildAction<DotNetCompileBuildAction>(this);
 
-    Target Test => _ => _
+    Target Test => d => d
         .After(Compile)
         .UseBuildAction<DotNetTestAction>(this,
             x => x
@@ -73,14 +75,14 @@ class Build : NukeBuild, IBuildInfo
                 .EnableCoverage()
                 .SetCoverageDirectory(CoverageDirectory));
 
-    Target CoverageReport => _ => _
+    Target CoverageReport => d => d
         .After(Test)
         .UseBuildAction<CoverageReportAction>(this,
             x => x
                 .SetReports(TestBaseDirectory / "coverage" / "**" / "*.xml")
                 .SetTargetDirectory(TestBaseDirectory / "coverage_report"));
 
-    Target Pack => _ => _
+    Target Pack => d => d
         .After(Compile)
         .UseBuildAction<PackBuildAction>(this,
             x => x
@@ -89,14 +91,14 @@ class Build : NukeBuild, IBuildInfo
                 .SetCopyright($"{DateTime.Now.Year} CreativeCoders")
                 .SetEnableNoBuild(false));
 
-    Target Publish => _ => _
+    Target Publish => d => d
         .UseBuildAction<DotNetPublishBuildAction>(this,
             x => x
                 .SetProject(SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
                             "CreativeCoders.GitTool.Cli.csproj")
                 .SetOutput(ArtifactsDirectory / "GitTool.Cli"));
 
-    Target PublishCliWin64 => _ => _
+    Target PublishCliWin64 => d => d
         .DependsOn(Clean)
         .DependsOn(Restore)
         .UseBuildAction<DotNetPublishBuildAction>(this,
@@ -106,38 +108,31 @@ class Build : NukeBuild, IBuildInfo
                 .SetOutput(ArtifactsDirectory / "GitTool.Cli.Win64")
                 .SetRuntime(DotNetRuntime.WinX64));
 
-    Target PushToNuGet => _ => _
+    Target PushToNuGet => d => d
         .Requires(() => NuGetApiKey)
         .UseBuildAction<PushBuildAction>(this,
             x => x
                 .SetSource(NuGetSource)
                 .SetApiKey(NuGetApiKey));
 
-    Target CreateCliZip => _ => _
-        .DependsOn(Publish)
-        .Executes(() =>
-        {
-            ZipFile.CreateFromDirectory(ArtifactsDirectory / "GitTool.Cli", ArtifactsDirectory / "GitTool.Cli.zip");
-        });
-
-    Target CreateWin64Setup => _ => _
+    Target CreateWin64Setup => d => d
         .DependsOn(PublishCliWin64)
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
                 .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
                 .AddKeyValueDefinition("CiAppVersion", GitVersion.NuGetVersionV2)));
 
-    Target RunBuild => _ => _
+    Target RunBuild => d => d
         .DependsOn(Clean)
         .DependsOn(Restore)
         .DependsOn(Compile);
 
-    Target RunTest => _ => _
+    Target RunTest => d => d
         .DependsOn(RunBuild)
         .DependsOn(Test)
         .DependsOn(CoverageReport);
 
-    Target CreateNuGetPackages => _ => _
+    Target CreateNuGetPackages => d => d
         .DependsOn(RunTest)
         .DependsOn(Pack);
 

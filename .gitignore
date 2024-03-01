@@ -354,3 +354,5 @@ MigrationBackup/
 .artifacts
 
 .tests
+
+.idea

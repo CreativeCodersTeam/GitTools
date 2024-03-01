@@ -18,8 +18,4 @@ public class GitCheckoutFailedException : GitException
     public GitCheckoutFailedException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
-
-    protected GitCheckoutFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
 }

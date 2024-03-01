@@ -1,19 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CreativeCoders.Core" Version="0.62.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="Octokit" Version="0.50.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.Core" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+        <PackageReference Include="Octokit" Version="10.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+    </ItemGroup>
 
 </Project>

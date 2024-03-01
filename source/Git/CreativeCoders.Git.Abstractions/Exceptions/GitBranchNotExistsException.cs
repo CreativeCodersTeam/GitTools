@@ -20,8 +20,4 @@ public class GitBranchNotExistsException : GitException
     public GitBranchNotExistsException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
-
-    protected GitBranchNotExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
 }

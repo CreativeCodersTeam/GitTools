@@ -1,27 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>gt</AssemblyName>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>gt</AssemblyName>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.62.0" />
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.62.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.44.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.1.0"/>
+        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
+        <PackageReference Include="Spectre.Console" Version="0.48.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Branches\CreativeCoders.GitTool.Commands.Branches.csproj" />
-    <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Features\CreativeCoders.GitTool.Commands.Features.csproj" />
-    <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Releases\CreativeCoders.GitTool.Commands.Releases.csproj" />
-    <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj" />
-    <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
-    <ProjectReference Include="..\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj" />
-    <ProjectReference Include="..\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Branches\CreativeCoders.GitTool.Commands.Branches.csproj"/>
+        <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Features\CreativeCoders.GitTool.Commands.Features.csproj"/>
+        <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Releases\CreativeCoders.GitTool.Commands.Releases.csproj"/>
+        <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj"/>
+    </ItemGroup>
 
 </Project>

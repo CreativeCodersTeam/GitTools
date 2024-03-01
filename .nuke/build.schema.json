@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Build Schema",
   "$ref": "#/definitions/build",
+  "title": "Build Schema",
   "definitions": {
     "build": {
       "type": "object",
@@ -29,6 +29,7 @@
             "AppVeyor",
             "AzurePipelines",
             "Bamboo",
+            "Bitbucket",
             "Bitrise",
             "GitHubActions",
             "GitLab",
@@ -80,7 +81,6 @@
               "Clean",
               "Compile",
               "CoverageReport",
-              "CreateCliZip",
               "CreateNuGetPackages",
               "CreateWin64Setup",
               "Pack",
@@ -107,7 +107,6 @@
               "Clean",
               "Compile",
               "CoverageReport",
-              "CreateCliZip",
               "CreateNuGetPackages",
               "CreateWin64Setup",
               "Pack",

@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="GitLabApiClient" Version="1.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GitLabApiClient" Version="1.8.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+    </ItemGroup>
 
 </Project>

@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.62.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="4.1.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+    </ItemGroup>
 
 </Project>

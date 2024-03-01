@@ -50,8 +50,8 @@ internal class DefaultRepositoryConfigurations : IRepositoryConfigurations
     public async Task SaveConfigurationAsync(Uri repositoryUrl, RepositoryConfiguration configuration)
     {
         var fileName = GetFileName(repositoryUrl);
-
-        FileSys.Directory.CreateDirectory(FileSys.Path.GetDirectoryName(fileName));
+        
+        FileSys.Directory.CreateDirectory(FileSys.Path.GetDirectoryName(fileName) ?? throw new InvalidOperationException());
 
         await FileSys.File.WriteAllTextAsync(fileName,
             JsonSerializer.Serialize(configuration));
