@@ -2,6 +2,4 @@
 
 namespace CreativeCoders.Git.Abstractions.RefSpecs;
 
-public interface IGitRefSpecCollection : IEnumerable<IGitRefSpec>
-{
-}
+public interface IGitRefSpecCollection : IEnumerable<IGitRefSpec>;

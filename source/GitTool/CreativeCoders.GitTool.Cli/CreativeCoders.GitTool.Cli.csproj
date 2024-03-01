@@ -4,6 +4,7 @@
         <OutputType>Exe</OutputType>
         <AssemblyName>gt</AssemblyName>
         <Nullable>enable</Nullable>
+        <RuntimeIdentifiers>win-x64;linux-x64;linux-arm</RuntimeIdentifiers>
     </PropertyGroup>
 
     <ItemGroup>
