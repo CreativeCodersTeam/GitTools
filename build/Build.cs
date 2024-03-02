@@ -25,9 +25,16 @@ using Nuke.Common.Tools.InnoSetup;
 [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
 [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-[GitHubActions("integration", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
+[GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
     OnPushBranches = ["feature/**"],
     InvokedTargets = ["deploynuget"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions("integration-win", GitHubActionsImage.WindowsLatest,
+    OnPushBranches = ["feature/**"],
+    InvokedTargets = ["Rebuild", "CodeCoverage", "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0

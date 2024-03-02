@@ -9,12 +9,12 @@
 #
 #     - To trigger manual generation invoke:
 #
-#         nuke --generate-configuration GitHubActions_integration --host GitHubActions
+#         nuke --generate-configuration GitHubActions_integration-win --host GitHubActions
 #
 # </auto-generated>
 # ------------------------------------------------------------------------------
 
-name: integration
+name: integration-win
 
 on:
   push:
@@ -22,9 +22,9 @@ on:
       - 'feature/**'
 
 jobs:
-  ubuntu-latest:
-    name: ubuntu-latest
-    runs-on: ubuntu-latest
+  windows-latest:
+    name: windows-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,8 +36,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: deploynuget'
-        run: ./build.cmd deploynuget
+      - name: 'Run: Rebuild, CodeCoverage, CreateWin64Setup'
+        run: ./build.cmd Rebuild CodeCoverage CreateWin64Setup
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
