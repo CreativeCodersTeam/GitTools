@@ -1,155 +1,167 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO.Compression;
-using CreativeCoders.NukeBuild;
+using System.Linq;
+using CreativeCoders.Core;
+using CreativeCoders.Core.Collections;
 using CreativeCoders.NukeBuild.BuildActions;
+using CreativeCoders.NukeBuild.Components.Parameters;
+using CreativeCoders.NukeBuild.Components.Targets;
+using CreativeCoders.NukeBuild.Components.Targets.Settings;
 using JetBrains.Annotations;
 using Nuke.Common;
-using Nuke.Common.Git;
+using Nuke.Common.CI.GitHubActions;
+using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.InnoSetup;
 
+#pragma warning disable S1144 // remove unused private members
+#pragma warning disable S3903 // move class to namespace
+
 [PublicAPI]
+[UnsetVisualStudioEnvironmentVariables]
 [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
 [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-class Build : NukeBuild, IBuildInfo
+[GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
+    OnPushBranches = ["feature/**"],
+    InvokedTargets = ["deploynuget"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions("pull-request", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
+    OnPullRequestBranches = ["main"],
+    InvokedTargets = ["rebuild", "codecoverage", "pack"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions("main", GitHubActionsImage.UbuntuLatest,
+    OnPushBranches = ["main"],
+    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions("main-win", GitHubActionsImage.WindowsLatest,
+    OnPushBranches = ["main"],
+    InvokedTargets = ["Rebuild", "CodeCoverage", "CreateWin64Setup"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions(ReleaseWorkflow, GitHubActionsImage.UbuntuLatest,
+    OnPushTags = ["v**"],
+    InvokedTargets = ["deploynuget"],
+    ImportSecrets = ["NUGET_ORG_TOKEN"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions(ReleaseWorkflow + "-win", GitHubActionsImage.WindowsLatest,
+    OnPushTags = ["v**"],
+    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
+    ImportSecrets = ["NUGET_ORG_TOKEN"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+class Build : NukeBuild, IGitRepositoryParameter,
+    IConfigurationParameter,
+    IGitVersionParameter,
+    ISourceDirectoryParameter,
+    IArtifactsSettings,
+    ICleanTarget, IBuildTarget, IRestoreTarget, ICodeCoverageTarget, IPushNuGetTarget, IRebuildTarget,
+    IDeployNuGetTarget, IPublishTarget
 {
-    public static int Main () => Execute<Build>(x => x.RunBuild);
+    public const string ReleaseWorkflow = "release";
 
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+    readonly GitHubActions GitHubActions = GitHubActions.Instance;
 
-    [Solution] readonly Solution Solution;
+    [Parameter(Name = "GITHUB_TOKEN")] string DevNuGetApiKey;
 
-    [GitRepository] readonly GitRepository GitRepository;
+    [Parameter(Name = "NUGET_ORG_TOKEN")] string NuGetOrgApiKey;
 
-    [GitVersion] readonly GitVersion GitVersion;
+    public Build()
+    {
+        Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+        Environment.SetEnvironmentVariable("NUKE_TELEMETRY_OPTOUT", "1");
+    }
 
-    AbsolutePath SourceDirectory => RootDirectory / "source";
-
-    AbsolutePath ArtifactsDirectory => RootDirectory / ".artifacts";
-
-    AbsolutePath TestBaseDirectory => RootDirectory / ".tests";
-
-    AbsolutePath TestResultsDirectory => TestBaseDirectory / "results";
-
-    AbsolutePath TestProjectsBasePath => RootDirectory / "tests";
-
-    AbsolutePath CoverageDirectory => TestBaseDirectory / "coverage";
-
-    const string PackageProjectUrl = "https://github.com/CreativeCodersTeam/GitTools";
-
-    [Parameter] string NuGetSource;
-
-    [Parameter] string NuGetApiKey;
-
-    Target Clean => _ => _
-        .Before(Restore)
-        .UseBuildAction<CleanBuildAction>(this,
-            x => x
-                .AddDirectoryForClean(ArtifactsDirectory)
-                .AddDirectoryForClean(TestBaseDirectory));
-
-    Target Restore => _ => _
-        .Before(Compile)
-        .UseBuildAction<RestoreBuildAction>(this);
-
-    Target Compile => _ => _
-        .After(Clean)
-        .UseBuildAction<DotNetCompileBuildAction>(this);
-
-    Target Test => _ => _
-        .After(Compile)
-        .UseBuildAction<DotNetTestAction>(this,
-            x => x
-                .SetTestProjectsBaseDirectory(TestProjectsBasePath)
-                .SetProjectsPattern("**/*.csproj")
-                .SetResultsDirectory(TestResultsDirectory)
-                .UseLogger("trx")
-                .SetResultFileExt("trx")
-                .EnableCoverage()
-                .SetCoverageDirectory(CoverageDirectory));
-
-    Target CoverageReport => _ => _
-        .After(Test)
-        .UseBuildAction<CoverageReportAction>(this,
-            x => x
-                .SetReports(TestBaseDirectory / "coverage" / "**" / "*.xml")
-                .SetTargetDirectory(TestBaseDirectory / "coverage_report"));
-
-    Target Pack => _ => _
-        .After(Compile)
-        .UseBuildAction<PackBuildAction>(this,
-            x => x
-                .SetPackageLicenseExpression(PackageLicenseExpressions.ApacheLicense20)
-                .SetPackageProjectUrl(PackageProjectUrl)
-                .SetCopyright($"{DateTime.Now.Year} CreativeCoders")
-                .SetEnableNoBuild(false));
-
-    Target Publish => _ => _
-        .UseBuildAction<DotNetPublishBuildAction>(this,
-            x => x
-                .SetProject(SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
-                            "CreativeCoders.GitTool.Cli.csproj")
-                .SetOutput(ArtifactsDirectory / "GitTool.Cli"));
-
-    Target PublishCliWin64 => _ => _
-        .DependsOn(Clean)
-        .DependsOn(Restore)
-        .UseBuildAction<DotNetPublishBuildAction>(this,
-            x => x
-                .SetProject(SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
-                            "CreativeCoders.GitTool.Cli.csproj")
-                .SetOutput(ArtifactsDirectory / "GitTool.Cli.Win64")
-                .SetRuntime(DotNetRuntime.WinX64));
-
-    Target PushToNuGet => _ => _
-        .Requires(() => NuGetApiKey)
-        .UseBuildAction<PushBuildAction>(this,
-            x => x
-                .SetSource(NuGetSource)
-                .SetApiKey(NuGetApiKey));
-
-    Target CreateCliZip => _ => _
-        .DependsOn(Publish)
-        .Executes(() =>
-        {
-            ZipFile.CreateFromDirectory(ArtifactsDirectory / "GitTool.Cli", ArtifactsDirectory / "GitTool.Cli.zip");
-        });
-
-    Target CreateWin64Setup => _ => _
-        .DependsOn(PublishCliWin64)
+    Target CreateWin64Setup => d => d
+        .OnlyWhenDynamic(() =>
+            Environment.GetEnvironmentVariable("RUNNER_OS")?.Equals("Windows", StringComparison.Ordinal) == true)
+        .DependsOn<IPublishTarget>()
+        .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setups" / "*.*")
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
                 .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
-                .AddKeyValueDefinition("CiAppVersion", GitVersion.NuGetVersionV2)));
+                .AddKeyValueDefinition(
+                    "CiAppVersion", this.As<IGitVersionParameter>().GitVersion?.NuGetVersionV2)));
 
-    Target RunBuild => _ => _
-        .DependsOn(Clean)
-        .DependsOn(Restore)
-        .DependsOn(Compile);
+    IList<AbsolutePath> ICleanSettings.DirectoriesToClean =>
+        this.As<ICleanSettings>().DefaultDirectoriesToClean
+            .AddRange(this.As<ITestSettings>().TestBaseDirectory);
 
-    Target RunTest => _ => _
-        .DependsOn(RunBuild)
-        .DependsOn(Test)
-        .DependsOn(CoverageReport);
+    public IEnumerable<Project> TestProjects => GetTestProjects();
 
-    Target CreateNuGetPackages => _ => _
-        .DependsOn(RunTest)
-        .DependsOn(Pack);
+    DotNetPublishSettings IPublishTarget.ConfigurePublishSettings(DotNetPublishSettings publishSettings)
+    {
+        return this.As<IPublishTarget>().ConfigureDefaultPublishSettings(publishSettings)
+            .SetNoBuild(false);
+    }
 
-    string IBuildInfo.Configuration => Configuration;
+    IEnumerable<PublishingItem> IPublishSettings.PublishingItems
+    {
+        get
+        {
+            var sourceDir = this.As<ISourceDirectoryParameter>();
+            var artifactsDir = this.As<IArtifactsSettings>();
 
-    Solution IBuildInfo.Solution => Solution;
+            return
+            [
+                new PublishingItem(
+                    sourceDir.SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
+                    "CreativeCoders.GitTool.Cli.csproj", artifactsDir.ArtifactsDirectory / "GitTool.Cli"),
+                new PublishingItem(sourceDir.SourceDirectory / "GitTool" / "CreativeCoders.GitTool.Cli" /
+                                   "CreativeCoders.GitTool.Cli.csproj",
+                    artifactsDir.ArtifactsDirectory / "GitTool.Cli.Win64")
+                {
+                    Runtime = DotNetRuntime.WinX64,
+                    SelfContained = true
+                }
+            ];
+        }
+    }
 
-    GitRepository IBuildInfo.GitRepository => GitRepository;
+    bool IPushNuGetSettings.SkipPush => GitHubActions?.IsPullRequest == true;
 
-    IVersionInfo IBuildInfo.VersionInfo => new GitVersionWrapper(GitVersion, "0.0.0", 1);
+    string IPushNuGetSettings.NuGetFeedUrl =>
+        GitHubActions?.Workflow.StartsWith(ReleaseWorkflow) == true
+            ? "nuget.org"
+            : "https://nuget.pkg.github.com/CreativeCodersTeam/index.json";
 
-    AbsolutePath IBuildInfo.SourceDirectory => SourceDirectory;
+    string IPushNuGetSettings.NuGetApiKey =>
+        GitHubActions?.Workflow.StartsWith(ReleaseWorkflow) == true
+            ? NuGetOrgApiKey
+            : DevNuGetApiKey;
 
-    AbsolutePath IBuildInfo.ArtifactsDirectory => ArtifactsDirectory;
+    string IPackSettings.PackageProjectUrl => "https://github.com/CreativeCodersTeam/GitTools";
+
+    string IPackSettings.PackageLicenseExpression => PackageLicenseExpressions.ApacheLicense20;
+
+    string IPackSettings.Copyright => $"{DateTime.Now.Year} CreativeCoders";
+
+    Project[] GetTestProjects()
+    {
+        return this.TryAs<ISolutionParameter>(out var solutionParameter)
+            ? solutionParameter.Solution.GetAllProjects("*")
+                .Where(x => ((string)x.Path)?.StartsWith(RootDirectory / "tests") ?? false).ToArray()
+            : Array.Empty<Project>();
+    }
+
+    public static int Main() => Execute<Build>(x => ((ICodeCoverageTarget)x).CodeCoverage);
 }

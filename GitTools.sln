@@ -7,56 +7,70 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitTools", "GitTools", "{90
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{EA56F26E-54C0-4C1C-986C-2785829AE2D8}"
 	ProjectSection(SolutionItems) = preProject
-		Git\Directory.Build.props = Git\Directory.Build.props
+		Git\Directory.Build.props = source\Git\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B7558045-D005-49D4-9205-55A32B6C99DE}"
 	ProjectSection(SolutionItems) = preProject
-		..\tests\Directory.Build.props = ..\tests\Directory.Build.props
+		..\tests\Directory.Build.props = tests\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{35D676C5-4FB7-41AB-A60B-DD8F30ACFB5B}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
+		Directory.Build.props = source\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{4AD18751-E2F6-40F3-99F6-69FA2320CA30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Abstractions", "Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj", "{AD6C98CD-A96D-4795-B9A7-F321D6597C11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Abstractions", "source\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj", "{AD6C98CD-A96D-4795-B9A7-F321D6597C11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Auth.CredentialManagerCore", "Git\CreativeCoders.Git.Auth.CredentialManagerCore\CreativeCoders.Git.Auth.CredentialManagerCore.csproj", "{0858E655-2326-48F6-85FA-01E068A0331F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Auth.CredentialManagerCore", "source\Git\CreativeCoders.Git.Auth.CredentialManagerCore\CreativeCoders.Git.Auth.CredentialManagerCore.csproj", "{0858E655-2326-48F6-85FA-01E068A0331F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git", "Git\CreativeCoders.Git\CreativeCoders.Git.csproj", "{25BCE0B9-068F-4EC0-BCD0-680B3FE47626}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git", "source\Git\CreativeCoders.Git\CreativeCoders.Git.csproj", "{25BCE0B9-068F-4EC0-BCD0-680B3FE47626}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Base", "GitTool\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj", "{CF40538D-E176-4449-B27F-22BB43E5BFD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Base", "source\GitTool\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj", "{CF40538D-E176-4449-B27F-22BB43E5BFD6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitHub", "GitTool\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj", "{8B3F3455-5D00-47A3-B40E-F3E3E3C5E5DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitHub", "source\GitTool\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj", "{8B3F3455-5D00-47A3-B40E-F3E3E3C5E5DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitLab", "GitTool\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj", "{F79BE247-8C60-4A51-B538-B2387C2D357F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitLab", "source\GitTool\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj", "{F79BE247-8C60-4A51-B538-B2387C2D357F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Branches", "GitTool\Commands\CreativeCoders.GitTool.Commands.Branches\CreativeCoders.GitTool.Commands.Branches.csproj", "{1589F267-9A07-470B-A13C-9FE1CE5016B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Branches", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Branches\CreativeCoders.GitTool.Commands.Branches.csproj", "{1589F267-9A07-470B-A13C-9FE1CE5016B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Features", "GitTool\Commands\CreativeCoders.GitTool.Commands.Features\CreativeCoders.GitTool.Commands.Features.csproj", "{0B7EBFC9-9D04-4F2C-8B63-387F2A2AAAD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Features", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Features\CreativeCoders.GitTool.Commands.Features.csproj", "{0B7EBFC9-9D04-4F2C-8B63-387F2A2AAAD9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Cli", "GitTool\CreativeCoders.GitTool.Cli\CreativeCoders.GitTool.Cli.csproj", "{35C347B1-6DA0-4D9F-8259-928C561EEF8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Cli", "source\GitTool\CreativeCoders.GitTool.Cli\CreativeCoders.GitTool.Cli.csproj", "{35C347B1-6DA0-4D9F-8259-928C561EEF8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests", "..\tests\CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests\CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests.csproj", "{0E6E1AE1-7176-4D40-96AE-7A9FDC4D3223}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests", "tests\CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests\CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests.csproj", "{0E6E1AE1-7176-4D40-96AE-7A9FDC4D3223}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.UnitTests", "..\tests\CreativeCoders.Git.UnitTests\CreativeCoders.Git.UnitTests.csproj", "{8E5F6024-5850-4272-9A9D-45CF566C526A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.Git.UnitTests", "tests\CreativeCoders.Git.UnitTests\CreativeCoders.Git.UnitTests.csproj", "{8E5F6024-5850-4272-9A9D-45CF566C526A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitHub.UnitTests", "..\tests\CreativeCoders.GitTool.GitHub.UnitTests\CreativeCoders.GitTool.GitHub.UnitTests.csproj", "{B6FE210C-94B0-4D65-A881-42FA3F3A9856}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitHub.UnitTests", "tests\CreativeCoders.GitTool.GitHub.UnitTests\CreativeCoders.GitTool.GitHub.UnitTests.csproj", "{B6FE210C-94B0-4D65-A881-42FA3F3A9856}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitLab.UnitTests", "..\tests\CreativeCoders.GitTool.GitLab.UnitTests\CreativeCoders.GitTool.GitLab.UnitTests.csproj", "{40CB3BB2-1AD4-4008-8D61-C179342F07F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.GitLab.UnitTests", "tests\CreativeCoders.GitTool.GitLab.UnitTests\CreativeCoders.GitTool.GitLab.UnitTests.csproj", "{40CB3BB2-1AD4-4008-8D61-C179342F07F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Releases", "GitTool\Commands\CreativeCoders.GitTool.Commands.Releases\CreativeCoders.GitTool.Commands.Releases.csproj", "{9F00E2AF-FA50-49DD-B6B0-3330E2883044}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Releases", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Releases\CreativeCoders.GitTool.Commands.Releases.csproj", "{9F00E2AF-FA50-49DD-B6B0-3330E2883044}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Tool", "GitTool\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj", "{E0E53B66-17F8-4A01-A799-8998FD0A20ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Tool", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj", "{E0E53B66-17F8-4A01-A799-8998FD0A20ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{585C67E9-74D4-4F79-BC61-9AA632C6A622}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{585C67E9-74D4-4F79-BC61-9AA632C6A622}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4F28808-C129-4AE9-8454-08EAB02D7E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Commands.Shared", "GitTool\Commands\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj", "{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Commands.Shared", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj", "{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__global", "__global", "{957CFE00-6B57-4EBF-BEE2-319A5C7B9EF9}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		GitVersion.yml = GitVersion.yml
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_setup", "_setup", "{A26D07EF-C593-41ED-AFD0-A2660857BEA6}"
+	ProjectSection(SolutionItems) = preProject
+		setup\GitTool.iss = setup\GitTool.iss
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

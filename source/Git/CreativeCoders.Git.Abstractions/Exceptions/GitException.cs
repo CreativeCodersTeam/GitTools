@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Exceptions;
 
 [ExcludeFromCodeCoverage]
+[PublicAPI]
 public class GitException : Exception
 {
     public GitException()
@@ -16,10 +17,6 @@ public class GitException : Exception
     }
 
     public GitException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
-
-    protected GitException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

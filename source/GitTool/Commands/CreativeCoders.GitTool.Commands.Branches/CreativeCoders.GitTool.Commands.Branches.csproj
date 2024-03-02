@@ -1,27 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CreativeCoders.DependencyInjection" Version="0.62.0" />
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.62.0" />
-    <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="0.62.0" />
-    <PackageReference Include="Spectre.Console" Version="0.44.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.DependencyInjection" Version="4.1.0"/>
+        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.1.0"/>
+        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="4.1.0"/>
+        <PackageReference Include="Spectre.Console" Version="0.48.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
-    <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj" />
-    <ProjectReference Include="..\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\Info\" />
-    <Folder Include="Commands\Push\" />
-    <Folder Include="Commands\Update\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Commands\Info\"/>
+        <Folder Include="Commands\Push\"/>
+        <Folder Include="Commands\Update\"/>
+    </ItemGroup>
 
 </Project>

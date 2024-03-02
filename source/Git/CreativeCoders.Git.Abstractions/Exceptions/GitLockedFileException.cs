@@ -2,9 +2,4 @@
 
 namespace CreativeCoders.Git.Abstractions.Exceptions;
 
-public class GitLockedFileException : GitException
-{
-    public GitLockedFileException(Exception innerException) : base("A file is locked", innerException)
-    {
-    }
-}
+public class GitLockedFileException(Exception innerException) : GitException("A file is locked", innerException);

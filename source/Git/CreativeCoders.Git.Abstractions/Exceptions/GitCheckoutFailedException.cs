@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Exceptions;
@@ -16,10 +15,6 @@ public class GitCheckoutFailedException : GitException
     }
 
     public GitCheckoutFailedException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
-
-    protected GitCheckoutFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

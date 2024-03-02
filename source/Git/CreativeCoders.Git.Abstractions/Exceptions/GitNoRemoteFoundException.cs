@@ -1,8 +1,3 @@
 ﻿namespace CreativeCoders.Git.Abstractions.Exceptions;
 
-public class GitNoRemoteFoundException : GitException
-{
-    public GitNoRemoteFoundException() : base("No remote can be found")
-    {
-    }
-}
+public class GitNoRemoteFoundException() : GitException("No remote can be found");

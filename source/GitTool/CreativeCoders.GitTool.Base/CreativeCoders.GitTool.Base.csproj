@@ -1,22 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CreativeCoders.SysConsole.App" Version="0.62.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="CreativeCoders.Core" Version="0.62.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.44.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
+        <PackageReference Include="CreativeCoders.Core" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
+        <PackageReference Include="Spectre.Console" Version="0.48.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Git\CreativeCoders.Git.Auth.CredentialManagerCore\CreativeCoders.Git.Auth.CredentialManagerCore.csproj" />
-    <ProjectReference Include="..\..\Git\CreativeCoders.Git\CreativeCoders.Git.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Git\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Git\CreativeCoders.Git.Auth.CredentialManagerCore\CreativeCoders.Git.Auth.CredentialManagerCore.csproj"/>
+        <ProjectReference Include="..\..\Git\CreativeCoders.Git\CreativeCoders.Git.csproj"/>
+    </ItemGroup>
 
 </Project>

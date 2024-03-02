@@ -1,6 +1,6 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Git.CredentialManager;
+using GitCredentialManager;
 using Xunit;
 
 namespace CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests;

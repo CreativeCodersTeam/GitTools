@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Exceptions;
@@ -16,10 +15,6 @@ public class GitPushFailedException : GitException
     }
 
     public GitPushFailedException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
-
-    protected GitPushFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

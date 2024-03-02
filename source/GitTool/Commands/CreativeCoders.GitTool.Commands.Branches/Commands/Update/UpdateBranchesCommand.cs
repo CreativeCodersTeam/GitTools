@@ -8,32 +8,33 @@ using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Update;
 
+[UsedImplicitly]
 public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOptions>
 {
+    private readonly IAnsiConsole _ansiConsole;
     private readonly ICml _cml;
 
-    private readonly IAnsiConsole _ansiConsole;
+    private readonly IGitToolPullCommand _pullCommand;
 
     private readonly IRepositoryConfigurations _repositoryConfigurations;
-
-    private readonly IGitToolPullCommand _pullCommand;
 
     public UpdateBranchesCommand(IRepositoryConfigurations repositoryConfigurations, IGitToolPullCommand pullCommand,
         IAnsiConsole ansiConsole, ICml cml)
     {
-        _cml = Ensure.NotNull(cml, nameof(cml));
-        _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
-        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-        _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
+        _cml = Ensure.NotNull(cml);
+        _ansiConsole = Ensure.NotNull(ansiConsole);
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+        _pullCommand = Ensure.NotNull(pullCommand);
     }
 
     public async Task<int> ExecuteAsync(IGitRepository gitRepository, UpdateBranchesOptions options)
     {
-        Ensure.NotNull(options, nameof(options));
+        Ensure.NotNull(options);
 
         _ansiConsole
             .EmptyLine()
@@ -55,9 +56,12 @@ public class UpdateBranchesCommand : IGitToolCommandWithOptions<UpdateBranchesOp
             updateBranchNames.Add(configuration.DevelopBranch);
         }
 
-        _ansiConsole.WriteLine("Fetch prune to remove remote branch refs if already deleted");
+        if (!options.SkipFetchPrune)
+        {
+            _ansiConsole.WriteLine("Fetch prune to remove remote branch refs if already deleted");
 
-        gitRepository.FetchPruneFromOrigin();
+            gitRepository.FetchPruneFromOrigin();
+        }
 
         await UpdateBranchesAsync(gitRepository, updateBranchNames).ConfigureAwait(false);
 
