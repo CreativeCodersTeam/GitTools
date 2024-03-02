@@ -81,7 +81,7 @@ class Build : NukeBuild, IGitRepositoryParameter,
         .OnlyWhenDynamic(() =>
             Environment.GetEnvironmentVariable("RUNNER_OS")?.Equals("Windows", StringComparison.Ordinal) == true)
         .DependsOn<IPublishTarget>()
-        .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setup" / "gittool_setup_*.exe")
+        .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setups" / "gittool_setup_*.exe")
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
                 .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
