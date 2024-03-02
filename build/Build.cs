@@ -28,7 +28,7 @@ using Nuke.Common.Tools.InnoSetup;
 [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
 [GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
     OnPushBranches = ["feature/**"],
-    InvokedTargets = ["deploynuget"],
+    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
