@@ -15,7 +15,6 @@ using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.InnoSetup;
 
 #pragma warning disable S1144 // remove unused private members
@@ -26,9 +25,9 @@ using Nuke.Common.Tools.InnoSetup;
 [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
 [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-[GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
+[GitHubActions("integration", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
     OnPushBranches = ["feature/**"],
-    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
+    InvokedTargets = ["deploynuget"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
@@ -72,6 +71,8 @@ class Build : NukeBuild, IGitRepositoryParameter,
     [Parameter(Name = "NUGET_ORG_TOKEN")] string NuGetOrgApiKey;
 
     Target CreateWin64Setup => d => d
+        .OnlyWhenDynamic(() =>
+            Environment.GetEnvironmentVariable("RUNNER_OS")?.Equals("Windows", StringComparison.Ordinal) == true)
         .DependsOn<IPublishTarget>()
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
