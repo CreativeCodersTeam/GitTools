@@ -32,13 +32,6 @@ using Nuke.Common.Tools.InnoSetup;
     PublishArtifacts = true,
     FetchDepth = 0
 )]
-[GitHubActions("integration-win", GitHubActionsImage.WindowsLatest,
-    OnPushBranches = ["feature/**"],
-    InvokedTargets = ["Rebuild", "CodeCoverage", "CreateWin64Setup"],
-    EnableGitHubToken = true,
-    PublishArtifacts = true,
-    FetchDepth = 0
-)]
 [GitHubActions("pull-request", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
     OnPullRequestBranches = ["main"],
     InvokedTargets = ["rebuild", "codecoverage", "pack"],
@@ -46,14 +39,29 @@ using Nuke.Common.Tools.InnoSetup;
     PublishArtifacts = true,
     FetchDepth = 0
 )]
-[GitHubActions("main", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
+[GitHubActions("main", GitHubActionsImage.UbuntuLatest,
     OnPushBranches = ["main"],
     InvokedTargets = ["deploynuget", "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
 )]
-[GitHubActions(ReleaseWorkflow, GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
+[GitHubActions("main-win", GitHubActionsImage.WindowsLatest,
+    OnPushBranches = ["main"],
+    InvokedTargets = ["Rebuild", "CodeCoverage", "CreateWin64Setup"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions(ReleaseWorkflow, GitHubActionsImage.UbuntuLatest,
+    OnPushTags = ["v**"],
+    InvokedTargets = ["deploynuget"],
+    ImportSecrets = ["NUGET_ORG_TOKEN"],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
+[GitHubActions(ReleaseWorkflow + "-win", GitHubActionsImage.WindowsLatest,
     OnPushTags = ["v**"],
     InvokedTargets = ["deploynuget", "CreateWin64Setup"],
     ImportSecrets = ["NUGET_ORG_TOKEN"],
@@ -132,12 +140,12 @@ class Build : NukeBuild, IGitRepositoryParameter,
     bool IPushNuGetSettings.SkipPush => GitHubActions?.IsPullRequest == true;
 
     string IPushNuGetSettings.NuGetFeedUrl =>
-        GitHubActions?.Workflow == ReleaseWorkflow
+        GitHubActions?.Workflow.StartsWith(ReleaseWorkflow) == true
             ? "nuget.org"
             : "https://nuget.pkg.github.com/CreativeCodersTeam/index.json";
 
     string IPushNuGetSettings.NuGetApiKey =>
-        GitHubActions?.Workflow == ReleaseWorkflow
+        GitHubActions?.Workflow.StartsWith(ReleaseWorkflow) == true
             ? NuGetOrgApiKey
             : DevNuGetApiKey;
 
