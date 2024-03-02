@@ -45,6 +45,11 @@ jobs:
         with:
           name: coverage_report
           path: .tests/coverage_report
+      - name: 'Publish: setups'
+        uses: actions/upload-artifact@v3
+        with:
+          name: setups
+          path: .artifacts/setups
   windows-latest:
     name: windows-latest
     runs-on: windows-latest
@@ -68,3 +73,8 @@ jobs:
         with:
           name: coverage_report
           path: .tests/coverage_report
+      - name: 'Publish: setups'
+        uses: actions/upload-artifact@v3
+        with:
+          name: setups
+          path: .artifacts/setups

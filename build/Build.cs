@@ -77,11 +77,17 @@ class Build : NukeBuild, IGitRepositoryParameter,
 
     [Parameter(Name = "NUGET_ORG_TOKEN")] string NuGetOrgApiKey;
 
+    public Build()
+    {
+        Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+        Environment.SetEnvironmentVariable("NUKE_TELEMETRY_OPTOUT", "1");
+    }
+
     Target CreateWin64Setup => d => d
         .OnlyWhenDynamic(() =>
             Environment.GetEnvironmentVariable("RUNNER_OS")?.Equals("Windows", StringComparison.Ordinal) == true)
         .DependsOn<IPublishTarget>()
-        .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setups" / "gittool_setup_*.exe")
+        .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setups" / "*.*")
         .Executes(() => InnoSetupTasks
             .InnoSetup(x => x
                 .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
