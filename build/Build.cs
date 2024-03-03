@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
@@ -32,6 +33,13 @@ using Nuke.Common.Tools.InnoSetup;
     PublishArtifacts = true,
     FetchDepth = 0
 )]
+[GitHubActions("integration-win", GitHubActionsImage.WindowsLatest,
+    OnPushBranches = ["feature/**"],
+    InvokedTargets = ["deploynuget", "CreateWin64Setup", nameof(ICreateGithubReleaseTarget.CreateGithubRelease)],
+    EnableGitHubToken = true,
+    PublishArtifacts = true,
+    FetchDepth = 0
+)]
 [GitHubActions("pull-request", GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest,
     OnPullRequestBranches = ["main"],
     InvokedTargets = ["rebuild", "codecoverage", "pack"],
@@ -41,7 +49,7 @@ using Nuke.Common.Tools.InnoSetup;
 )]
 [GitHubActions("main", GitHubActionsImage.UbuntuLatest,
     OnPushBranches = ["main"],
-    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
+    InvokedTargets = ["deploynuget"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
@@ -63,7 +71,7 @@ using Nuke.Common.Tools.InnoSetup;
 )]
 [GitHubActions(ReleaseWorkflow + "-win", GitHubActionsImage.WindowsLatest,
     OnPushTags = ["v**"],
-    InvokedTargets = ["deploynuget", "CreateWin64Setup"],
+    InvokedTargets = ["Rebuild", "CodeCoverage", "CreateWin64Setup"],
     ImportSecrets = ["NUGET_ORG_TOKEN"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
@@ -75,7 +83,7 @@ class Build : NukeBuild, IGitRepositoryParameter,
     ISourceDirectoryParameter,
     IArtifactsSettings,
     ICleanTarget, IBuildTarget, IRestoreTarget, ICodeCoverageTarget, IPushNuGetTarget, IRebuildTarget,
-    IDeployNuGetTarget, IPublishTarget
+    IDeployNuGetTarget, IPublishTarget, ICreateGithubReleaseTarget
 {
     public const string ReleaseWorkflow = "release";
 
@@ -107,6 +115,30 @@ class Build : NukeBuild, IGitRepositoryParameter,
             .AddRange(this.As<ITestSettings>().TestBaseDirectory);
 
     public IEnumerable<Project> TestProjects => GetTestProjects();
+
+    string ICreateGithubReleaseSettings.ReleaseName =>
+        $"v{this.As<IGitVersionParameter>().GitVersion?.NuGetVersionV2 ?? "0.1"}";
+
+    string ICreateGithubReleaseSettings.ReleaseBody =>
+        $"Version {this.As<IGitVersionParameter>().GitVersion?.NuGetVersionV2 ?? "0.1"}";
+
+    string ICreateGithubReleaseSettings.ReleaseVersion =>
+        this.As<IGitVersionParameter>().GitVersion?.NuGetVersionV2 ?? "0.1";
+
+    IEnumerable<GithubReleaseAsset> ICreateGithubReleaseSettings.ReleaseAssets
+    {
+        get
+        {
+            var fileName = GetSetupFileName();
+
+            if (fileName == string.Empty)
+            {
+                return [];
+            }
+
+            return [new GithubReleaseAsset(Path.GetFileName(fileName), File.OpenRead(fileName))];
+        }
+    }
 
     DotNetPublishSettings IPublishTarget.ConfigurePublishSettings(DotNetPublishSettings publishSettings)
     {
@@ -154,6 +186,20 @@ class Build : NukeBuild, IGitRepositoryParameter,
     string IPackSettings.PackageLicenseExpression => PackageLicenseExpressions.ApacheLicense20;
 
     string IPackSettings.Copyright => $"{DateTime.Now.Year} CreativeCoders";
+
+    string GetSetupFileName()
+    {
+        var setupsOutputPath = this.As<IArtifactsSettings>().ArtifactsDirectory / "setups";
+
+        var setupFiles = setupsOutputPath.GlobFiles("gittool_setup_*.exe");
+
+        return setupFiles.Count switch
+        {
+            > 1 => throw new InvalidOperationException("Multiple setup files found"),
+            0 => throw new InvalidOperationException("No setup files found"),
+            _ => setupFiles.Single()
+        };
+    }
 
     Project[] GetTestProjects()
     {

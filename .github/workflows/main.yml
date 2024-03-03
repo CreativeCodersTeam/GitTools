@@ -36,8 +36,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: deploynuget, CreateWin64Setup'
-        run: ./build.cmd deploynuget CreateWin64Setup
+      - name: 'Run: deploynuget'
+        run: ./build.cmd deploynuget
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
@@ -45,8 +45,3 @@ jobs:
         with:
           name: coverage_report
           path: .tests/coverage_report
-      - name: 'Publish: setups'
-        uses: actions/upload-artifact@v3
-        with:
-          name: setups
-          path: .artifacts/setups
