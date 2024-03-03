@@ -35,7 +35,8 @@ using Nuke.Common.Tools.InnoSetup;
 )]
 [GitHubActions("integration-win", GitHubActionsImage.WindowsLatest,
     OnPushBranches = ["feature/**"],
-    InvokedTargets = ["deploynuget", "CreateWin64Setup", nameof(ICreateGithubReleaseTarget.CreateGithubRelease)],
+    InvokedTargets =
+        ["rebuild", "codecoverage", "CreateWin64Setup", nameof(ICreateGithubReleaseTarget.CreateGithubRelease)],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
