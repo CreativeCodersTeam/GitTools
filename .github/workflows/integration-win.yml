@@ -36,8 +36,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: deploynuget, CreateWin64Setup, CreateGithubRelease'
-        run: ./build.cmd deploynuget CreateWin64Setup CreateGithubRelease
+      - name: 'Run: rebuild, codecoverage, CreateWin64Setup, CreateGithubRelease'
+        run: ./build.cmd rebuild codecoverage CreateWin64Setup CreateGithubRelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
