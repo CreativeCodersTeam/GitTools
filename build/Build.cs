@@ -137,7 +137,7 @@ class Build : NukeBuild, IGitRepositoryParameter,
                 return [];
             }
 
-            return [new GithubReleaseAsset(Path.GetFileName(fileName), File.OpenRead(fileName))];
+            return [new GithubReleaseAsset(fileName, Stream.Null)];
         }
     }
 
