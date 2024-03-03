@@ -102,6 +102,7 @@ class Build : NukeBuild, IGitRepositoryParameter,
     Target CreateWin64Setup => d => d
         .OnlyWhenDynamic(() =>
             Environment.GetEnvironmentVariable("RUNNER_OS")?.Equals("Windows", StringComparison.Ordinal) == true)
+        .Before<ICreateGithubReleaseTarget>()
         .DependsOn<IPublishTarget>()
         .Produces(this.As<IArtifactsSettings>().ArtifactsDirectory / "setups" / "*.*")
         .Executes(() => InnoSetupTasks
