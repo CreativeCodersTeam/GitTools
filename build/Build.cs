@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
@@ -30,17 +29,6 @@ using Nuke.Common.Tools.InnoSetup;
 [GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
     OnPushBranches = ["feature/**"],
     InvokedTargets = [NukeTargets.DeployNuGet],
-    EnableGitHubToken = true,
-    PublishArtifacts = true,
-    FetchDepth = 0
-)]
-[GitHubActions("integration-win", GitHubActionsImage.WindowsLatest,
-    OnPushBranches = ["feature/**"],
-    InvokedTargets =
-    [
-        NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup",
-        nameof(ICreateGithubReleaseTarget.CreateGithubRelease)
-    ],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
