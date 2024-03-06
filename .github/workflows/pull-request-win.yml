@@ -9,22 +9,22 @@
 #
 #     - To trigger manual generation invoke:
 #
-#         nuke --generate-configuration GitHubActions_pull-request --host GitHubActions
+#         nuke --generate-configuration GitHubActions_pull-request-win --host GitHubActions
 #
 # </auto-generated>
 # ------------------------------------------------------------------------------
 
-name: pull-request
+name: pull-request-win
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  ubuntu-latest:
-    name: ubuntu-latest
-    runs-on: ubuntu-latest
+  windows-latest:
+    name: windows-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,8 +36,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: Rebuild, CodeCoverage, Pack'
-        run: ./build.cmd Rebuild CodeCoverage Pack
+      - name: 'Run: Rebuild, CodeCoverage, CreateWin64Setup'
+        run: ./build.cmd Rebuild CodeCoverage CreateWin64Setup
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
@@ -45,3 +45,8 @@ jobs:
         with:
           name: coverage_report
           path: .tests/coverage_report
+      - name: 'Publish: setups'
+        uses: actions/upload-artifact@v3
+        with:
+          name: setups
+          path: .artifacts/setups
