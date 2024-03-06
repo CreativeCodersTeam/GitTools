@@ -64,7 +64,8 @@ using Nuke.Common.Tools.InnoSetup;
 )]
 [GitHubActions(ReleaseWorkflow + "-win", GitHubActionsImage.WindowsLatest,
     OnPushTags = ["v**"],
-    InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup"],
+    InvokedTargets =
+        [NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup", NukeTargets.CreateGitHubRelease],
     ImportSecrets = ["NUGET_ORG_TOKEN"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
