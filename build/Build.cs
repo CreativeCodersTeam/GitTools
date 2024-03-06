@@ -41,7 +41,7 @@ using Nuke.Common.Tools.InnoSetup;
     FetchDepth = 0
 )]
 [GitHubActions("pull-request-win", GitHubActionsImage.WindowsLatest,
-    OnPushBranches = ["main"],
+    OnPullRequestBranches = ["main"],
     InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
