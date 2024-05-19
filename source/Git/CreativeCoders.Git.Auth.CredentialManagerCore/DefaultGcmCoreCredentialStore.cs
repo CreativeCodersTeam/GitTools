@@ -14,14 +14,14 @@ internal class DefaultGcmCoreCredentialStore : IGcmCoreCredentialStore
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return new WindowsCredentialManager();
+            return new WindowsCredentialManager(credentialsNameSpace);
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
             return new SecretServiceCollection(credentialsNameSpace);
         }
-        
+
         throw new PlatformNotSupportedException();
     }
 }

@@ -21,12 +21,14 @@ internal class DefaultGitLabServiceProviderFactory : IGitServiceProviderFactory
     public DefaultGitLabServiceProviderFactory(IGitCredentialProviders credentialProviders,
         IOptions<GitLabServiceProviderOptions> options)
     {
-        _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
-        _options = Ensure.NotNull(options, nameof(options)).Value;
+        _credentialProviders = Ensure.NotNull(credentialProviders);
+        _options = Ensure.NotNull(options).Value;
     }
 
     public async Task<IGitServiceProvider> CreateProviderAsync(IGitRepository gitRepository)
     {
+        Ensure.NotNull(gitRepository);
+
         var remote = gitRepository.Remotes[GitRemotes.Origin] ?? gitRepository.Remotes.FirstOrDefault();
 
         if (remote == null)

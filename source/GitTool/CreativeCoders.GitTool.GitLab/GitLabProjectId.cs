@@ -1,4 +1,5 @@
 ﻿using System;
+using CreativeCoders.Core;
 using GitLabApiClient.Internal.Paths;
 
 namespace CreativeCoders.GitTool.GitLab;
@@ -7,6 +8,8 @@ public static class GitLabProjectId
 {
     public static ProjectId GetProjectId(Uri repositoryUrl)
     {
+        Ensure.NotNull(repositoryUrl);
+
         var repositoryPath = repositoryUrl.AbsolutePath[1..];
 
         if (repositoryPath.EndsWith(".git", StringComparison.CurrentCultureIgnoreCase))

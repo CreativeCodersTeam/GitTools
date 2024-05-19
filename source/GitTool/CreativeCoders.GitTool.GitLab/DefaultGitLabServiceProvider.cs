@@ -15,11 +15,13 @@ internal class DefaultGitLabServiceProvider : IGitServiceProvider
 
     public DefaultGitLabServiceProvider(IGitLabClient gitLabClient)
     {
-        _gitLabClient = Ensure.NotNull(gitLabClient, nameof(gitLabClient));
+        _gitLabClient = Ensure.NotNull(gitLabClient);
     }
 
     public async Task<GitPullRequest> CreatePullRequestAsync(GitCreatePullRequest gitCreatePullRequest)
     {
+        Ensure.NotNull(gitCreatePullRequest);
+
         var newMergeRequest = new CreateMergeRequest(gitCreatePullRequest.SourceBranch,
             gitCreatePullRequest.TargetBranch,
             gitCreatePullRequest.Title);

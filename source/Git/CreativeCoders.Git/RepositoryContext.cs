@@ -11,12 +11,16 @@ public class RepositoryContext
     public RepositoryContext(Repository repository, ILibGitCaller libGitCaller,
         Func<Signature> getSignature, Func<CredentialsHandler> getCredentialsHandler)
     {
-        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
-        _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
+        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler);
+        _getSignature = Ensure.NotNull(getSignature);
 
         Repository = repository;
         LibGitCaller = libGitCaller;
     }
+
+    public Repository Repository { get; }
+
+    public ILibGitCaller LibGitCaller { get; }
 
     public Signature GetSignature()
     {
@@ -27,8 +31,4 @@ public class RepositoryContext
     {
         return _getCredentialsHandler();
     }
-
-    public Repository Repository { get; }
-
-    public ILibGitCaller LibGitCaller { get; }
 }

@@ -11,7 +11,7 @@ public static class GitHubServiceCollectionExtensions
 {
     public static IServiceCollection AddGitHubTools(this IServiceCollection services, IConfiguration configuration)
     {
-        Ensure.NotNull(configuration, nameof(configuration));
+        Ensure.NotNull(configuration);
 
         services.AddGitTools();
 

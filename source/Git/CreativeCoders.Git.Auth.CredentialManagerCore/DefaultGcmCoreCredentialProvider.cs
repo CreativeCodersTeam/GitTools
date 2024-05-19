@@ -10,12 +10,12 @@ internal class DefaultGcmCoreCredentialProvider : IGitCredentialProvider
 
     public DefaultGcmCoreCredentialProvider(IGcmCoreCredentialStore credentialStore)
     {
-        _credentialStore = Ensure.Argument(credentialStore, nameof(credentialStore)).NotNull().Value;
+        _credentialStore = Ensure.Argument(credentialStore).NotNull().Value;
     }
 
     public IGitCredential? GetCredentials(string url, string? fromUrl)
     {
-        Ensure.Argument(url, nameof(url)).NotNullOrEmpty();
+        Ensure.Argument(url).NotNullOrEmpty();
 
         var store = _credentialStore.Create("git");
 
@@ -26,12 +26,12 @@ internal class DefaultGcmCoreCredentialProvider : IGitCredentialProvider
             : new GitCredential(credential.Account, credential.Password);
     }
 
+    public string Name => "GcmCore";
+
     private static string ExtractServiceName(string url)
     {
         var uri = new Uri(url);
 
         return $"{uri.Scheme}://{uri.Host}";
     }
-
-    public string Name => "GcmCore";
 }

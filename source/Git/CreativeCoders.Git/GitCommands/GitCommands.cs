@@ -5,21 +5,20 @@ namespace CreativeCoders.Git.GitCommands;
 
 public class GitCommands : IGitCommands
 {
-    private readonly DefaultGitRepository _repository;
-
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
 
     private readonly Func<Signature> _getSignature;
 
     private readonly ILibGitCaller _libGitCaller;
+    private readonly DefaultGitRepository _repository;
 
     internal GitCommands(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
-        _repository = Ensure.NotNull(repository, nameof(repository));
-        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
-        _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
-        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
+        _repository = Ensure.NotNull(repository);
+        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler);
+        _getSignature = Ensure.NotNull(getSignature);
+        _libGitCaller = Ensure.NotNull(libGitCaller);
     }
 
     public IPullCommand CreatePullCommand()
