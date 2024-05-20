@@ -16,9 +16,9 @@ internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
     public DefaultGitRepositoryFactory(IGitCredentialProviders credentialProviders,
         IGitRepositoryUtils repositoryUtils, IServiceProvider serviceProvider)
     {
-        _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
-        _repositoryUtils = Ensure.NotNull(repositoryUtils, nameof(repositoryUtils));
-        _serviceProvider = Ensure.NotNull(serviceProvider, nameof(serviceProvider));
+        _credentialProviders = Ensure.NotNull(credentialProviders);
+        _repositoryUtils = Ensure.NotNull(repositoryUtils);
+        _serviceProvider = Ensure.NotNull(serviceProvider);
     }
 
     public IGitRepository OpenRepository(string? path)

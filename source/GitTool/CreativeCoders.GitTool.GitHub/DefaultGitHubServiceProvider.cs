@@ -16,7 +16,7 @@ internal class DefaultGitHubServiceProvider : IGitServiceProvider
 
     public DefaultGitHubServiceProvider(IGitHubClient gitHubClient)
     {
-        _gitHubClient = Ensure.Argument(gitHubClient, nameof(gitHubClient)).NotNull().Value;
+        _gitHubClient = Ensure.Argument(gitHubClient).NotNull().Value;
     }
 
     public async Task<GitPullRequest> CreatePullRequestAsync(GitCreatePullRequest gitCreatePullRequest)

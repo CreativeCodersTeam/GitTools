@@ -10,7 +10,7 @@ public class GitCredentialsHandler
     public GitCredentialsHandler(IGitCredentialProviders credentialProviders)
     {
         _credentialProviders = Ensure
-            .Argument(credentialProviders, nameof(credentialProviders))
+            .Argument(credentialProviders)
             .NotNull()
             .Value;
     }

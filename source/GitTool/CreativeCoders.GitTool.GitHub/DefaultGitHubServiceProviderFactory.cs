@@ -12,15 +12,14 @@ namespace CreativeCoders.GitTool.GitHub;
 
 internal class DefaultGitHubServiceProviderFactory : IGitServiceProviderFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
     private readonly GitHubServiceProviderOptions _options;
+    private readonly IServiceProvider _serviceProvider;
 
     public DefaultGitHubServiceProviderFactory(IServiceProvider serviceProvider,
         IOptions<GitHubServiceProviderOptions> options)
     {
-        _serviceProvider = Ensure.NotNull(serviceProvider, nameof(serviceProvider));
-        _options = Ensure.NotNull(options, nameof(options)).Value;
+        _serviceProvider = Ensure.NotNull(serviceProvider);
+        _options = Ensure.NotNull(options).Value;
     }
 
     public Task<IGitServiceProvider> CreateProviderAsync(IGitRepository gitRepository)

@@ -19,21 +19,21 @@ using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git;
 
-internal class DefaultGitRepository : IGitRepository
+internal sealed class DefaultGitRepository : IGitRepository
 {
     private readonly IGitCredentialProviders _credentialProviders;
 
-    private readonly Repository _repo;
-
     private readonly ILibGitCaller _libGitCaller;
+
+    private readonly Repository _repo;
 
     public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders,
         ILibGitCaller libGitCaller)
     {
-        _repo = Ensure.NotNull(repo, nameof(repo));
-        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
+        _repo = Ensure.NotNull(repo);
+        _libGitCaller = Ensure.NotNull(libGitCaller);
 
-        _credentialProviders = Ensure.NotNull(credentialProviders, nameof(credentialProviders));
+        _credentialProviders = Ensure.NotNull(credentialProviders);
 
         var context = new RepositoryContext(repo, libGitCaller, GetSignature, GetCredentialsHandler);
 
@@ -47,6 +47,8 @@ internal class DefaultGitRepository : IGitRepository
         Differ = new GitDiffer(_repo.Diff);
         Commands = new GitCommands.GitCommands(this, GetCredentialsHandler, GetSignature, libGitCaller);
     }
+
+    internal Repository LibGit2Repository => _repo;
 
     public void Dispose()
     {
@@ -108,14 +110,6 @@ internal class DefaultGitRepository : IGitRepository
         return treeChanges.Count > 0;
     }
 
-    private CredentialsHandler GetCredentialsHandler()
-        => new GitCredentialsHandler(_credentialProviders).HandleCredentials;
-
-    private Signature GetSignature()
-    {
-        return _libGitCaller.Invoke(() => _repo.Config.BuildSignature(DateTimeOffset.Now));
-    }
-
     public IGitRepositoryInfo Info { get; }
 
     public bool IsHeadDetached => _libGitCaller.Invoke(() => _repo.Info.IsHeadDetached);
@@ -136,5 +130,11 @@ internal class DefaultGitRepository : IGitRepository
 
     public IGitCommands Commands { get; }
 
-    internal Repository LibGit2Repository => _repo;
+    private CredentialsHandler GetCredentialsHandler()
+        => new GitCredentialsHandler(_credentialProviders).HandleCredentials;
+
+    private Signature GetSignature()
+    {
+        return _libGitCaller.Invoke(() => _repo.Config.BuildSignature(DateTimeOffset.Now));
+    }
 }

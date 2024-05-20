@@ -1,4 +1,5 @@
 ﻿using System;
+using CreativeCoders.Core;
 
 namespace CreativeCoders.GitTool.GitHub;
 
@@ -6,6 +7,8 @@ public class GitHubRepositoryId
 {
     public GitHubRepositoryId(Uri repositoryUrl)
     {
+        Ensure.NotNull(repositoryUrl);
+
         var projectPath = repositoryUrl.AbsolutePath[1..];
 
         if (projectPath.EndsWith(".git", StringComparison.CurrentCultureIgnoreCase))

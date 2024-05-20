@@ -11,13 +11,12 @@ namespace CreativeCoders.Git.GitCommands;
 
 internal class PullCommand : IPullCommand
 {
-    private readonly DefaultGitRepository _repository;
-
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
-    
+
     private readonly Func<Signature> _getSignature;
 
     private readonly ILibGitCaller _libGitCaller;
+    private readonly DefaultGitRepository _repository;
 
     private GitCheckoutNotifyHandler? _checkoutNotify;
 
@@ -30,10 +29,10 @@ internal class PullCommand : IPullCommand
     public PullCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
         Func<Signature> getSignature, ILibGitCaller libGitCaller)
     {
-        _repository = Ensure.NotNull(repository, nameof(repository));
-        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
-        _getSignature = Ensure.NotNull(getSignature, nameof(getSignature));
-        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
+        _repository = Ensure.NotNull(repository);
+        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler);
+        _getSignature = Ensure.NotNull(getSignature);
+        _libGitCaller = Ensure.NotNull(libGitCaller);
     }
 
     public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
@@ -59,7 +58,7 @@ internal class PullCommand : IPullCommand
 
     public IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
-        Ensure.NotNull(notify, nameof(notify));
+        Ensure.NotNull(notify);
 
         _checkoutNotify = notify;
 
@@ -70,14 +69,14 @@ internal class PullCommand : IPullCommand
 
     public IPullCommand OnCheckoutProgress(GitCheckoutProgressHandler progress)
     {
-        _checkoutProgress = Ensure.NotNull(progress, nameof(progress));
+        _checkoutProgress = Ensure.NotNull(progress);
 
         return this;
     }
 
     public IPullCommand OnTransferProgress(Action<GitFetchTransferProgress> progress)
     {
-        _transferProgress = Ensure.NotNull(progress, nameof(progress));
+        _transferProgress = Ensure.NotNull(progress);
 
         return this;
     }
@@ -121,7 +120,7 @@ internal class PullCommand : IPullCommand
             ReceivedObjects = progress.ReceivedObjects,
             TotalObjects = progress.TotalObjects
         });
-        
+
         return true;
     }
 

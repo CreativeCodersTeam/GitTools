@@ -9,7 +9,7 @@ internal class DefaultGitCredentialProviders : IGitCredentialProviders
 
     public DefaultGitCredentialProviders(IEnumerable<IGitCredentialProvider> providers)
     {
-        _providers = Ensure.Argument(providers, nameof(providers)).NotNull().Value;
+        _providers = Ensure.NotNull(providers);
     }
 
     public IGitCredentialProvider? GetProvider(string providerName)
