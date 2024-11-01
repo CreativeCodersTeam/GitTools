@@ -12,6 +12,7 @@ using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Branches;
 
+[CliController]
 [CliController("branch")]
 public class BranchesController
 {
@@ -19,7 +20,7 @@ public class BranchesController
 
     public BranchesController(IGitToolCommandExecutor commandExecutor)
     {
-        _commandExecutor = Ensure.NotNull(commandExecutor, nameof(commandExecutor));
+        _commandExecutor = Ensure.NotNull(commandExecutor);
     }
 
     [UsedImplicitly]

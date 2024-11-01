@@ -1,0 +1,11 @@
+Package: gittool
+Version: {GT_VERSION}
+Section: devel
+Priority: optional
+Architecture: amd64
+Depends: dotnet-runtime-8.0 (>= 1.2.13)
+Maintainer: CreativeCodersTeam
+Homepage: https://github.com/CreativeCodersTeam/gittool
+Description: GitTool
+ Some extended commands for working with Git repositories in a custom git flow style
+ 
