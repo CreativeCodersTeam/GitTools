@@ -46,6 +46,8 @@ public class Startup : ICliStartup
 
         runtimeBuilder.UseMiddleware<GitToolsExceptionMiddleware>();
 
+        runtimeBuilder.UseHelp();
+
         runtimeBuilder.UseRouting();
     }
 }
