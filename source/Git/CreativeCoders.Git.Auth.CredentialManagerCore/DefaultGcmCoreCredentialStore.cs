@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
 using GitCredentialManager;
-using GitCredentialManager.Interop.Linux;
-using GitCredentialManager.Interop.Windows;
 
 namespace CreativeCoders.Git.Auth.CredentialManagerCore;
 
@@ -12,16 +8,6 @@ internal class DefaultGcmCoreCredentialStore : IGcmCoreCredentialStore
 {
     public ICredentialStore Create(string? credentialsNameSpace = default)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            return new WindowsCredentialManager(credentialsNameSpace);
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            return new SecretServiceCollection(credentialsNameSpace);
-        }
-
-        throw new PlatformNotSupportedException();
+        return CredentialManager.Create(credentialsNameSpace);
     }
 }
