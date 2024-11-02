@@ -16,37 +16,21 @@ namespace CreativeCoders.GitTool.Commands.Tool;
 [CliController]
 public class ToolController
 {
-    private readonly IGitServiceProviders _gitServiceProviders;
-
     private readonly IGitRepositoryFactory _gitRepositoryFactory;
+
+    private readonly IGitServiceProviders _gitServiceProviders;
 
     private readonly IRepositoryConfigurations _repositoryConfigurations;
 
     private readonly ISysConsole _sysConsole;
 
-    private readonly ICliActionHelpPrinter _helpPrinter;
-
     public ToolController(ISysConsole sysConsole, IRepositoryConfigurations repositoryConfigurations,
-        IGitRepositoryFactory gitRepositoryFactory, IGitServiceProviders gitServiceProviders,
-        ICliActionHelpPrinter helpPrinter)
+        IGitRepositoryFactory gitRepositoryFactory, IGitServiceProviders gitServiceProviders)
     {
-        _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
-        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-        _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-        _helpPrinter = Ensure.NotNull(helpPrinter, nameof(helpPrinter));
-    }
-
-    [CliAction("help")]
-    public void ShowHelp(string[] args)
-    {
-        _sysConsole
-            .WriteLine()
-            .WriteLine("GitTool")
-            .WriteLine($"Copyright {DateTime.Now.Year} CreativeCoders")
-            .WriteLine();
-
-        _helpPrinter.PrintHelp(args);
+        _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
+        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory);
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+        _sysConsole = Ensure.NotNull(sysConsole);
     }
 
     [CliAction("setup")]
