@@ -32,7 +32,7 @@ internal class DefaultGitHubServiceProviderFactory : IGitServiceProviderFactory
     {
         var repositoryHost = gitRepository.Info.RemoteUri.Host;
 
-        return _options.Hosts.Concat(new[] { "github.com" })
+        return _options.Hosts.Concat(["github.com"])
             .Any(x => repositoryHost.Equals(x, StringComparison.CurrentCultureIgnoreCase));
     }
 

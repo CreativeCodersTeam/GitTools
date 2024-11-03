@@ -8,12 +8,12 @@ public class GitRemote : ComparableObject<GitRemote, IGitRemote>, IGitRemote
 {
     private readonly Remote _remote;
 
+    static GitRemote() => InitComparableObject(x => x.Name);
+
     internal GitRemote(Remote remote)
     {
-        _remote = Ensure.NotNull(remote, nameof(remote));
+        _remote = Ensure.NotNull(remote);
     }
-
-    static GitRemote() => InitComparableObject(x => x.Name);
 
     internal static GitRemote? From(Remote? remote)
     {
@@ -21,6 +21,8 @@ public class GitRemote : ComparableObject<GitRemote, IGitRemote>, IGitRemote
             ? null
             : new GitRemote(remote);
     }
+
+    public static implicit operator Remote(GitRemote remote) => remote._remote;
 
     public string Name => _remote.Name;
 
@@ -35,7 +37,7 @@ public class GitRemote : ComparableObject<GitRemote, IGitRemote>, IGitRemote
             var refSpecs = _remote.RefSpecs;
 
             return refSpecs is null
-                ? Enumerable.Empty<IGitRefSpec>()
+                ? []
                 : new GitRefSpecCollection((RefSpecCollection)refSpecs);
         }
     }
@@ -43,6 +45,4 @@ public class GitRemote : ComparableObject<GitRemote, IGitRemote>, IGitRemote
     public IEnumerable<IGitRefSpec> FetchRefSpecs => _remote.FetchRefSpecs.Select(x => new GitRefSpec(x));
 
     public IEnumerable<IGitRefSpec> PushRefSpecs => _remote.PushRefSpecs.Select(x => new GitRefSpec(x));
-
-    public static implicit operator Remote(GitRemote remote) => remote._remote;
 }

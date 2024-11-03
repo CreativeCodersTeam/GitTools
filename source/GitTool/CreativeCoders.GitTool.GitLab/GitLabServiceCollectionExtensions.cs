@@ -7,7 +7,7 @@ namespace CreativeCoders.GitTool.GitLab;
 
 public static class GitLabServiceCollectionExtensions
 {
-    public static IServiceCollection AddGitLabTools(this IServiceCollection services,
+    public static void AddGitLabTools(this IServiceCollection services,
         IConfiguration configuration)
     {
         Ensure.NotNull(configuration);
@@ -18,7 +18,5 @@ public static class GitLabServiceCollectionExtensions
 
         services.Configure<GitLabServiceProviderOptions>(
             configuration.GetSection("GitServiceProviders").GetSection("GitLab"));
-
-        return services;
     }
 }

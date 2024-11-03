@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CreativeCoders.GitTool.Cli;
 
-public class Program
+public static class Program
 {
     public static async Task<int> Main(string[] args)
     {
@@ -31,7 +31,6 @@ public class Program
                 {
                     x.AddJsonFile(toolConfigurationFile);
                 }
-                    
             })
             .Build();
     }

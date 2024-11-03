@@ -5,22 +5,21 @@ namespace CreativeCoders.Git.Branches;
 
 public class GitBranchCollection : IGitBranchCollection
 {
-    private readonly RepositoryContext _context;
-
     private readonly BranchCollection _branchCollection;
+    private readonly RepositoryContext _context;
 
     private readonly ILibGitCaller _libGitCaller;
 
     internal GitBranchCollection(RepositoryContext context)
     {
-        _context = Ensure.NotNull(context, nameof(context));
-        _branchCollection = _context.Repository.Branches;
+        _context = Ensure.NotNull(context);
+        _branchCollection = _context.LibGitRepository.Branches;
         _libGitCaller = context.LibGitCaller;
     }
 
     public IGitBranch? CheckOut(string branchName)
     {
-        Ensure.Argument(branchName, nameof(branchName)).NotNullOrEmpty();
+        Ensure.Argument(branchName).NotNullOrEmpty();
 
         var branch = this[branchName];
 
@@ -30,26 +29,26 @@ public class GitBranchCollection : IGitBranchCollection
         }
 
         var checkedOutBranch = _libGitCaller.Invoke(
-            () => Commands.Checkout(_context.Repository, _context.Repository.Branches[branchName]));
+            () => Commands.Checkout(_context.LibGitRepository, _context.LibGitRepository.Branches[branchName]));
 
         return GitBranch.From(checkedOutBranch);
     }
 
     public IGitBranch? CreateBranch(string branchName)
     {
-        return GitBranch.From(_libGitCaller.Invoke(() => _context.Repository.CreateBranch(branchName)));
+        return GitBranch.From(_libGitCaller.Invoke(() => _context.LibGitRepository.CreateBranch(branchName)));
     }
 
     public void DeleteLocalBranch(string branchName)
     {
-        var branch = _libGitCaller.Invoke(() => _context.Repository.Branches[branchName]);
+        var branch = _libGitCaller.Invoke(() => _context.LibGitRepository.Branches[branchName]);
 
         if (branch.IsRemote)
         {
             return;
         }
 
-        _libGitCaller.Invoke(() => _context.Repository.Branches.Remove(branch));
+        _libGitCaller.Invoke(() => _context.LibGitRepository.Branches.Remove(branch));
     }
 
     public IEnumerator<IGitBranch> GetEnumerator()

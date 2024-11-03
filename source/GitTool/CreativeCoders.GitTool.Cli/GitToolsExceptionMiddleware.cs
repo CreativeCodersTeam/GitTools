@@ -6,22 +6,24 @@ using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.SysConsole.Cli.Actions.Exceptions;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime;
 using CreativeCoders.SysConsole.Cli.Actions.Runtime.Middleware;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli;
 
+[UsedImplicitly]
 public class GitToolsExceptionMiddleware : CliActionMiddlewareBase
 {
-    private readonly ICml _cml;
-
     private readonly IAnsiConsole _ansiConsole;
+
+    private readonly ICml _cml;
 
     public GitToolsExceptionMiddleware(Func<CliActionContext, Task> next,
         IAnsiConsole ansiConsole, ICml cml)
         : base(next)
     {
-        _cml = Ensure.NotNull(cml, nameof(cml));
-        _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
+        _cml = Ensure.NotNull(cml);
+        _ansiConsole = Ensure.NotNull(ansiConsole);
     }
 
     public override async Task InvokeAsync(CliActionContext context)

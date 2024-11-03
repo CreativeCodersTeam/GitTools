@@ -6,9 +6,14 @@ namespace CreativeCoders.Git.Abstractions.Common;
 
 public class ReferenceName : ComparableObject<ReferenceName>
 {
+    static ReferenceName()
+    {
+        InitComparableObject(x => x.Canonical);
+    }
+
     public ReferenceName(string canonical)
     {
-        Canonical = Ensure.IsNotNullOrWhitespace(canonical, nameof(canonical));
+        Canonical = Ensure.IsNotNullOrWhitespace(canonical);
         Friendly = ShortenName();
         WithoutRemote = RemoveRemotePrefix();
 
@@ -17,11 +22,6 @@ public class ReferenceName : ComparableObject<ReferenceName>
         IsTag = IsPrefixedBy(Canonical, ReferencePrefixes.Tag);
         IsPullRequest = IsPrefixedBy(Canonical, ReferencePrefixes.PullRequest1)
                         || IsPrefixedBy(Canonical, ReferencePrefixes.PullRequest2);
-    }
-
-    static ReferenceName()
-    {
-        InitComparableObject(x => x.Canonical);
     }
 
     public static bool TryParse(string canonicalName, out ReferenceName? referenceName)
@@ -68,7 +68,7 @@ public class ReferenceName : ComparableObject<ReferenceName>
         var isRemote = IsPrefixedBy(Canonical, ReferencePrefixes.RemoteTrackingBranch);
 
         return isRemote
-            ? Friendly[(Friendly.IndexOf("/", StringComparison.Ordinal) + 1)..]
+            ? Friendly[(Friendly.IndexOf('/') + 1)..]
             : Friendly;
     }
 

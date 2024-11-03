@@ -7,54 +7,25 @@ using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Features.Commands.StartFeature;
 
+[UsedImplicitly]
 public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOptions>
 {
+    private readonly IGitToolPullCommand _pullCommand;
     private readonly IRepositoryConfigurations _repositoryConfigurations;
 
     private readonly ISysConsole _sysConsole;
-
-    private readonly IGitToolPullCommand _pullCommand;
 
     public StartFeatureCommand(ISysConsole sysConsole,
         IRepositoryConfigurations repositoryConfigurations,
         IGitToolPullCommand pullCommand)
     {
-        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-
-        _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-
-        _pullCommand = Ensure.NotNull(pullCommand, nameof(pullCommand));
-    }
-
-    public async Task<int> ExecuteAsync(IGitRepository gitRepository, StartFeatureOptions options)
-    {
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
-
-        var data = CreateData(gitRepository, options);
-
-        PrintStartFeatureData(data);
-
-        CheckIfFeatureBranchExists(data);
-
-        await CheckOutAndUpdateBaseBranch(gitRepository, configuration).ConfigureAwait(false);
-
-        CreateAndCheckOutFeatureBranch(gitRepository, options, configuration);
-
-        if (options.PushAfterCreate)
-        {
-            _sysConsole.WriteLine("Pushing feature branch to remote...");
-
-            gitRepository.Push(new GitPushOptions());
-
-            _sysConsole
-                .WriteLine("Feature branch pushed")
-                .WriteLine();
-        }
-
-        return ReturnCodes.Success;
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+        _sysConsole = Ensure.NotNull(sysConsole);
+        _pullCommand = Ensure.NotNull(pullCommand);
     }
 
     private void PrintStartFeatureData(StartFeatureData data)
@@ -150,5 +121,33 @@ public class StartFeatureCommand : IGitToolCommandWithOptions<StartFeatureOption
 
         return new StartFeatureData(gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
             configuration.GetDefaultBranchName(gitRepository.Info.MainBranch));
+    }
+
+    public async Task<int> ExecuteAsync(IGitRepository gitRepository, StartFeatureOptions options)
+    {
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+
+        var data = CreateData(gitRepository, options);
+
+        PrintStartFeatureData(data);
+
+        CheckIfFeatureBranchExists(data);
+
+        await CheckOutAndUpdateBaseBranch(gitRepository, configuration).ConfigureAwait(false);
+
+        CreateAndCheckOutFeatureBranch(gitRepository, options, configuration);
+
+        if (options.PushAfterCreate)
+        {
+            _sysConsole.WriteLine("Pushing feature branch to remote...");
+
+            gitRepository.Push(new GitPushOptions());
+
+            _sysConsole
+                .WriteLine("Feature branch pushed")
+                .WriteLine();
+        }
+
+        return ReturnCodes.Success;
     }
 }

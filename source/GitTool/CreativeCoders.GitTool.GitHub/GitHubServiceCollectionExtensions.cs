@@ -9,7 +9,7 @@ namespace CreativeCoders.GitTool.GitHub;
 
 public static class GitHubServiceCollectionExtensions
 {
-    public static IServiceCollection AddGitHubTools(this IServiceCollection services, IConfiguration configuration)
+    public static void AddGitHubTools(this IServiceCollection services, IConfiguration configuration)
     {
         Ensure.NotNull(configuration);
 
@@ -28,7 +28,5 @@ public static class GitHubServiceCollectionExtensions
 
         services.Configure<GitHubServiceProviderOptions>(
             configuration.GetSection("GitServiceProviders").GetSection("GitHub"));
-
-        return services;
     }
 }

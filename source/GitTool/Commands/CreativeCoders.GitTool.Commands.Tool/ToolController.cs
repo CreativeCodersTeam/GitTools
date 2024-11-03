@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.SysConsole.Cli.Actions.Definition;
-using CreativeCoders.SysConsole.Cli.Actions.Help;
 using CreativeCoders.SysConsole.Core.Abstractions;
 using JetBrains.Annotations;
 

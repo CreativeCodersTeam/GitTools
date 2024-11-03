@@ -5,18 +5,12 @@ using CreativeCoders.Git.Abstractions.Merges;
 using CreativeCoders.Git.Commits;
 using CreativeCoders.Git.Common;
 using CreativeCoders.Git.Merges;
-using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.GitCommands;
 
 internal class PullCommand : IPullCommand
 {
-    private readonly Func<CredentialsHandler> _getCredentialsHandler;
-
-    private readonly Func<Signature> _getSignature;
-
-    private readonly ILibGitCaller _libGitCaller;
-    private readonly DefaultGitRepository _repository;
+    private readonly RepositoryContext _repositoryContext;
 
     private GitCheckoutNotifyHandler? _checkoutNotify;
 
@@ -26,13 +20,32 @@ internal class PullCommand : IPullCommand
 
     private Action<GitFetchTransferProgress>? _transferProgress;
 
-    public PullCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
-        Func<Signature> getSignature, ILibGitCaller libGitCaller)
+    public PullCommand(RepositoryContext repositoryContext)
     {
-        _repository = Ensure.NotNull(repository);
-        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler);
-        _getSignature = Ensure.NotNull(getSignature);
-        _libGitCaller = Ensure.NotNull(libGitCaller);
+        _repositoryContext = Ensure.NotNull(repositoryContext);
+    }
+
+    private void OnGitCheckoutProgress(string path, int completedSteps, int totalSteps)
+    {
+        _checkoutProgress?.Invoke(path, completedSteps, totalSteps);
+    }
+
+    private bool OnGitTransferProgress(TransferProgress progress)
+    {
+        _transferProgress?.Invoke(new GitFetchTransferProgress
+        {
+            IndexedObjects = progress.IndexedObjects,
+            ReceivedBytes = progress.ReceivedBytes,
+            ReceivedObjects = progress.ReceivedObjects,
+            TotalObjects = progress.TotalObjects
+        });
+
+        return true;
+    }
+
+    private bool OnGitCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
+    {
+        return _checkoutNotify == null || _checkoutNotify(path, notifyFlags.ToGitCheckoutNotifyFlags());
     }
 
     public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
@@ -87,7 +100,7 @@ internal class PullCommand : IPullCommand
         {
             FetchOptions = new FetchOptions
             {
-                CredentialsProvider = _getCredentialsHandler(),
+                CredentialsProvider = _repositoryContext.GetCredentialsHandler(),
                 OnTransferProgress = OnGitTransferProgress
             },
             MergeOptions = new MergeOptions
@@ -99,33 +112,17 @@ internal class PullCommand : IPullCommand
             }
         };
 
-        var signature = _getSignature();
+        var certCheckHandler = _repositoryContext.GetCertificateCheckHandler();
+        if (certCheckHandler != null)
+        {
+            options.FetchOptions.CertificateCheck = certCheckHandler;
+        }
 
-        var mergeResult = _libGitCaller.Invoke(() => Commands.Pull(_repository.LibGit2Repository, signature, options));
+        var signature = _repositoryContext.GetSignature();
+
+        var mergeResult = _repositoryContext.LibGitCaller.Invoke(() =>
+            Commands.Pull(_repositoryContext.LibGitRepository, signature, options));
 
         return new GitMergeResult(mergeResult.Status.ToGitMergeStatus(), GitCommit.From(mergeResult.Commit));
-    }
-
-    private void OnGitCheckoutProgress(string path, int completedSteps, int totalSteps)
-    {
-        _checkoutProgress?.Invoke(path, completedSteps, totalSteps);
-    }
-
-    private bool OnGitTransferProgress(TransferProgress progress)
-    {
-        _transferProgress?.Invoke(new GitFetchTransferProgress
-        {
-            IndexedObjects = progress.IndexedObjects,
-            ReceivedBytes = progress.ReceivedBytes,
-            ReceivedObjects = progress.ReceivedObjects,
-            TotalObjects = progress.TotalObjects
-        });
-
-        return true;
-    }
-
-    private bool OnGitCheckoutNotify(string path, CheckoutNotifyFlags notifyFlags)
-    {
-        return _checkoutNotify == null || _checkoutNotify(path, notifyFlags.ToGitCheckoutNotifyFlags());
     }
 }

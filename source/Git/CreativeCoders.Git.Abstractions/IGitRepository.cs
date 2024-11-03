@@ -1,5 +1,6 @@
 ﻿using System;
 using CreativeCoders.Git.Abstractions.Branches;
+using CreativeCoders.Git.Abstractions.Certs;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
 using CreativeCoders.Git.Abstractions.GitCommands;
@@ -42,4 +43,6 @@ public interface IGitRepository : IDisposable
     IGitDiffer Differ { get; }
 
     IGitCommands Commands { get; }
+
+    HostCertificateCheckHandler? CertificateCheck { get; set; }
 }

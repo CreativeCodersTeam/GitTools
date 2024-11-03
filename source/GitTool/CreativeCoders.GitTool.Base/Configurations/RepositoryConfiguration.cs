@@ -1,7 +1,9 @@
 ﻿using CreativeCoders.Git.Abstractions.Branches;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Base.Configurations;
 
+[PublicAPI]
 public class RepositoryConfiguration
 {
     public string GetDefaultBranchName(GitMainBranch gitMainBranch)
@@ -23,6 +25,8 @@ public class RepositoryConfiguration
     public string FeatureBranchPrefix { get; set; } = "feature/";
 
     public string GitServiceProviderName { get; set; } = string.Empty;
+
+    public bool DisableCertificateValidation { get; set; } = true;
 
     public static RepositoryConfiguration Default { get; } = new()
     {

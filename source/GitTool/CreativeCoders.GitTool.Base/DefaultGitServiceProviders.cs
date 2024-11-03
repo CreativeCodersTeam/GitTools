@@ -19,9 +19,22 @@ internal class DefaultGitServiceProviders : IGitServiceProviders
     public DefaultGitServiceProviders(IEnumerable<IGitServiceProviderFactory> providerFactories,
         IOptions<ToolConfiguration> toolOptions)
     {
-        _providerFactories = Ensure.NotNull(providerFactories, nameof(providerFactories));
+        _providerFactories = Ensure.NotNull(providerFactories);
 
-        _toolOptions = Ensure.NotNull(toolOptions, nameof(toolOptions)).Value;
+        _toolOptions = Ensure.NotNull(toolOptions).Value;
+    }
+
+    private IGitServiceProviderFactory? GetProviderFactory(IGitRepository gitRepository,
+        string? providerName)
+    {
+        if (!string.IsNullOrEmpty(providerName))
+        {
+            return _providerFactories
+                .FirstOrDefault(x =>
+                    x.ProviderName.Equals(providerName, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        return _providerFactories.FirstOrDefault(x => x.IsResponsibleFor(gitRepository));
     }
 
     public async Task<IGitServiceProvider> GetServiceProviderAsync(IGitRepository gitRepository,
@@ -43,19 +56,6 @@ internal class DefaultGitServiceProviders : IGitServiceProviders
         }
 
         return gitServiceProvider;
-    }
-
-    private IGitServiceProviderFactory? GetProviderFactory(IGitRepository gitRepository,
-        string? providerName)
-    {
-        if (!string.IsNullOrEmpty(providerName))
-        {
-            return _providerFactories
-                .FirstOrDefault(x =>
-                    x.ProviderName.Equals(providerName, StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        return _providerFactories.FirstOrDefault(x => x.IsResponsibleFor(gitRepository));
     }
 
     public IEnumerable<string> ProviderNames => _providerFactories.Select(x => x.ProviderName);

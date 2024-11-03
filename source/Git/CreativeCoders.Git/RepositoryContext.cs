@@ -2,25 +2,27 @@
 
 namespace CreativeCoders.Git;
 
-public class RepositoryContext
+internal class RepositoryContext
 {
+    private readonly Func<CertificateCheckHandler?> _certificateCheckHandler;
+
     private readonly Func<CredentialsHandler> _getCredentialsHandler;
 
     private readonly Func<Signature> _getSignature;
 
-    public RepositoryContext(Repository repository, ILibGitCaller libGitCaller,
-        Func<Signature> getSignature, Func<CredentialsHandler> getCredentialsHandler)
+    public RepositoryContext(DefaultGitRepository repository, Repository libGitRepository, ILibGitCaller libGitCaller,
+        Func<Signature> getSignature, Func<CredentialsHandler> getCredentialsHandler,
+        Func<CertificateCheckHandler?> certificateCheckHandler)
     {
         _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler);
         _getSignature = Ensure.NotNull(getSignature);
 
-        Repository = repository;
-        LibGitCaller = libGitCaller;
+        LibGitRepository = Ensure.NotNull(libGitRepository);
+        LibGitCaller = Ensure.NotNull(libGitCaller);
+        Repository = Ensure.NotNull(repository);
+
+        _certificateCheckHandler = certificateCheckHandler;
     }
-
-    public Repository Repository { get; }
-
-    public ILibGitCaller LibGitCaller { get; }
 
     public Signature GetSignature()
     {
@@ -31,4 +33,15 @@ public class RepositoryContext
     {
         return _getCredentialsHandler();
     }
+
+    public CertificateCheckHandler? GetCertificateCheckHandler()
+    {
+        return _certificateCheckHandler();
+    }
+
+    public Repository LibGitRepository { get; }
+
+    public ILibGitCaller LibGitCaller { get; }
+
+    public DefaultGitRepository Repository { get; }
 }

@@ -1,19 +1,24 @@
 ﻿using CreativeCoders.Core;
 using CreativeCoders.Core.Reflection;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.GitTool.Base.Configurations;
 
 namespace CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 
 public class GitToolCommandExecutor : IGitToolCommandExecutor
 {
-    private readonly IServiceProvider _serviceProvider;
-
     private readonly IGitRepositoryFactory _gitRepositoryFactory;
 
-    public GitToolCommandExecutor(IServiceProvider serviceProvider, IGitRepositoryFactory gitRepositoryFactory)
+    private readonly IRepositoryConfigurations _repositoryConfigurations;
+
+    private readonly IServiceProvider _serviceProvider;
+
+    public GitToolCommandExecutor(IServiceProvider serviceProvider, IGitRepositoryFactory gitRepositoryFactory,
+        IRepositoryConfigurations repositoryConfigurations)
     {
-        _serviceProvider = Ensure.NotNull(serviceProvider, nameof(serviceProvider));
-        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory, nameof(gitRepositoryFactory));
+        _serviceProvider = Ensure.NotNull(serviceProvider);
+        _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory);
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
     }
 
     public async Task<int> ExecuteAsync<TCommand>()
@@ -27,6 +32,17 @@ public class GitToolCommandExecutor : IGitToolCommandExecutor
         }
 
         using var gitRepository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+
+        if (configuration.DisableCertificateValidation)
+        {
+            gitRepository.CertificateCheck = (_, args) =>
+            {
+                args.IsValid = true;
+                return true;
+            };
+        }
 
         return await command.ExecuteAsync(gitRepository).ConfigureAwait(false);
     }
@@ -42,6 +58,17 @@ public class GitToolCommandExecutor : IGitToolCommandExecutor
         }
 
         using var gitRepository = _gitRepositoryFactory.OpenRepositoryFromCurrentDir();
+
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+
+        if (configuration.DisableCertificateValidation)
+        {
+            gitRepository.CertificateCheck = (_, args) =>
+            {
+                args.IsValid = true;
+                return true;
+            };
+        }
 
         return await command.ExecuteAsync(gitRepository, options).ConfigureAwait(false);
     }

@@ -12,5 +12,5 @@ public enum GitEntryChangeKind
     Untracked,
     TypeChanged,
     Unreadable,
-    Conflicted,
+    Conflicted
 }
