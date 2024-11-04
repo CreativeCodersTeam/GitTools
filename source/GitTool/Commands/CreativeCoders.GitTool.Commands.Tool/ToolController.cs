@@ -92,6 +92,7 @@ public class ToolController
             .WriteLine($"DevelopBranch: {configuration.DevelopBranch}")
             .WriteLine($"FeatureBranchPrefix: {configuration.FeatureBranchPrefix}")
             .WriteLine($"GitServiceProviderName: {configuration.GitServiceProviderName}")
+            .WriteLine($"DisableCertificateValidation: {configuration.DisableCertificateValidation}")
             .WriteLine();
     }
 }

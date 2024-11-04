@@ -26,9 +26,9 @@ public class RepositoryConfiguration
 
     public string GitServiceProviderName { get; set; } = string.Empty;
 
-    public bool DisableCertificateValidation { get; set; } = true;
+    public bool DisableCertificateValidation { get; set; }
 
-    public static RepositoryConfiguration Default { get; } = new()
+    public static RepositoryConfiguration Default { get; } = new RepositoryConfiguration
     {
         HasDevelopBranch = true,
         DevelopBranch = "develop"
