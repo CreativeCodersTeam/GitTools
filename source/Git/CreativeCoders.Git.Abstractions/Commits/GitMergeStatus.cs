@@ -12,5 +12,5 @@ public enum GitMergeStatus
     NonFastForward,
 
     /// <summary>Merge resulted in conflicts.</summary>
-    Conflicts,
+    Conflicts
 }

@@ -4,17 +4,19 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Info;
 
+[UsedImplicitly]
 public class InfoBranchesCommand : IGitToolCommandWithOptions<InfoBranchesOptions>
 {
     private readonly IAnsiConsole _ansiConsole;
 
     public InfoBranchesCommand(IAnsiConsole ansiConsole)
     {
-        _ansiConsole = Ensure.NotNull(ansiConsole, nameof(ansiConsole));
+        _ansiConsole = Ensure.NotNull(ansiConsole);
     }
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository, InfoBranchesOptions options)

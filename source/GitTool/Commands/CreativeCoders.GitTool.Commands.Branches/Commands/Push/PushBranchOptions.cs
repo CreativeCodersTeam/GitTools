@@ -1,7 +1,9 @@
 ﻿using CreativeCoders.SysConsole.Cli.Parsing;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Branches.Commands.Push;
 
+[PublicAPI]
 public class PushBranchOptions
 {
     private const string CreateRemoteLongName = "createremote";

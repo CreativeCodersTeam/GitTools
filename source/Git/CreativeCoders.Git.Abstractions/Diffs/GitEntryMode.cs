@@ -8,5 +8,5 @@ public enum GitEntryMode
     NonExecutableGroupWritableFile = 33204, // 0x000081B4
     ExecutableFile = 33261, // 0x000081ED
     SymbolicLink = 40960, // 0x0000A000
-    GitLink = 57344, // 0x0000E000
+    GitLink = 57344 // 0x0000E000
 }

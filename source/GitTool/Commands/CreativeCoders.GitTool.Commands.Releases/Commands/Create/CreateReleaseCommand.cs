@@ -5,9 +5,11 @@ using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using CreativeCoders.SysConsole.Core.Abstractions;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Releases.Commands.Create;
 
+[UsedImplicitly]
 public class CreateReleaseCommand : IGitToolCommandWithOptions<CreateReleaseOptions>
 {
     private readonly IGitServiceProviders _gitServiceProviders;
@@ -17,8 +19,19 @@ public class CreateReleaseCommand : IGitToolCommandWithOptions<CreateReleaseOpti
     public CreateReleaseCommand(ISysConsole sysConsole,
         IGitServiceProviders gitServiceProviders)
     {
-        _sysConsole = Ensure.NotNull(sysConsole, nameof(sysConsole));
-        _gitServiceProviders = Ensure.NotNull(gitServiceProviders, nameof(gitServiceProviders));
+        _sysConsole = Ensure.NotNull(sysConsole);
+        _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
+    }
+
+    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
+        CreateReleaseOptions options)
+    {
+        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
+
+        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
+            $"Release {options.Version}", "develop", mainBranchName);
+
+        _ = await provider.CreatePullRequestAsync(createPullRequest);
     }
 
     public async Task<int> ExecuteAsync(IGitRepository gitRepository, CreateReleaseOptions options)
@@ -57,18 +70,5 @@ public class CreateReleaseCommand : IGitToolCommandWithOptions<CreateReleaseOpti
         }
 
         return 0;
-    }
-
-    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
-        CreateReleaseOptions options)
-    {
-        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
-
-        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
-            $"Release {options.Version}", "develop", mainBranchName);
-
-        var _ = await provider.CreatePullRequestAsync(createPullRequest);
-
-        
     }
 }

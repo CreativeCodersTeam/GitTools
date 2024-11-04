@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class GitServiceCollectionExtensions
 {
-    public static IServiceCollection AddGit(this IServiceCollection services)
+    public static void AddGit(this IServiceCollection services)
     {
         services.TryAddTransient<ILibGitCaller, LibGitCaller>();
 
@@ -18,15 +18,13 @@ public static class GitServiceCollectionExtensions
         services.TryAddSingleton<IGitCredentialProviders, DefaultGitCredentialProviders>();
 
         services.TryAddSingleton<IGitRepositoryUtils, GitRepositoryUtils>();
-
-        return services;
     }
 
     [PublicAPI]
     public static IServiceCollection AddGit(this IServiceCollection services,
         Action<GitRepositoryOptions> setupOptions)
     {
-        Ensure.Argument(setupOptions, nameof(setupOptions)).NotNull();
+        Ensure.Argument(setupOptions).NotNull();
 
         services.AddGit();
 

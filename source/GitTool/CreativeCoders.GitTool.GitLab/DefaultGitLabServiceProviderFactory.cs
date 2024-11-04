@@ -54,7 +54,7 @@ internal class DefaultGitLabServiceProviderFactory : IGitServiceProviderFactory
     {
         var repositoryHost = gitRepository.Info.RemoteUri.Host;
 
-        return _options.Hosts.Concat(new[] { "gitlab.com" })
+        return _options.Hosts.Concat(["gitlab.com"])
             .Any(x => repositoryHost.Equals(x, StringComparison.CurrentCultureIgnoreCase));
     }
 

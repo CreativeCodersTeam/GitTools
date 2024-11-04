@@ -31,7 +31,7 @@ public class GitLabProjectIdTests
     public void Ctor_MismatchingRepositoryUrls_ThrowsException(string repositoryUrl)
     {
         // Act
-        Func<ProjectId> act = () => GitLabProjectId.GetProjectId(new Uri(repositoryUrl));
+        var act = () => GitLabProjectId.GetProjectId(new Uri(repositoryUrl));
 
         // Assert
         act

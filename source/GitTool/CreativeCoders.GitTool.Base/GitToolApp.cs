@@ -2,7 +2,7 @@
 
 public static class GitToolApp
 {
-    public const string ConfigFolderName = "CreativeCoders/CcGitTool";
+    public const string ConfigFolderName = "CreativeCoders/GitTool";
 
     public const string ConfigFileName = "gt.json";
 

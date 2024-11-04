@@ -47,10 +47,8 @@ public static class GitRepositoryBranchExtensions
             {
                 yield break;
             }
-            else
-            {
-                yield return gitCommit;
-            }
+
+            yield return gitCommit;
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CreativeCoders.Core;
 using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.SysConsole.Cli.Actions.Definition;
-using CreativeCoders.SysConsole.Cli.Actions.Help;
-using CreativeCoders.SysConsole.Core.Abstractions;
+using CreativeCoders.SysConsole.Core;
 using JetBrains.Annotations;
+using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Commands.Tool;
 
@@ -16,21 +15,21 @@ namespace CreativeCoders.GitTool.Commands.Tool;
 [CliController]
 public class ToolController
 {
+    private readonly IAnsiConsole _console;
+
     private readonly IGitRepositoryFactory _gitRepositoryFactory;
 
     private readonly IGitServiceProviders _gitServiceProviders;
 
     private readonly IRepositoryConfigurations _repositoryConfigurations;
 
-    private readonly ISysConsole _sysConsole;
-
-    public ToolController(ISysConsole sysConsole, IRepositoryConfigurations repositoryConfigurations,
+    public ToolController(IAnsiConsole console, IRepositoryConfigurations repositoryConfigurations,
         IGitRepositoryFactory gitRepositoryFactory, IGitServiceProviders gitServiceProviders)
     {
+        _console = Ensure.NotNull(console);
         _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
         _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory);
         _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
-        _sysConsole = Ensure.NotNull(sysConsole);
     }
 
     [CliAction("setup")]
@@ -40,32 +39,39 @@ public class ToolController
 
         var configuration = _repositoryConfigurations.GetConfiguration(repository);
 
-        var developBranch = _sysConsole
+        _console.PrintBlock()
             .WriteLine()
-            .WriteLine("Development branch (empty = no development branch)")
-            .Write($"(Current value = '{configuration.DevelopBranch}'): ")
-            .ReadLine();
+            .WriteLine("Development branch (empty = no development branch)");
+
+        var developBranch =
+            _console.Prompt(new TextPrompt<string?>($"(Current value = '{configuration.DevelopBranch}'): ")
+                { AllowEmpty = true });
 
         configuration.DevelopBranch = developBranch ?? string.Empty;
         configuration.HasDevelopBranch = !string.IsNullOrEmpty(developBranch);
 
-        var featurePrefix = _sysConsole
-            .Write($"Prefix for feature branches (Empty = current value '{configuration.FeatureBranchPrefix}')")
-            .ReadLine();
+        var featureBranchPrefix = _console.Prompt(new TextPrompt<string?>(
+                $"Prefix for feature branches (Empty = current value '{configuration.FeatureBranchPrefix}'): ")
+            { AllowEmpty = true });
 
-        if (!string.IsNullOrEmpty(featurePrefix))
+        if (!string.IsNullOrEmpty(featureBranchPrefix))
         {
-            configuration.FeatureBranchPrefix = featurePrefix;
+            configuration.FeatureBranchPrefix = featureBranchPrefix;
         }
 
-        var gitProviderName = _sysConsole
-            .WriteLine("Select git service provider")
-            .SelectItem(_gitServiceProviders.ProviderNames);
+        var selectionPrompt = new SelectionPrompt<string>();
+
+        var gitProviderName = _console.Prompt(selectionPrompt.AddChoices(_gitServiceProviders.ProviderNames));
 
         if (!string.IsNullOrEmpty(gitProviderName))
         {
             configuration.GitServiceProviderName = gitProviderName;
         }
+
+        var disableCertValidationPrompt = new ConfirmationPrompt("Disable certificate check (true/false): ")
+            { DefaultValue = configuration.DisableCertificateValidation };
+
+        configuration.DisableCertificateValidation = _console.Prompt(disableCertValidationPrompt);
 
         await _repositoryConfigurations.SaveConfigurationAsync(repository.Info.RemoteUri, configuration);
     }
@@ -78,7 +84,7 @@ public class ToolController
 
         var configuration = _repositoryConfigurations.GetConfiguration(repository);
 
-        _sysConsole
+        _console.PrintBlock()
             .WriteLine()
             .WriteLine($"Configuration for '{repository.Info.RemoteUri}'")
             .WriteLine()
@@ -86,6 +92,7 @@ public class ToolController
             .WriteLine($"DevelopBranch: {configuration.DevelopBranch}")
             .WriteLine($"FeatureBranchPrefix: {configuration.FeatureBranchPrefix}")
             .WriteLine($"GitServiceProviderName: {configuration.GitServiceProviderName}")
+            .WriteLine($"DisableCertificateValidation: {configuration.DisableCertificateValidation}")
             .WriteLine();
     }
 }

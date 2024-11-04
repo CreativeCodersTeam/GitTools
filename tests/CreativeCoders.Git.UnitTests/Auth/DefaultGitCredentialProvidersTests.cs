@@ -20,7 +20,7 @@ public class DefaultGitCredentialProvidersTests
         A.CallTo(() => provider0.Name).Returns(providerName0);
         A.CallTo(() => provider1.Name).Returns(providerName1);
 
-        var providers = new DefaultGitCredentialProviders(new[] { provider0, provider1 });
+        var providers = new DefaultGitCredentialProviders([provider0, provider1]);
 
         // Act
         var provider = providers.GetProvider(providerName0);
@@ -44,7 +44,7 @@ public class DefaultGitCredentialProvidersTests
         A.CallTo(() => provider0.Name).Returns(providerName0);
         A.CallTo(() => provider1.Name).Returns(providerName1);
 
-        var providers = new DefaultGitCredentialProviders(new[] { provider0, provider1 });
+        var providers = new DefaultGitCredentialProviders([provider0, provider1]);
 
         // Act
         var provider = providers.GetProvider(providerName2);
@@ -73,7 +73,7 @@ public class DefaultGitCredentialProvidersTests
         A.CallTo(() => provider0.Name).Returns(providerName0);
         A.CallTo(() => provider1.Name).Returns(providerName1);
 
-        var providers = new DefaultGitCredentialProviders(new[] { provider0, provider1 });
+        var providers = new DefaultGitCredentialProviders([provider0, provider1]);
 
         // Act
         var credential = providers.GetCredentials(url, null);

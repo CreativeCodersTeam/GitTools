@@ -1,5 +1,6 @@
 ﻿using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Abstractions.Branches;
+using CreativeCoders.Git.Abstractions.Certs;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.Git.Abstractions.Diffs;
 using CreativeCoders.Git.Abstractions.Exceptions;
@@ -35,7 +36,8 @@ internal sealed class DefaultGitRepository : IGitRepository
 
         _credentialProviders = Ensure.NotNull(credentialProviders);
 
-        var context = new RepositoryContext(repo, libGitCaller, GetSignature, GetCredentialsHandler);
+        var context = new RepositoryContext(this, repo, libGitCaller, GetSignature, GetCredentialsHandler,
+            GetCertificateCheck);
 
         Info = new GitRepositoryInfo(_repo);
 
@@ -45,10 +47,44 @@ internal sealed class DefaultGitRepository : IGitRepository
         Refs = new GitReferenceCollection(_repo.Refs);
         Remotes = new GitRemoteCollection(_repo.Network.Remotes);
         Differ = new GitDiffer(_repo.Diff);
-        Commands = new GitCommands.GitCommands(this, GetCredentialsHandler, GetSignature, libGitCaller);
+        Commands = new GitCommands.GitCommands(context);
     }
 
-    internal Repository LibGit2Repository => _repo;
+    private CredentialsHandler GetCredentialsHandler()
+        => new GitCredentialsHandler(_credentialProviders).HandleCredentials;
+
+    private Signature GetSignature()
+    {
+        return _libGitCaller.Invoke(() => _repo.Config.BuildSignature(DateTimeOffset.Now));
+    }
+
+    private CertificateCheckHandler? GetCertificateCheck()
+    {
+        if (CertificateCheck == null)
+        {
+            return null;
+        }
+
+        return (certificate, valid, host) =>
+        {
+            SshCertificate? sshCertificate = null;
+
+            if (certificate is CertificateSsh sshCert)
+            {
+                sshCertificate = new SshCertificate(sshCert.HashMD5, sshCert.HashSHA1, sshCert.HasMD5, sshCert.HasSHA1);
+            }
+
+            var x509Certificate = (certificate as CertificateX509)?.Certificate;
+
+            var args = new CertificateCheckArgs(x509Certificate, sshCertificate, host);
+
+            var handled = CertificateCheck(this, args);
+
+            return handled
+                ? args.IsValid
+                : valid;
+        };
+    }
 
     public void Dispose()
     {
@@ -110,6 +146,8 @@ internal sealed class DefaultGitRepository : IGitRepository
         return treeChanges.Count > 0;
     }
 
+    internal Repository LibGit2Repository => _repo;
+
     public IGitRepositoryInfo Info { get; }
 
     public bool IsHeadDetached => _libGitCaller.Invoke(() => _repo.Info.IsHeadDetached);
@@ -130,11 +168,5 @@ internal sealed class DefaultGitRepository : IGitRepository
 
     public IGitCommands Commands { get; }
 
-    private CredentialsHandler GetCredentialsHandler()
-        => new GitCredentialsHandler(_credentialProviders).HandleCredentials;
-
-    private Signature GetSignature()
-    {
-        return _libGitCaller.Invoke(() => _repo.Config.BuildSignature(DateTimeOffset.Now));
-    }
+    public HostCertificateCheckHandler? CertificateCheck { get; set; }
 }

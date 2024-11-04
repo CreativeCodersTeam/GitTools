@@ -6,16 +6,16 @@ namespace CreativeCoders.Git.Tags;
 
 public class GitTagCollection : IGitTagCollection
 {
-    private readonly Repository _repository;
+    private readonly RepositoryContext _context;
 
     private readonly ILibGitCaller _libGitCaller;
 
-    private readonly RepositoryContext _context;
+    private readonly Repository _repository;
 
     internal GitTagCollection(RepositoryContext context)
     {
-        _context = Ensure.NotNull(context, nameof(context));
-        _repository = _context.Repository;
+        _context = Ensure.NotNull(context);
+        _repository = _context.LibGitRepository;
         _libGitCaller = _context.LibGitCaller;
     }
 

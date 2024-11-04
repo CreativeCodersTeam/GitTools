@@ -11,36 +11,113 @@ namespace CreativeCoders.Git.GitCommands;
 
 internal class PushCommand : IPushCommand
 {
-    private readonly DefaultGitRepository _repository;
-
-    private readonly Func<CredentialsHandler> _getCredentialsHandler;
-
-    private readonly ILibGitCaller _libGitCaller;
-
-    private bool _createRemoteBranchIfNotExists;
+    private readonly RepositoryContext _repositoryContext;
 
     private IGitBranch? _branch;
 
     private bool _confirm;
 
-    private Action<GitPushStatusError>? _pushStatusError;
-
-    private Func<GitPackBuilderProgress, bool>? _packBuilderProgress;
-
-    private Func<GitPushTransferProgress, bool>? _transferProgress;
-
-    private Func<IEnumerable<GitPushUpdate>, bool>? _negotiationCompletedBeforePush;
-
-    private Action<IEnumerable<IGitCommit>>? _unPushedCommits;
+    private bool _createRemoteBranchIfNotExists;
 
     private Func<bool>? _doConfirm;
 
-    public PushCommand(DefaultGitRepository repository, Func<CredentialsHandler> getCredentialsHandler,
-        ILibGitCaller libGitCaller)
+    private Func<IEnumerable<GitPushUpdate>, bool>? _negotiationCompletedBeforePush;
+
+    private Func<GitPackBuilderProgress, bool>? _packBuilderProgress;
+
+    private Action<GitPushStatusError>? _pushStatusError;
+
+    private Func<GitPushTransferProgress, bool>? _transferProgress;
+
+    private Action<IEnumerable<IGitCommit>>? _unPushedCommits;
+
+    public PushCommand(RepositoryContext repositoryContext)
     {
-        _repository = Ensure.NotNull(repository, nameof(repository));
-        _getCredentialsHandler = Ensure.NotNull(getCredentialsHandler, nameof(getCredentialsHandler));
-        _libGitCaller = Ensure.NotNull(libGitCaller, nameof(libGitCaller));
+        _repositoryContext = Ensure.NotNull(repositoryContext);
+    }
+
+    private void OnGitPushStatusError(PushStatusError pushStatusErrors)
+    {
+        _pushStatusError?
+            .Invoke(new GitPushStatusError(pushStatusErrors.Reference, pushStatusErrors.Message));
+    }
+
+    private bool OnGitPackBuilderProgress(PackBuilderStage stage, int current, int total)
+    {
+        return _packBuilderProgress?
+                   .Invoke(new GitPackBuilderProgress(stage.ToGitPackBuilderStage(), current, total))
+               ?? true;
+    }
+
+    private bool OnGitNegotiationCompletedBeforePush(IEnumerable<PushUpdate> updates)
+    {
+        return _negotiationCompletedBeforePush?
+                   .Invoke(
+                       updates.Select(x =>
+                               new GitPushUpdate(
+                                   new GitObjectId(x.SourceObjectId), x.SourceRefName,
+                                   new GitObjectId(x.DestinationObjectId), x.DestinationRefName))
+                           .ToArray())
+               ?? true;
+    }
+
+    private bool OnGitPushTransferProgress(int current, int total, long bytes)
+    {
+        return _transferProgress?
+                   .Invoke(new GitPushTransferProgress(current, total, bytes))
+               ?? true;
+    }
+
+    private void PushInternal()
+    {
+        var pushBranch = _branch != null
+            ? _repositoryContext.LibGitRepository.Branches[_branch.Name.Canonical]
+            : _repositoryContext.LibGitRepository.Head;
+
+        if (pushBranch.TrackedBranch == null)
+        {
+            if (!_createRemoteBranchIfNotExists)
+            {
+                throw new GitPushFailedException(
+                    $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
+            }
+
+            var remoteOrigin = _repositoryContext.LibGitRepository.Network.Remotes[GitRemotes.Origin];
+
+            _repositoryContext.LibGitRepository.Branches.Update(pushBranch,
+                b => b.Remote = remoteOrigin.Name,
+                b => b.UpstreamBranch = pushBranch.CanonicalName);
+        }
+
+        var pushOptions = new PushOptions
+        {
+            CredentialsProvider = _repositoryContext.GetCredentialsHandler(),
+            OnPushTransferProgress = OnGitPushTransferProgress,
+            OnNegotiationCompletedBeforePush = OnGitNegotiationCompletedBeforePush,
+            OnPackBuilderProgress = OnGitPackBuilderProgress,
+            OnPushStatusError = OnGitPushStatusError
+        };
+
+        var unPushedCommits = new GitBranch(pushBranch)
+            .UnPushedCommits()
+            .ToArray();
+
+        if (unPushedCommits.Length > 0)
+        {
+            _unPushedCommits?.Invoke(unPushedCommits);
+
+            if (_confirm && _doConfirm != null)
+            {
+                var confirmed = _doConfirm.Invoke();
+
+                if (!confirmed)
+                {
+                    return;
+                }
+            }
+        }
+
+        _repositoryContext.LibGitRepository.Network.Push(pushBranch, pushOptions);
     }
 
     public IPushCommand CreateRemoteBranchIfNotExists()
@@ -113,7 +190,8 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
-    public IPushCommand OnNegotiationCompletedBeforePush(Action<IEnumerable<GitPushUpdate>> negotiationCompletedBeforePush)
+    public IPushCommand OnNegotiationCompletedBeforePush(
+        Action<IEnumerable<GitPushUpdate>> negotiationCompletedBeforePush)
     {
         return OnNegotiationCompletedBeforePush(x =>
         {
@@ -123,7 +201,8 @@ internal class PushCommand : IPushCommand
         });
     }
 
-    public IPushCommand OnNegotiationCompletedBeforePush(Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush)
+    public IPushCommand OnNegotiationCompletedBeforePush(
+        Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush)
     {
         _negotiationCompletedBeforePush = negotiationCompletedBeforePush;
 
@@ -146,88 +225,6 @@ internal class PushCommand : IPushCommand
 
     public void Run()
     {
-        _libGitCaller.Invoke(() =>
-        {
-            var pushBranch = _branch != null
-                ? _repository.LibGit2Repository.Branches[_branch.Name.Canonical]
-                : _repository.LibGit2Repository.Head;
-
-            if (pushBranch.TrackedBranch == null)
-            {
-                if (!_createRemoteBranchIfNotExists)
-                {
-                    throw new GitPushFailedException(
-                        $"Branch '{pushBranch.FriendlyName}' has no tracking remote branch to push to");
-                }
-
-                var remoteOrigin = _repository.LibGit2Repository.Network.Remotes[GitRemotes.Origin];
-
-                _repository.LibGit2Repository.Branches.Update(pushBranch,
-                    b => b.Remote = remoteOrigin.Name,
-                    b => b.UpstreamBranch = pushBranch.CanonicalName);
-            }
-
-            var pushOptions = new PushOptions
-            {
-                CredentialsProvider = _getCredentialsHandler(),
-                OnPushTransferProgress = OnGitPushTransferProgress,
-                OnNegotiationCompletedBeforePush = OnGitNegotiationCompletedBeforePush,
-                OnPackBuilderProgress = OnGitPackBuilderProgress,
-                OnPushStatusError = OnGitPushStatusError
-            };
-
-            var unPushedCommits = new GitBranch(pushBranch)
-                .UnPushedCommits()
-                .ToArray();
-
-            if (unPushedCommits.Length > 0)
-            {
-                _unPushedCommits?.Invoke(unPushedCommits);
-
-                if (_confirm && _doConfirm != null)
-                {
-                    var confirmed = _doConfirm.Invoke();
-
-                    if (!confirmed)
-                    {
-                        return;
-                    }
-                }
-            }
-
-            _repository.LibGit2Repository.Network.Push(pushBranch, pushOptions);
-        });
-    }
-
-    private void OnGitPushStatusError(PushStatusError pushStatusErrors)
-    {
-        _pushStatusError?
-            .Invoke(new GitPushStatusError(pushStatusErrors.Reference, pushStatusErrors.Message));
-    }
-
-    private bool OnGitPackBuilderProgress(PackBuilderStage stage, int current, int total)
-    {
-        return _packBuilderProgress?
-                   .Invoke(new GitPackBuilderProgress(stage.ToGitPackBuilderStage(), current, total))
-               ?? true;
-    }
-
-    private bool OnGitNegotiationCompletedBeforePush(IEnumerable<PushUpdate> updates)
-    {
-        return _negotiationCompletedBeforePush?
-                   .Invoke(
-                       updates.Select(x =>
-                               new GitPushUpdate(
-                                   new GitObjectId(x.SourceObjectId), x.SourceRefName,
-                                   new GitObjectId(x.DestinationObjectId), x.DestinationRefName))
-                           .ToArray())
-               ?? true;
-    }
-
-    private bool OnGitPushTransferProgress(int current, int total, long bytes)
-    {
-        return _transferProgress?
-                   .Invoke(new GitPushTransferProgress(current, total, bytes))
-               ?? true;
+        _repositoryContext.LibGitCaller.Invoke(PushInternal);
     }
 }

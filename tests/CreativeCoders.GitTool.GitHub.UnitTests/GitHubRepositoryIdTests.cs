@@ -32,7 +32,7 @@ public class GitHubRepositoryIdTests
     public void Ctor_MismatchingRepositoryUrls_ThrowsException(string repositoryUrl)
     {
         // Act
-        Func<GitHubRepositoryId> act = () => new GitHubRepositoryId(new Uri(repositoryUrl));
+        var act = () => new GitHubRepositoryId(new Uri(repositoryUrl));
 
         // Assert
         act

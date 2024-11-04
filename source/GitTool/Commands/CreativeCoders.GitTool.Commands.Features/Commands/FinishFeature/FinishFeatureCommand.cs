@@ -4,9 +4,11 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Commands.Features.Commands.FinishFeature;
 
+[UsedImplicitly]
 public class FinishFeatureCommand : IGitToolCommandWithOptions<FinishFeatureOptions>
 {
     private readonly IFinishFeatureSteps _finishFeatureSteps;
@@ -16,8 +18,17 @@ public class FinishFeatureCommand : IGitToolCommandWithOptions<FinishFeatureOpti
     public FinishFeatureCommand(IRepositoryConfigurations repositoryConfigurations,
         IFinishFeatureSteps finishFeatureSteps)
     {
-        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations, nameof(repositoryConfigurations));
-        _finishFeatureSteps = Ensure.NotNull(finishFeatureSteps, nameof(finishFeatureSteps));
+        _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+        _finishFeatureSteps = Ensure.NotNull(finishFeatureSteps);
+    }
+
+    private FinishFeatureData CreateData(IGitRepository gitRepository, FinishFeatureOptions options)
+    {
+        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+
+        return new FinishFeatureData(gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
+            configuration.GetDefaultBranchName(gitRepository.Info.MainBranch), configuration.GitServiceProviderName,
+            options.PullRequestTitle);
     }
 
     public async Task<int> ExecuteAsync(IGitRepository gitRepository, FinishFeatureOptions options)
@@ -39,14 +50,5 @@ public class FinishFeatureCommand : IGitToolCommandWithOptions<FinishFeatureOpti
         gitRepository.Branches.DeleteLocalBranch(data.FeatureBranch);
 
         return ReturnCodes.Success;
-    }
-
-    private FinishFeatureData CreateData(IGitRepository gitRepository, FinishFeatureOptions options)
-    {
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
-
-        return new FinishFeatureData(gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
-            configuration.GetDefaultBranchName(gitRepository.Info.MainBranch), configuration.GitServiceProviderName,
-            options.PullRequestTitle);
     }
 }
