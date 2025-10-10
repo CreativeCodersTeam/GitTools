@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
+using CreativeCoders.Core.IO;
+using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.NukeBuild.BuildActions;
 using CreativeCoders.NukeBuild.Components;
 using CreativeCoders.NukeBuild.Components.Parameters;
@@ -15,6 +17,7 @@ using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.InnoSetup;
 
@@ -110,11 +113,23 @@ class Build : NukeBuild, IGitRepositoryParameter,
         .Before<ICreateGithubReleaseTarget>()
         .DependsOn<IPublishTarget>()
         .Produces(this.GetArtifactsDirectory() / "setups" / "*.*")
-        .Executes(() => InnoSetupTasks
-            .InnoSetup(x => x
-                .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
-                .AddKeyValueDefinition(
-                    "CiAppVersion", GetVersion())));
+        .Executes(() =>
+        {
+            ProcessTasks
+                .StartProcess("winget",
+                    "install --id=JRSoftware.InnoSetup -e --disable-interactivity --accept-source-agreements --accept-package-agreements")
+                .WaitForExit();
+            
+            return InnoSetupTasks
+                .InnoSetup(x => x
+                    .SetProcessToolPath(
+                        FileSys.Path.Combine(
+                            Env.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            @"Programs\Inno Setup 6", "ISCC.exe"))
+                    .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
+                    .AddKeyValueDefinition(
+                        "CiAppVersion", GetVersion()));
+        });
 
     IList<AbsolutePath> ICleanSettings.DirectoriesToClean =>
         this.As<ICleanSettings>().DefaultDirectoriesToClean
