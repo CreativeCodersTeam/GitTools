@@ -113,7 +113,10 @@ class Build : NukeBuild, IGitRepositoryParameter,
         .Produces(this.GetArtifactsDirectory() / "setups" / "*.*")
         .Executes(() =>
         {
-            ProcessTasks.StartProcess("winget", "install --id=JRSoftware.InnoSetup  -e").WaitForExit();
+            ProcessTasks
+                .StartProcess("winget",
+                    "install --id=JRSoftware.InnoSetup -e --disable-interactivity --accept-source-agreements --accept-package-agreements")
+                .WaitForExit();
             
             return InnoSetupTasks
                 .InnoSetup(x => x
