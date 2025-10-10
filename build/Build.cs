@@ -32,6 +32,7 @@ using Nuke.Common.Tools.InnoSetup;
     InvokedTargets = [NukeTargets.DeployNuGet],
     EnableGitHubToken = true,
     PublishArtifacts = true,
+    PublishCondition = "runner.os == 'Linux'",
     FetchDepth = 0
 )]
 [GitHubActions("pull-request",
@@ -40,6 +41,7 @@ using Nuke.Common.Tools.InnoSetup;
     InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, NukeTargets.Pack],
     EnableGitHubToken = true,
     PublishArtifacts = true,
+    PublishCondition = "runner.os == 'Linux'",
     FetchDepth = 0
 )]
 [GitHubActions("pull-request-win", GitHubActionsImage.WindowsLatest,
@@ -47,6 +49,7 @@ using Nuke.Common.Tools.InnoSetup;
     InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
+    PublishCondition = "runner.os == 'Linux'",
     FetchDepth = 0
 )]
 [GitHubActions("main",
@@ -55,6 +58,7 @@ using Nuke.Common.Tools.InnoSetup;
     InvokedTargets = [NukeTargets.DeployNuGet],
     EnableGitHubToken = true,
     PublishArtifacts = true,
+    PublishCondition = "runner.os == 'Linux'",
     FetchDepth = 0
 )]
 [GitHubActions("main-win", GitHubActionsImage.WindowsLatest,
@@ -171,7 +175,8 @@ class Build : NukeBuild, IGitRepositoryParameter,
         }
     }
 
-    bool IPushNuGetSettings.SkipPush => GitHubActions?.IsPullRequest == true;
+    bool IPushNuGetSettings.SkipPush => GitHubActions?.IsPullRequest == true ||
+                                        !(GitHubActions.IsLocalBuild() || GitHubActions?.GetRunnerOs() == GitHubActionsRunnerOs.Linux);
 
     string IPushNuGetSettings.NuGetFeedUrl =>
         GitHubActions?.Workflow.StartsWith(ReleaseWorkflow) == true
