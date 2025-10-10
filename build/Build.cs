@@ -49,7 +49,6 @@ using Nuke.Common.Tools.InnoSetup;
     InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, "CreateWin64Setup"],
     EnableGitHubToken = true,
     PublishArtifacts = true,
-    PublishCondition = "runner.os == 'Linux'",
     FetchDepth = 0
 )]
 [GitHubActions("main",
