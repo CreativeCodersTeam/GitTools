@@ -2,7 +2,7 @@
 using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Auth;
 using FakeItEasy;
-using FluentAssertions;
+using AwesomeAssertions;
 using LibGit2Sharp;
 using Xunit;
 

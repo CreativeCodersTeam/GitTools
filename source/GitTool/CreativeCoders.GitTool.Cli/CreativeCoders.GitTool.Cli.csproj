@@ -8,10 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.3.0"/>
-        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="4.3.0"/>
+        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.6.0" />
+        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="4.6.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1"/>
-        <PackageReference Include="Spectre.Console" Version="0.49.1"/>
+        <PackageReference Include="Spectre.Console" Version="0.51.1" />
     </ItemGroup>
 
     <ItemGroup>

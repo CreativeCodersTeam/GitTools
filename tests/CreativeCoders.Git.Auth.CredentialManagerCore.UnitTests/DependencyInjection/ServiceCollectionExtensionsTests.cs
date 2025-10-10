@@ -1,6 +1,6 @@
 ﻿using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Auth.CredentialManagerCore.DependencyInjection;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

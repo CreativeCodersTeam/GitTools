@@ -1,7 +1,7 @@
 ﻿using CreativeCoders.Git.Abstractions.Auth;
 using CreativeCoders.Git.Auth;
 using FakeItEasy;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace CreativeCoders.Git.UnitTests.Auth;

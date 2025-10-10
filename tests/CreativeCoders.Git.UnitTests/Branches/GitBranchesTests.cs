@@ -1,5 +1,5 @@
 ﻿using CreativeCoders.Git.Abstractions.Branches;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace CreativeCoders.Git.UnitTests.Branches;

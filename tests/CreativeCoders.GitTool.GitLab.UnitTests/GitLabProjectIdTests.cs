@@ -1,5 +1,5 @@
 ﻿using System;
-using FluentAssertions;
+using AwesomeAssertions;
 using GitLabApiClient.Internal.Paths;
 using Xunit;
 

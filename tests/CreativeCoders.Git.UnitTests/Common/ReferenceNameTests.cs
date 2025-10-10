@@ -1,6 +1,6 @@
 ﻿using System;
 using CreativeCoders.Git.Abstractions.Common;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace CreativeCoders.Git.UnitTests.Common;
