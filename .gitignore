@@ -351,10 +351,15 @@ MigrationBackup/
 /source/GitTools/CreativeCoders.DevTools.GitTool.Feature/Properties/launchSettings.json
 /source/GitTool/CreativeCoders.GitTool.Cli/Properties/launchSettings.json
 
+.idea
+
+.vscode
+
 .artifacts
 
 .tests
 
-.idea
+.nuke
 
-.nuke/temp
+.DS_Store
+
