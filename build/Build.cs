@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
+using CreativeCoders.Core.IO;
+using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.NukeBuild.BuildActions;
 using CreativeCoders.NukeBuild.Components;
 using CreativeCoders.NukeBuild.Components.Parameters;
@@ -120,6 +122,10 @@ class Build : NukeBuild, IGitRepositoryParameter,
             
             return InnoSetupTasks
                 .InnoSetup(x => x
+                    .SetProcessToolPath(
+                        FileSys.Path.Combine(
+                            Env.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            @"Programs\Inno Setup 6", "ISCC.exe"))
                     .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
                     .AddKeyValueDefinition(
                         "CiAppVersion", GetVersion()));
