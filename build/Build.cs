@@ -15,6 +15,7 @@ using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.InnoSetup;
 
@@ -110,11 +111,16 @@ class Build : NukeBuild, IGitRepositoryParameter,
         .Before<ICreateGithubReleaseTarget>()
         .DependsOn<IPublishTarget>()
         .Produces(this.GetArtifactsDirectory() / "setups" / "*.*")
-        .Executes(() => InnoSetupTasks
-            .InnoSetup(x => x
-                .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
-                .AddKeyValueDefinition(
-                    "CiAppVersion", GetVersion())));
+        .Executes(() =>
+        {
+            ProcessTasks.StartProcess("winget", "install --id=JRSoftware.InnoSetup  -e").WaitForExit();
+            
+            return InnoSetupTasks
+                .InnoSetup(x => x
+                    .SetScriptFile(RootDirectory / "setup" / "GitTool.iss")
+                    .AddKeyValueDefinition(
+                        "CiAppVersion", GetVersion()));
+        });
 
     IList<AbsolutePath> ICleanSettings.DirectoriesToClean =>
         this.As<ICleanSettings>().DefaultDirectoriesToClean
