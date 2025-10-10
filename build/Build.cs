@@ -26,14 +26,16 @@ using Nuke.Common.Tools.InnoSetup;
 [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
 [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-[GitHubActions("integration", GitHubActionsImage.UbuntuLatest,
+[GitHubActions("integration",
+    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
     OnPushBranches = ["feature/**"],
     InvokedTargets = [NukeTargets.DeployNuGet],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     FetchDepth = 0
 )]
-[GitHubActions("pull-request", GitHubActionsImage.UbuntuLatest,
+[GitHubActions("pull-request",
+    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.MacOsLatest,
     OnPullRequestBranches = ["main"],
     InvokedTargets = [NukeTargets.Rebuild, NukeTargets.CodeCoverage, NukeTargets.Pack],
     EnableGitHubToken = true,
@@ -47,7 +49,8 @@ using Nuke.Common.Tools.InnoSetup;
     PublishArtifacts = true,
     FetchDepth = 0
 )]
-[GitHubActions("main", GitHubActionsImage.UbuntuLatest,
+[GitHubActions("main",
+    GitHubActionsImage.UbuntuLatest, GitHubActionsImage.MacOsLatest,
     OnPushBranches = ["main"],
     InvokedTargets = [NukeTargets.DeployNuGet],
     EnableGitHubToken = true,
