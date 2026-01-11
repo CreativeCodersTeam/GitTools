@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Authors>CreativeCoders</Authors>
 		<IsPackable>True</IsPackable>
 		<RepositoryUrl>https://github.com/CreativeCodersTeam/GitTools</RepositoryUrl>

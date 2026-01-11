@@ -31,6 +31,7 @@ public class RepositoryConfiguration
     public static RepositoryConfiguration Default { get; } = new RepositoryConfiguration
     {
         HasDevelopBranch = true,
-        DevelopBranch = "develop"
+        DevelopBranch = "develop",
+        GitServiceProviderName = "github"
     };
 }

@@ -66,7 +66,8 @@ internal class DefaultRepositoryConfigurations : IRepositoryConfigurations
         {
             return new RepositoryConfiguration
             {
-                HasDevelopBranch = false
+                HasDevelopBranch = false,
+                GitServiceProviderName = "github"
             };
         }
 
