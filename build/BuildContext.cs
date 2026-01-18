@@ -6,6 +6,7 @@ using CreativeCoders.CakeBuild.Tasks.Defaults;
 using CreativeCoders.CakeBuild.Tasks.Templates.Settings;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
+using CreativeCoders.Core.IO;
 using JetBrains.Annotations;
 
 namespace Build;
@@ -82,4 +83,12 @@ public class BuildContext(ICakeContext context)
     public string ReleaseName => $"v{ReleaseVersion}";
 
     public string ReleaseVersion => Version.FullSemVer;
+
+    private DirectoryPath SetupOutputDir => ArtifactsDir.Combine("setups");
+
+    public IEnumerable<GitHubReleaseAsset> ReleaseAssets =>
+    [
+        new GitHubReleaseFileAsset(
+            FileSys.Directory.EnumerateFiles(SetupOutputDir.FullPath, "*.exe").First(), null)
+    ];
 }

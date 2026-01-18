@@ -47,7 +47,7 @@ jobs:
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       - name: 'Build with target: Pack'
-        run: ./build.cmd -t pack -t publish -t CreateWin64Setup
+        run: ./build.cmd -t pack -t publish -createdistpackages -t CreateWin64Setup -t creategithubrelease
       - name: 'Publish: coverage_report'
         uses: actions/upload-artifact@v4
         with:
