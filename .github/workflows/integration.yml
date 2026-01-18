@@ -20,7 +20,7 @@ jobs:
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       - name: 'Build with target: NuGetPush'
-        run: ./build.cmd -t nugetpush
+        run: ./build.cmd -t nugetpush -t publish -t createdistpackages
         env:
           NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
