@@ -75,9 +75,11 @@ public class BuildContext(ICakeContext context)
         }
     ];
 
+    private const string DistPackageName = "GitTool.Cli";
+
     public IEnumerable<DistPackage> DistPackages =>
     [
-        new DistPackage("GitTool.Cli", PublishOutputDir.Combine("cli"))
+        new DistPackage(DistPackageName, PublishOutputDir.Combine("cli"))
     ];
 
     public string ReleaseName => $"v{ReleaseVersion}";
@@ -93,6 +95,9 @@ public class BuildContext(ICakeContext context)
     public IEnumerable<GitHubReleaseAsset> ReleaseAssets =>
     [
         new GitHubReleaseFileAsset(
-            FileSys.Directory.EnumerateFiles(SetupOutputDir.FullPath, "*.exe").First(), null)
+            FileSys.Directory.EnumerateFiles(SetupOutputDir.FullPath, "*.exe").First(), null),
+        new GitHubReleaseFileAsset(
+            GetRequiredSettings<ICreateDistPackagesTaskSettings>().DistOutputPath
+                .CombineWithFilePath(DistPackageName + ".tar.gz").FullPath, null)
     ];
 }

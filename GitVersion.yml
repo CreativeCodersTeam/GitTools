@@ -24,7 +24,7 @@ branches:
     pre-release-weight: 30000
   main:
     mode: ContinuousDeployment
-    label: ''
+    label: 'ci'
     increment: Patch
     track-merge-target: false
     regex: ^master$|^main$
