@@ -9,6 +9,7 @@ internal static class Program
         return CakeHostBuilder.Create()
             .UseBuildContext<BuildContext>()
             .AddDefaultTasks()
+            .AddTask<CreateWin64SetupTask>()
             .AddBuildServerIntegration()
             .InstallTools(
                 new DotNetToolInstallation("GitVersion.Tool", "6.5.1"),

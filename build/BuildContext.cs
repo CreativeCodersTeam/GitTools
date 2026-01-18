@@ -12,7 +12,7 @@ namespace Build;
 
 [UsedImplicitly]
 public class BuildContext(ICakeContext context)
-    : CakeBuildContext(context), IDefaultTaskSettings, ICreateDistPackagesTaskSettings
+    : CakeBuildContext(context), IDefaultTaskSettings, ICreateDistPackagesTaskSettings, ICreateGitHubReleaseTaskSettings
 {
     public IList<DirectoryPath> DirectoriesToClean => this.CastAs<ICleanTaskSettings>()
         .GetDefaultDirectoriesToClean().AddRange(RootDir.Combine(".tests"));
@@ -34,17 +34,52 @@ public class BuildContext(ICakeContext context)
 
     public DirectoryPath PublishOutputDir => ArtifactsDir.Combine("published");
 
+    private const string CliPath = "source/GitTool/CreativeCoders.GitTool.Cli";
+
+    private const string CliProjectFile = "CreativeCoders.GitTool.Cli.csproj";
+
     public IEnumerable<PublishingItem> PublishingItems =>
     [
         new PublishingItem(
             RootDir
-                .Combine("source/GitTool/CreativeCoders.GitTool.Cli")
-                .CombineWithFilePath("CreativeCoders.GitTool.Cli.csproj"),
-            PublishOutputDir.Combine("cli"))
+                .Combine(CliPath)
+                .CombineWithFilePath(CliProjectFile),
+            PublishOutputDir.Combine("cli")),
+        new PublishingItem(
+            RootDir
+                .Combine(CliPath)
+                .CombineWithFilePath(CliProjectFile),
+            PublishOutputDir.Combine("cli-win64"))
+        {
+            Runtime = "win-x64",
+            SelfContained = true
+        },
+        new PublishingItem(
+            RootDir
+                .Combine(CliPath)
+                .CombineWithFilePath(CliProjectFile),
+            PublishOutputDir.Combine("cli-win64-no-selfcontained"))
+        {
+            Runtime = "win-x64",
+            SelfContained = false
+        },
+        new PublishingItem(
+            RootDir
+                .Combine(CliPath)
+                .CombineWithFilePath(CliProjectFile),
+            PublishOutputDir.Combine("cli-win-arm64"))
+        {
+            Runtime = "win-arm64",
+            SelfContained = true
+        }
     ];
 
     public IEnumerable<DistPackage> DistPackages =>
     [
         new DistPackage("GitTool.Cli", PublishOutputDir.Combine("cli"))
     ];
+
+    public string ReleaseName => $"v{ReleaseVersion}";
+
+    public string ReleaseVersion => Version.FullSemVer;
 }
