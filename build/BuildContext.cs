@@ -84,6 +84,10 @@ public class BuildContext(ICakeContext context)
 
     public string ReleaseVersion => Version.FullSemVer;
 
+    public string ReleaseBody => "GitTools Release";
+
+    public bool IsPreRelease => !string.IsNullOrWhiteSpace(Version.PreReleaseTag);
+
     private DirectoryPath SetupOutputDir => ArtifactsDir.Combine("setups");
 
     public IEnumerable<GitHubReleaseAsset> ReleaseAssets =>
