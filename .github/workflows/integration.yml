@@ -56,7 +56,7 @@ jobs:
       - name: 'Publish: Win64 Setup'
         uses: actions/upload-artifact@v4
         with:
-          name: gt-win64-setup
+          name: setups
           path: .artifacts/setups
   macos-latest:
     name: macos-latest
