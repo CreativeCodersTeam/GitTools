@@ -5,11 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CreativeCoders.SysConsole.App" Version="4.6.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
-        <PackageReference Include="CreativeCoders.Core" Version="4.6.0" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
-        <PackageReference Include="Spectre.Console" Version="0.51.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+        <PackageReference Include="CreativeCoders.Core" Version="6.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.2" />
+        <PackageReference Include="Spectre.Console" Version="0.54.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -41,6 +41,8 @@ public class GitToolsExceptionMiddleware : CliActionMiddlewareBase
         catch (Exception e)
         {
             _ansiConsole
+                .WriteMarkupLine(_cml.Error("An error occurred:"))
+                .WriteLineEx(e.ToString())
                 .WriteMarkupLine(e.GetBaseException().Message)
                 .WriteLine();
 

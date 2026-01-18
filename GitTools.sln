@@ -52,8 +52,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Comm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreativeCoders.GitTool.Commands.Tool", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Tool\CreativeCoders.GitTool.Commands.Tool.csproj", "{E0E53B66-17F8-4A01-A799-8998FD0A20ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{585C67E9-74D4-4F79-BC61-9AA632C6A622}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4F28808-C129-4AE9-8454-08EAB02D7E7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Commands.Shared", "source\GitTool\Commands\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj", "{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}"
@@ -65,11 +63,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__global", "__global", "{95
 		GitVersion.yml = GitVersion.yml
 		LICENSE = LICENSE
 		README.md = README.md
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_setup", "_setup", "{A26D07EF-C593-41ED-AFD0-A2660857BEA6}"
 	ProjectSection(SolutionItems) = preProject
 		setup\GitTool.iss = setup\GitTool.iss
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "build\Build.csproj", "{06510226-737C-4300-92A5-3FE3C5E4D6A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{E91F4387-0278-43C4-AE97-E9C54E414C41}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\integration.yml = .github\workflows\integration.yml
+		.github\workflows\main.yml = .github\workflows\main.yml
+		.github\workflows\pull-request.yml = .github\workflows\pull-request.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{DE982092-6508-4062-99D5-6A6EE9ECB81F}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		build.sh = build.sh
 	EndProjectSection
 EndProject
 Global
@@ -138,12 +154,12 @@ Global
 		{E0E53B66-17F8-4A01-A799-8998FD0A20ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0E53B66-17F8-4A01-A799-8998FD0A20ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0E53B66-17F8-4A01-A799-8998FD0A20ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{585C67E9-74D4-4F79-BC61-9AA632C6A622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{585C67E9-74D4-4F79-BC61-9AA632C6A622}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC8C53FC-85DB-4A43-9D80-CEFF9047250E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06510226-737C-4300-92A5-3FE3C5E4D6A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06510226-737C-4300-92A5-3FE3C5E4D6A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,8 +183,10 @@ Global
 		{40CB3BB2-1AD4-4008-8D61-C179342F07F2} = {B7558045-D005-49D4-9205-55A32B6C99DE}
 		{9F00E2AF-FA50-49DD-B6B0-3330E2883044} = {4AD18751-E2F6-40F3-99F6-69FA2320CA30}
 		{E0E53B66-17F8-4A01-A799-8998FD0A20ED} = {4AD18751-E2F6-40F3-99F6-69FA2320CA30}
-		{585C67E9-74D4-4F79-BC61-9AA632C6A622} = {E4F28808-C129-4AE9-8454-08EAB02D7E7F}
 		{FC8C53FC-85DB-4A43-9D80-CEFF9047250E} = {4AD18751-E2F6-40F3-99F6-69FA2320CA30}
+		{06510226-737C-4300-92A5-3FE3C5E4D6A4} = {E4F28808-C129-4AE9-8454-08EAB02D7E7F}
+		{E91F4387-0278-43C4-AE97-E9C54E414C41} = {957CFE00-6B57-4EBF-BEE2-319A5C7B9EF9}
+		{DE982092-6508-4062-99D5-6A6EE9ECB81F} = {957CFE00-6B57-4EBF-BEE2-319A5C7B9EF9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D38E5978-8FB3-474B-BDCB-18853E21A429}
