@@ -76,11 +76,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{E91F4387-0278-43C4-AE97-E9C54E414C41}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\integration.yml = .github\workflows\integration.yml
-		.github\workflows\main-win.yml = .github\workflows\main-win.yml
 		.github\workflows\main.yml = .github\workflows\main.yml
-		.github\workflows\pull-request-win.yml = .github\workflows\pull-request-win.yml
 		.github\workflows\pull-request.yml = .github\workflows\pull-request.yml
-		.github\workflows\release-win.yml = .github\workflows\release-win.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
