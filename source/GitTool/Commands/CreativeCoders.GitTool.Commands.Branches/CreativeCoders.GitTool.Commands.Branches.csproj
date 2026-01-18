@@ -5,9 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CreativeCoders.DependencyInjection" Version="5.11.0" />
-        <PackageReference Include="CreativeCoders.SysConsole.App" Version="5.11.0" />
-        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="5.11.0" />
+        <PackageReference Include="CreativeCoders.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="CreativeCoders.SysConsole.App" Version="6.0.0" />
+        <PackageReference Include="CreativeCoders.SysConsole.Cli.Actions" Version="6.0.0" />
         <PackageReference Include="Spectre.Console" Version="0.54.0" />
     </ItemGroup>
 

@@ -28,6 +28,11 @@ jobs:
         with:
           name: coverage-report-linux
           path: .tests/coverage-report
+      - name: 'Publish: cli dist package'
+        uses: actions/upload-artifact@v4
+        with:
+          name: GitTool.Cli
+          path: .artifacts/dist/GitTool.Cli.tar.gz
   windows-latest:
     name: windows-latest
     runs-on: windows-latest
