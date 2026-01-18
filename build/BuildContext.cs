@@ -82,9 +82,9 @@ public class BuildContext(ICakeContext context)
         new DistPackage(DistPackageName, PublishOutputDir.Combine("cli"))
     ];
 
-    public string ReleaseName => $"v{ReleaseVersion}";
+    public string ReleaseName => $"v{Version.FullSemVer}";
 
-    public string ReleaseVersion => Version.FullSemVer;
+    public string ReleaseVersion => $"v{Version.FullSemVer}";
 
     public string ReleaseBody => "GitTools Release";
 
