@@ -38,7 +38,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: ".\PathMgr.dll";  DestDir: "{app}"; Flags: uninsneveruninstall
-Source: "..\.artifacts\GitTool.Cli.Win64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\.artifacts\published\cli-win64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Tasks]

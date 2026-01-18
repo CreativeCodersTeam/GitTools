@@ -47,12 +47,17 @@ jobs:
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       - name: 'Build with target: Pack'
-        run: ./build.cmd -t pack -t publish
+        run: ./build.cmd -t pack -t publish -t CreateWin64Setup
       - name: 'Publish: coverage_report'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-windows
           path: .tests/coverage-report
+      - name: 'Publish: Win64 Setup'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gt-win64-setup
+          path: .artifacts/setup
   macos-latest:
     name: macos-latest
     runs-on: macos-latest
