@@ -23,7 +23,7 @@ branches:
     is-main-branch: false
     pre-release-weight: 30000
   main:
-    mode: ContinuousDeployment
+    mode: ContinuousDelivery
     label: 'ci'
     increment: Patch
     track-merge-target: false
