@@ -47,7 +47,7 @@ jobs:
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       - name: 'Build with target: CreateWin64Setup'
-        run: ./build.cmd -t pack -t publish -t CreateWin64Setup -t creategithubrelease
+        run: ./build.cmd -t pack -t publish -t createdistpackages -t CreateWin64Setup -t creategithubrelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: coverage_report'
