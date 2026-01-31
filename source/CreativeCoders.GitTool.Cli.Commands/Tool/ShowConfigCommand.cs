@@ -9,7 +9,7 @@ namespace CreativeCoders.GitTool.Cli.Commands.Tool;
 
 [CliCommand(["showconfig"], Description = "Shows the current repository configuration")]
 public class ShowConfigCommand(
-    IAnsiConsole console,
+    IAnsiConsole ansiConsole,
     IRepositoryConfigurations repositoryConfigurations,
     IGitRepositoryFactory gitRepositoryFactory) : ICliCommand
 {
@@ -19,7 +19,7 @@ public class ShowConfigCommand(
 
         var configuration = repositoryConfigurations.GetConfiguration(repository);
 
-        console.PrintBlock()
+        ansiConsole.PrintBlock()
             .WriteLine()
             .WriteLine($"Configuration for '{repository.Info.RemoteUri}'")
             .WriteLine()

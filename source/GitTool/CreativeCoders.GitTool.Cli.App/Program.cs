@@ -2,14 +2,17 @@
 using CreativeCoders.Cli.Hosting.Help;
 using CreativeCoders.Core.IO;
 using CreativeCoders.Core.SysEnvironment;
+using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Cli.Commands.Tool;
+using CreativeCoders.GitTool.Commands.Shared;
 using CreativeCoders.GitTool.GitHub;
 using CreativeCoders.GitTool.GitLab;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.App;
@@ -36,9 +39,12 @@ internal static class Program
 
         services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
 
+        services.TryAddSingleton(sp =>
+            sp.GetRequiredService<IGitRepositoryFactory>().OpenRepositoryFromCurrentDir());
+
         //services.AddGitFeatureCommands();
 
-        //services.AddGitSharedCommands();
+        services.AddGitSharedCommands();
 
         services.AddGitTools();
         services.AddGitHubTools(configuration);
@@ -47,6 +53,8 @@ internal static class Program
         services.AddSingleton(_ => AnsiConsole.Create(new AnsiConsoleSettings()));
 
         services.AddSingleton<ICml, Cml>();
+
+        services.AddSysConsole();
     }
 
     private static IConfiguration AddConfiguration(IServiceCollection services)
