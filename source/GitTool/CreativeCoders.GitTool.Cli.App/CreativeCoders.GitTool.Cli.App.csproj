@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>gt</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CreativeCoders.Cli.Hosting" Version="6.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj"/>
+    </ItemGroup>
+
+</Project>
