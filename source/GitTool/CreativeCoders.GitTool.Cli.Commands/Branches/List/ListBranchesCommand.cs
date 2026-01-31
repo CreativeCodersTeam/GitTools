@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.List;
 
 [UsedImplicitly]
-[CliCommand([BranchCommandGroup.Name, "list"], Description = "Lists all branches")]
+[CliCommand([BranchesCommandGroup.Name, "list"], Description = "Lists all branches")]
 public class ListBranchesCommand(ISysConsole sysConsole, IGitRepository gitRepository)
     : ICliCommand<ListBranchesOptions>
 {

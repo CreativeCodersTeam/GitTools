@@ -1,15 +1,13 @@
-﻿using System.Threading.Tasks;
-using CreativeCoders.Cli.Core;
+﻿using CreativeCoders.Cli.Core;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
-using CreativeCoders.GitTool.Commands.Shared;
-using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using JetBrains.Annotations;
+using IGitToolPullCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPullCommand;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.Pull;
 
 [UsedImplicitly]
-[CliCommand([BranchCommandGroup.Name, "pull"], Description = "Pulls the current branch from remote")]
+[CliCommand([BranchesCommandGroup.Name, "pull"], Description = "Pulls the current branch from remote")]
 public class PullBranchCommand(IGitToolPullCommand pullCommand, IGitRepository gitRepository)
     : ICliCommand<PullBranchOptions>
 {

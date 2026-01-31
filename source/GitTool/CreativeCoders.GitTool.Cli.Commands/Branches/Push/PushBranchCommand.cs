@@ -1,15 +1,13 @@
-﻿using System.Threading.Tasks;
-using CreativeCoders.Cli.Core;
+﻿using CreativeCoders.Cli.Core;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
-using CreativeCoders.GitTool.Commands.Shared;
-using CreativeCoders.GitTool.Commands.Shared.CommandExecuting;
 using JetBrains.Annotations;
+using IGitToolPushCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPushCommand;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.Push;
 
 [UsedImplicitly]
-[CliCommand([BranchCommandGroup.Name, "push"], Description = "Pushes the current branch to remote")]
+[CliCommand([BranchesCommandGroup.Name, "push"], Description = "Pushes the current branch to remote")]
 public class PushBranchCommand(IGitToolPushCommand pushCommand, IGitRepository gitRepository)
     : ICliCommand<PushBranchOptions>
 {

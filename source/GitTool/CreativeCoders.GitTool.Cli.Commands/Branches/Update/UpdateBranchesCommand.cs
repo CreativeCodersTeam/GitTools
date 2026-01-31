@@ -5,14 +5,14 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
-using CreativeCoders.GitTool.Commands.Shared;
 using JetBrains.Annotations;
 using Spectre.Console;
+using IGitToolPullCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPullCommand;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.Update;
 
 [UsedImplicitly]
-[CliCommand([BranchCommandGroup.Name, "update"],
+[CliCommand([BranchesCommandGroup.Name, "update"],
     Description = "Update all permanent local branches by pulling from remote branches")]
 public class UpdateBranchesCommand(
     IRepositoryConfigurations repositoryConfigurations,

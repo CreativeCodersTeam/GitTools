@@ -1,14 +1,14 @@
 ﻿using CreativeCoders.Cli.Core;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
-using CreativeCoders.GitTool.Commands.Shared;
+using CreativeCoders.GitTool.Cli.Commands.Shared;
 using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.Info;
 
 [UsedImplicitly]
-[CliCommand([BranchCommandGroup.Name, "info"], Description = "Shows information about the current branch")]
+[CliCommand([BranchesCommandGroup.Name, "info"], Description = "Shows information about the current branch")]
 public class InfoBranchesCommand(IAnsiConsole ansiConsole, IGitRepository gitRepository)
     : ICliCommand<InfoBranchesOptions>
 {
