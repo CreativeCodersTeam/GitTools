@@ -5,7 +5,7 @@ using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.SysConsole.Core;
 using Spectre.Console;
 
-namespace CreativeCoders.GitTool.Cli.Commands.Tool;
+namespace CreativeCoders.GitTool.Cli.Commands.Tool.ShowConfig;
 
 [CliCommand(["showconfig"], Description = "Shows the current repository configuration")]
 public class ShowConfigCommand(
