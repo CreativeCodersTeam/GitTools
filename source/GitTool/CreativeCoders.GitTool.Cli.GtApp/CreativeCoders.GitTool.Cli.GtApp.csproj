@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AssemblyName>gt</AssemblyName>
+        <RootNamespace>CreativeCoders.GitTool.Cli.App</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj"/>
         <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj"/>
         <ProjectReference Include="..\CreativeCoders.GitTool.GitHub\CreativeCoders.GitTool.GitHub.csproj"/>
         <ProjectReference Include="..\CreativeCoders.GitTool.GitLab\CreativeCoders.GitTool.GitLab.csproj"/>
     </ItemGroup>

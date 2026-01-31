@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 namespace CreativeCoders.GitTool.Cli.Commands.Branches.Push;
 
 [UsedImplicitly]
+[CliCommand([BranchCommandGroup.Name, "push"], Description = "Pushes the current branch to remote")]
 public class PushBranchCommand(IGitToolPushCommand pushCommand, IGitRepository gitRepository)
     : ICliCommand<PushBranchOptions>
 {

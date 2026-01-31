@@ -35,9 +35,9 @@ public class BuildContext(ICakeContext context)
 
     public DirectoryPath PublishOutputDir => ArtifactsDir.Combine("published");
 
-    private const string CliPath = "source/GitTool/CreativeCoders.GitTool.Cli.App";
+    private const string CliPath = "source/GitTool/CreativeCoders.GitTool.Cli.GtApp";
 
-    private const string CliProjectFile = "CreativeCoders.GitTool.Cli.App.csproj";
+    private const string CliProjectFile = "CreativeCoders.GitTool.Cli.GtApp.csproj";
 
     public IEnumerable<PublishingItem> PublishingItems =>
     [

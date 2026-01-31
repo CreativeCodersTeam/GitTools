@@ -18,8 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitTool\Commands\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj"/>
-        <ProjectReference Include="..\GitTool\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
+        <ProjectReference Include="..\Commands\CreativeCoders.GitTool.Commands.Shared\CreativeCoders.GitTool.Commands.Shared.csproj"/>
+        <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
     </ItemGroup>
 
 </Project>

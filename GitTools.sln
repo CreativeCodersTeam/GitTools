@@ -90,9 +90,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{DE982092
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cli", "Cli", "{D65676E3-6820-464B-8493-597E3E1DCD98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.App", "source\GitTool\CreativeCoders.GitTool.Cli.App\CreativeCoders.GitTool.Cli.App.csproj", "{46156AAB-B9F6-4C99-AD0A-9F370DB87679}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.GtApp", "source\GitTool\CreativeCoders.GitTool.Cli.GtApp\CreativeCoders.GitTool.Cli.GtApp.csproj", "{46156AAB-B9F6-4C99-AD0A-9F370DB87679}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.Commands", "source\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj", "{AAF48CD8-DD38-4925-B0AD-798416312825}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.Commands", "source\GitTool\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj", "{80C7112B-7D72-4585-BDFA-101289319B2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,10 +170,10 @@ Global
 		{46156AAB-B9F6-4C99-AD0A-9F370DB87679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46156AAB-B9F6-4C99-AD0A-9F370DB87679}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46156AAB-B9F6-4C99-AD0A-9F370DB87679}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AAF48CD8-DD38-4925-B0AD-798416312825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAF48CD8-DD38-4925-B0AD-798416312825}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAF48CD8-DD38-4925-B0AD-798416312825}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAF48CD8-DD38-4925-B0AD-798416312825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C7112B-7D72-4585-BDFA-101289319B2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C7112B-7D72-4585-BDFA-101289319B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C7112B-7D72-4585-BDFA-101289319B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C7112B-7D72-4585-BDFA-101289319B2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,7 +203,7 @@ Global
 		{DE982092-6508-4062-99D5-6A6EE9ECB81F} = {957CFE00-6B57-4EBF-BEE2-319A5C7B9EF9}
 		{D65676E3-6820-464B-8493-597E3E1DCD98} = {90C87656-57A8-4AE9-8619-DA08AA137D6A}
 		{46156AAB-B9F6-4C99-AD0A-9F370DB87679} = {D65676E3-6820-464B-8493-597E3E1DCD98}
-		{AAF48CD8-DD38-4925-B0AD-798416312825} = {D65676E3-6820-464B-8493-597E3E1DCD98}
+		{80C7112B-7D72-4585-BDFA-101289319B2C} = {D65676E3-6820-464B-8493-597E3E1DCD98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D38E5978-8FB3-474B-BDCB-18853E21A429}
