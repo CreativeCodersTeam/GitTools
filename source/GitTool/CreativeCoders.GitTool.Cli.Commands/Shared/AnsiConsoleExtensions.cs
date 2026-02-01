@@ -51,4 +51,24 @@ public static class AnsiConsoleExtensions
 
         return ansiConsole;
     }
+
+    public static IAnsiConsole WriteLines(this IAnsiConsole ansiConsole, IEnumerable<string> lines)
+    {
+        foreach (var line in lines)
+        {
+            ansiConsole.WriteLine(line);
+        }
+
+        return ansiConsole;
+    }
+
+    public static IAnsiConsole MarkupLines(this IAnsiConsole ansiConsole, IEnumerable<string> lines)
+    {
+        foreach (var line in lines)
+        {
+            ansiConsole.MarkupLine(line);
+        }
+
+        return ansiConsole;
+    }
 }

@@ -13,10 +13,12 @@ public class PushBranchCommand(IGitToolPushCommand pushCommand, IGitRepository g
 {
     private readonly IGitToolPushCommand _pushCommand = Ensure.NotNull(pushCommand);
 
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     public async Task<CommandResult> ExecuteAsync(PushBranchOptions options)
     {
         return await _pushCommand
-            .ExecuteAsync(gitRepository, options.CreateRemoteBranchIfNotExists, options.ConfirmPush, options.Verbose)
+            .ExecuteAsync(_gitRepository, options.CreateRemoteBranchIfNotExists, options.ConfirmPush, options.Verbose)
             .ConfigureAwait(false);
     }
 }

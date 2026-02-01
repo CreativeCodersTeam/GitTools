@@ -1,26 +1,23 @@
-﻿using CreativeCoders.Git.Abstractions;
+﻿using CreativeCoders.Core;
+using CreativeCoders.Git.Abstractions;
 
 namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Finish;
 
-public class FinishFeatureData
+public class FinishFeatureData(
+    IGitRepository repository,
+    string featureBranch,
+    string defaultBranch,
+    string repositoryGitServiceProviderName,
+    string? pullRequestTitle)
 {
-    public FinishFeatureData(IGitRepository repository, string featureBranch, string defaultBranch,
-        string repositoryGitServiceProviderName, string? pullRequestTitle)
-    {
-        Repository = repository;
-        FeatureBranch = featureBranch;
-        DefaultBranch = defaultBranch;
-        RepositoryGitServiceProviderName = repositoryGitServiceProviderName;
-        PullRequestTitle = pullRequestTitle;
-    }
+    public string FeatureBranch { get; } = Ensure.IsNotNullOrWhitespace(featureBranch);
 
-    public string FeatureBranch { get; }
+    public string DefaultBranch { get; } = Ensure.IsNotNullOrWhitespace(defaultBranch);
 
-    public string DefaultBranch { get; }
+    public string RepositoryGitServiceProviderName { get; } =
+        Ensure.IsNotNullOrWhitespace(repositoryGitServiceProviderName);
 
-    public string RepositoryGitServiceProviderName { get; }
+    public string? PullRequestTitle { get; } = pullRequestTitle;
 
-    public string? PullRequestTitle { get; }
-
-    public IGitRepository Repository { get; }
+    public IGitRepository Repository { get; } = Ensure.NotNull(repository);
 }

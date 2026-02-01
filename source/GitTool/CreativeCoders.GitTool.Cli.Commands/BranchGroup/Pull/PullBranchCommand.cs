@@ -13,8 +13,10 @@ public class PullBranchCommand(IGitToolPullCommand pullCommand, IGitRepository g
 {
     private readonly IGitToolPullCommand _pullCommand = Ensure.NotNull(pullCommand);
 
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     public async Task<CommandResult> ExecuteAsync(PullBranchOptions options)
     {
-        return await _pullCommand.ExecuteAsync(gitRepository, options.Verbose).ConfigureAwait(false);
+        return await _pullCommand.ExecuteAsync(_gitRepository, options.Verbose).ConfigureAwait(false);
     }
 }
