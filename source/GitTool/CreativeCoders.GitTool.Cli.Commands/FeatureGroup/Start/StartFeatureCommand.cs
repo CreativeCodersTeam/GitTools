@@ -4,7 +4,7 @@ using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
-using CreativeCoders.GitTool.Cli.Commands.Shared;
+using CreativeCoders.SysConsole.Core;
 using JetBrains.Annotations;
 using Spectre.Console;
 using IGitToolPullCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPullCommand;
@@ -30,10 +30,8 @@ public class StartFeatureCommand(
 
     private void PrintStartFeatureData(StartFeatureData data)
     {
-        _ansiConsole.WriteLines([
-            $"Create new feature branch '{data.FeatureBranch}' based on '{data.DefaultBranch}'",
-            string.Empty
-        ]);
+        _ansiConsole.WriteLines($"Create new feature branch '{data.FeatureBranch}' based on '{data.DefaultBranch}'",
+            string.Empty);
     }
 
     private void CheckIfFeatureBranchExists(StartFeatureData data)
@@ -65,11 +63,7 @@ public class StartFeatureCommand(
             return;
         }
 
-        _ansiConsole.WriteLines([
-            "Feature branch created",
-            string.Empty,
-            "Checking out feature branch..."
-        ]);
+        _ansiConsole.WriteLines("Feature branch created", string.Empty, "Checking out feature branch...");
 
         var checkedOutBranch = _gitRepository.Branches.CheckOut(featureBranch.Name.Canonical);
 
@@ -80,10 +74,7 @@ public class StartFeatureCommand(
             return;
         }
 
-        _ansiConsole.MarkupLines([
-            "Feature branch checked out".ToSuccessMarkup(),
-            string.Empty
-        ]);
+        _ansiConsole.MarkupLines("Feature branch checked out".ToSuccessMarkup(), string.Empty);
     }
 
     private async Task CheckOutAndUpdateBaseBranch(RepositoryConfiguration repositoryConfiguration)
@@ -92,11 +83,8 @@ public class StartFeatureCommand(
 
         if (string.IsNullOrEmpty(baseBranchName))
         {
-            _ansiConsole.MarkupLines([
-                $"There seems to be no base branch '{baseBranchName}'".ToErrorMarkup(),
-                string.Empty,
-                "Existing branches:"
-            ]);
+            _ansiConsole.MarkupLines($"There seems to be no base branch '{baseBranchName}'".ToErrorMarkup(),
+                string.Empty, "Existing branches:");
 
             _gitRepository.Branches.ForEach(branch =>
                 _ansiConsole.WriteLine($" {branch.Name.Friendly} -> {branch.TrackedBranch?.Name.Friendly}"));
@@ -108,11 +96,7 @@ public class StartFeatureCommand(
 
         _gitRepository.Branches.CheckOut(baseBranchName);
 
-        _ansiConsole.WriteLines([
-            "Base branch checked out",
-            string.Empty,
-            "Pulling from origin"
-        ]);
+        _ansiConsole.WriteLines("Base branch checked out", string.Empty, "Pulling from origin");
 
         await _pullCommand.ExecuteAsync(_gitRepository).ConfigureAwait(false);
 
@@ -150,10 +134,7 @@ public class StartFeatureCommand(
 
         _gitRepository.Push(new GitPushOptions());
 
-        _ansiConsole.WriteLines([
-            "Feature branch pushed",
-            string.Empty
-        ]);
+        _ansiConsole.WriteLines("Feature branch pushed", string.Empty);
 
         return ReturnCodes.Success;
     }
