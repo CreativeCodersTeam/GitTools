@@ -4,8 +4,9 @@ using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
-using CreativeCoders.SysConsole.Core.Abstractions;
+using CreativeCoders.GitTool.Cli.Commands.Shared;
 using JetBrains.Annotations;
+using Spectre.Console;
 using IGitToolPullCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPullCommand;
 
 namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Start;
@@ -13,7 +14,7 @@ namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Start;
 [UsedImplicitly]
 [CliCommand([FeatureCommandGroup.Name, "start"], Description = "Start a new feature branch")]
 public class StartFeatureCommand(
-    ISysConsole sysConsole,
+    IAnsiConsole ansiConsole,
     IRepositoryConfigurations repositoryConfigurations,
     IGitToolPullCommand pullCommand,
     IGitRepository gitRepository)
@@ -23,22 +24,25 @@ public class StartFeatureCommand(
 
     private readonly IRepositoryConfigurations _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
 
-    private readonly ISysConsole _sysConsole = Ensure.NotNull(sysConsole);
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
+
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
 
     private void PrintStartFeatureData(StartFeatureData data)
     {
-        _sysConsole
-            .WriteLine($"Create new feature branch '{data.FeatureBranch}' based on '{data.DefaultBranch}'")
-            .WriteLine();
+        _ansiConsole.WriteLines([
+            $"Create new feature branch '{data.FeatureBranch}' based on '{data.DefaultBranch}'",
+            string.Empty
+        ]);
     }
 
     private void CheckIfFeatureBranchExists(StartFeatureData data)
     {
-        var branch = gitRepository.Branches[data.FeatureBranch];
+        var branch = _gitRepository.Branches[data.FeatureBranch];
 
         if (branch != null)
         {
-            _sysConsole
+            _ansiConsole
                 .WriteLine();
         }
 
@@ -50,78 +54,82 @@ public class StartFeatureCommand(
     {
         var featureBranchName = repositoryConfiguration.GetFeatureBranchName(options.FeatureName);
 
-        _sysConsole.WriteLine($"Creating feature branch '{featureBranchName}' ...");
+        _ansiConsole.WriteLine($"Creating feature branch '{featureBranchName}' ...");
 
-        var featureBranch = gitRepository.Branches.CreateBranch(featureBranchName);
+        var featureBranch = _gitRepository.Branches.CreateBranch(featureBranchName);
 
         if (featureBranch == null)
         {
-            _sysConsole.WriteLineError("Feature branch could not be created");
+            _ansiConsole.MarkupLine("Feature branch could not be created".ToErrorMarkup());
 
             return;
         }
 
-        _sysConsole
-            .WriteLine("Feature branch created")
-            .WriteLine()
-            .WriteLine("Checking out feature branch...");
+        _ansiConsole.WriteLines([
+            "Feature branch created",
+            string.Empty,
+            "Checking out feature branch..."
+        ]);
 
-        var checkedOutBranch = gitRepository.Branches.CheckOut(featureBranch.Name.Canonical);
+        var checkedOutBranch = _gitRepository.Branches.CheckOut(featureBranch.Name.Canonical);
 
         if (checkedOutBranch == null)
         {
-            _sysConsole.WriteError("Feature Branch could not be checked out");
+            _ansiConsole.Markup("Feature Branch could not be checked out".ToErrorMarkup());
 
             return;
         }
 
-        _sysConsole
-            .WriteLine("Feature branch checked out")
-            .WriteLine();
+        _ansiConsole.MarkupLines([
+            "Feature branch checked out".ToSuccessMarkup(),
+            string.Empty
+        ]);
     }
 
     private async Task CheckOutAndUpdateBaseBranch(RepositoryConfiguration repositoryConfiguration)
     {
-        var baseBranchName = repositoryConfiguration.GetDefaultBranchName(gitRepository.Info.MainBranch);
+        var baseBranchName = repositoryConfiguration.GetDefaultBranchName(_gitRepository.Info.MainBranch);
 
         if (string.IsNullOrEmpty(baseBranchName))
         {
-            _sysConsole
-                .WriteLineError($"There seems to be no base branch '{baseBranchName}'")
-                .WriteLine()
-                .WriteLine("Existing branches:");
+            _ansiConsole.MarkupLines([
+                $"There seems to be no base branch '{baseBranchName}'".ToErrorMarkup(),
+                string.Empty,
+                "Existing branches:"
+            ]);
 
-            gitRepository.Branches.ForEach(branch =>
-                _sysConsole.WriteLine($" {branch.Name.Friendly} -> {branch.TrackedBranch?.Name.Friendly}"));
+            _gitRepository.Branches.ForEach(branch =>
+                _ansiConsole.WriteLine($" {branch.Name.Friendly} -> {branch.TrackedBranch?.Name.Friendly}"));
 
             return;
         }
 
-        _sysConsole.WriteLine($"Checkout base branch '{baseBranchName}'");
+        _ansiConsole.WriteLine($"Checkout base branch '{baseBranchName}'");
 
-        gitRepository.Branches.CheckOut(baseBranchName);
+        _gitRepository.Branches.CheckOut(baseBranchName);
 
-        _sysConsole
-            .WriteLine("Base branch checked out")
-            .WriteLine()
-            .WriteLine("Pulling from origin");
+        _ansiConsole.WriteLines([
+            "Base branch checked out",
+            string.Empty,
+            "Pulling from origin"
+        ]);
 
-        await _pullCommand.ExecuteAsync(gitRepository).ConfigureAwait(false);
+        await _pullCommand.ExecuteAsync(_gitRepository).ConfigureAwait(false);
 
-        gitRepository.Fetch("origin", new GitFetchOptions { TagFetchMode = GitTagFetchMode.All });
+        _gitRepository.Fetch("origin", new GitFetchOptions { TagFetchMode = GitTagFetchMode.All });
     }
 
     private StartFeatureData CreateData(StartFeatureOptions options)
     {
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+        var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
         return new StartFeatureData(configuration.GetFeatureBranchName(options.FeatureName),
-            configuration.GetDefaultBranchName(gitRepository.Info.MainBranch));
+            configuration.GetDefaultBranchName(_gitRepository.Info.MainBranch));
     }
 
     public async Task<CommandResult> ExecuteAsync(StartFeatureOptions options)
     {
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+        var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
         var data = CreateData(options);
 
@@ -135,13 +143,14 @@ public class StartFeatureCommand(
 
         if (options.PushAfterCreate)
         {
-            _sysConsole.WriteLine("Pushing feature branch to remote...");
+            _ansiConsole.WriteLine("Pushing feature branch to remote...");
 
-            gitRepository.Push(new GitPushOptions());
+            _gitRepository.Push(new GitPushOptions());
 
-            _sysConsole
-                .WriteLine("Feature branch pushed")
-                .WriteLine();
+            _ansiConsole.WriteLines([
+                "Feature branch pushed",
+                string.Empty
+            ]);
         }
 
         return ReturnCodes.Success;

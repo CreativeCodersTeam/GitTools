@@ -8,17 +8,11 @@ using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Shared;
 
-public class GitToolPushCommand : IGitToolPushCommand
+public class GitToolPushCommand(IAnsiConsole ansiConsole, ICml cml) : IGitToolPushCommand
 {
-    private readonly IAnsiConsole _ansiConsole;
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
-    private readonly ICml _cml;
-
-    public GitToolPushCommand(IAnsiConsole ansiConsole, ICml cml)
-    {
-        _ansiConsole = Ensure.NotNull(ansiConsole);
-        _cml = Ensure.NotNull(cml);
-    }
+    private readonly ICml _cml = Ensure.NotNull(cml);
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository, bool createRemoteIsNotExists, bool confirmPush)
         => ExecuteAsync(gitRepository, createRemoteIsNotExists, confirmPush, false);

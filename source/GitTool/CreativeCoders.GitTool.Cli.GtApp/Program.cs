@@ -8,7 +8,6 @@ using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
 using CreativeCoders.GitTool.Cli.Commands.FeatureGroup;
 using CreativeCoders.GitTool.Cli.Commands.Shared;
-using CreativeCoders.GitTool.Cli.Commands.Tool;
 using CreativeCoders.GitTool.Cli.Commands.Tool.ShowConfig;
 using CreativeCoders.GitTool.GitHub;
 using CreativeCoders.GitTool.GitLab;

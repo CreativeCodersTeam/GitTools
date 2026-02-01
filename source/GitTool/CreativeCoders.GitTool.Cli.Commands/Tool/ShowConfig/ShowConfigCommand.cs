@@ -1,4 +1,5 @@
 using CreativeCoders.Cli.Core;
+using CreativeCoders.Core;
 using CreativeCoders.Core.SysEnvironment;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base.Configurations;
@@ -13,13 +14,19 @@ public class ShowConfigCommand(
     IRepositoryConfigurations repositoryConfigurations,
     IGitRepositoryFactory gitRepositoryFactory) : ICliCommand
 {
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
+
+    private readonly IRepositoryConfigurations _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+
+    private readonly IGitRepositoryFactory _gitRepositoryFactory = Ensure.NotNull(gitRepositoryFactory);
+
     public Task<CommandResult> ExecuteAsync()
     {
-        using var repository = gitRepositoryFactory.OpenRepository(Env.CurrentDirectory);
+        using var repository = _gitRepositoryFactory.OpenRepository(Env.CurrentDirectory);
 
-        var configuration = repositoryConfigurations.GetConfiguration(repository);
+        var configuration = _repositoryConfigurations.GetConfiguration(repository);
 
-        ansiConsole.PrintBlock()
+        _ansiConsole.PrintBlock()
             .WriteLine()
             .WriteLine($"Configuration for '{repository.Info.RemoteUri}'")
             .WriteLine()
