@@ -50,12 +50,7 @@ internal class DefaultGitServiceProviders : IGitServiceProviders
 
         var gitServiceProvider = await providerFactory.CreateProviderAsync(gitRepository).ConfigureAwait(false);
 
-        if (gitServiceProvider == null)
-        {
-            throw new GitServiceProviderNotFoundException();
-        }
-
-        return gitServiceProvider;
+        return gitServiceProvider ?? throw new GitServiceProviderNotFoundException();
     }
 
     public IEnumerable<string> ProviderNames => _providerFactories.Select(x => x.ProviderName);

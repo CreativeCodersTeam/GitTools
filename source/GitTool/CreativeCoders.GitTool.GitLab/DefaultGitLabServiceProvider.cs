@@ -35,12 +35,9 @@ internal class DefaultGitLabServiceProvider : IGitServiceProvider
 
         var mergeRequest = await _gitLabClient.MergeRequests.CreateAsync(projectId, newMergeRequest);
 
-        if (mergeRequest == null)
-        {
-            throw new CreatePullRequestFailedException();
-        }
-
-        return new GitPullRequest(mergeRequest.WebUrl);
+        return mergeRequest == null
+            ? throw new CreatePullRequestFailedException()
+            : new GitPullRequest(mergeRequest.WebUrl);
     }
 
     public async Task<bool> PullRequestExists(Uri repositoryUrl, string sourceBranch, string targetBranch)

@@ -141,17 +141,19 @@ public class StartFeatureCommand(
 
         CreateAndCheckOutFeatureBranch(options, configuration);
 
-        if (options.PushAfterCreate)
+        if (!options.PushAfterCreate)
         {
-            _ansiConsole.WriteLine("Pushing feature branch to remote...");
-
-            _gitRepository.Push(new GitPushOptions());
-
-            _ansiConsole.WriteLines([
-                "Feature branch pushed",
-                string.Empty
-            ]);
+            return ReturnCodes.Success;
         }
+
+        _ansiConsole.WriteLine("Pushing feature branch to remote...");
+
+        _gitRepository.Push(new GitPushOptions());
+
+        _ansiConsole.WriteLines([
+            "Feature branch pushed",
+            string.Empty
+        ]);
 
         return ReturnCodes.Success;
     }
