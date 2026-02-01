@@ -9,4 +9,6 @@ public static class ReturnCodes
     public const int MergeConflicts = -3;
 
     public const int BranchHasUncommittedChanges = -4;
+
+    public const int NoGitRepositoryFound = -5;
 }

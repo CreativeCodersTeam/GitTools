@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CreativeCoders.Cli.Hosting" Version="6.2.0"/>
+        <PackageReference Include="CreativeCoders.Cli.Hosting" Version="6.4.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2"/>
     </ItemGroup>
 

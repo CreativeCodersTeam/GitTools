@@ -1,4 +1,5 @@
 ﻿using CreativeCoders.Cli.Hosting;
+using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Cli.Hosting.Help;
 using CreativeCoders.Core.IO;
 using CreativeCoders.Core.SysEnvironment;
@@ -58,22 +59,30 @@ internal static class Program
     {
         services.TryAddSingleton(sp =>
         {
-            var gitRepository = sp.GetRequiredService<IGitRepositoryFactory>().OpenRepositoryFromCurrentDir();
-
-            var repositoryConfigurations = sp.GetRequiredService<IRepositoryConfigurations>();
-
-            var repoConfiguration = repositoryConfigurations.GetConfiguration(gitRepository);
-
-            if (repoConfiguration.DisableCertificateValidation)
+            try
             {
-                gitRepository.CertificateCheck = (_, args) =>
-                {
-                    args.IsValid = true;
-                    return true;
-                };
-            }
+                var gitRepository = sp.GetRequiredService<IGitRepositoryFactory>().OpenRepositoryFromCurrentDir();
 
-            return gitRepository;
+                var repositoryConfigurations = sp.GetRequiredService<IRepositoryConfigurations>();
+
+                var repoConfiguration = repositoryConfigurations.GetConfiguration(gitRepository);
+
+                if (repoConfiguration.DisableCertificateValidation)
+                {
+                    gitRepository.CertificateCheck = (_, args) =>
+                    {
+                        args.IsValid = true;
+                        return true;
+                    };
+                }
+
+                return gitRepository;
+            }
+            catch (Exception e)
+            {
+                throw new CliCommandAbortException($"Error opening git repository: {e.Message}",
+                    ReturnCodes.NoGitRepositoryFound, e);
+            }
         });
     }
 
