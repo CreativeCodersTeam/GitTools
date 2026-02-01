@@ -11,7 +11,7 @@ public class GitBranch : ComparableObject<GitBranch, IGitBranch>, IGitBranch
 
     internal GitBranch(Branch branch)
     {
-        _branch = Ensure.NotNull(branch, nameof(branch));
+        _branch = Ensure.NotNull(branch);
 
         Name = new ReferenceName(branch.CanonicalName);
         Tip = GitCommit.From(branch.Tip);

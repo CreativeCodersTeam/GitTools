@@ -5,11 +5,12 @@ namespace CreativeCoders.Git.Abstractions.Pushes;
 
 public class GitPushUpdate
 {
-    public GitPushUpdate(IGitObjectId sourceObjectId, string sourceRefName, IGitObjectId destinationObjectId, string destinationRefName)
+    public GitPushUpdate(IGitObjectId sourceObjectId, string sourceRefName, IGitObjectId destinationObjectId,
+        string destinationRefName)
     {
-        SourceObjectId = Ensure.NotNull(sourceObjectId, nameof(sourceObjectId));
+        SourceObjectId = Ensure.NotNull(sourceObjectId);
         SourceRefName = sourceRefName;
-        DestinationObjectId = Ensure.NotNull(destinationObjectId, nameof(destinationObjectId));
+        DestinationObjectId = Ensure.NotNull(destinationObjectId);
         DestinationRefName = destinationRefName;
     }
 

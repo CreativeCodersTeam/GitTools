@@ -11,7 +11,7 @@ public class GitReference : ComparableObject<GitReference, IGitReference>, IGitR
 
     internal GitReference(Reference reference)
     {
-        _reference = Ensure.NotNull(reference, nameof(reference));
+        _reference = Ensure.NotNull(reference);
 
         Name = new ReferenceName(reference.CanonicalName);
 

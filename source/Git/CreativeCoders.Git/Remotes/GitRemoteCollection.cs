@@ -8,7 +8,7 @@ public class GitRemoteCollection : IGitRemoteCollection
 
     public GitRemoteCollection(RemoteCollection remoteCollection)
     {
-        _remoteCollection = Ensure.NotNull(remoteCollection, nameof(remoteCollection));
+        _remoteCollection = Ensure.NotNull(remoteCollection);
     }
 
     public IEnumerator<IGitRemote> GetEnumerator()

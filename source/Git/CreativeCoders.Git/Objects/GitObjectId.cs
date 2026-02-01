@@ -8,7 +8,7 @@ public class GitObjectId : ComparableObject<GitObjectId, IGitObjectId>, IGitObje
 
     internal GitObjectId(ObjectId objectId)
     {
-        _objectId = Ensure.NotNull(objectId, nameof(objectId));
+        _objectId = Ensure.NotNull(objectId);
     }
 
     public GitObjectId(string sha) : this(new ObjectId(sha))

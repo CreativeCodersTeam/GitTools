@@ -11,7 +11,7 @@ public class GitTreeEntryChanges : IGitTreeEntryChanges
 
     internal GitTreeEntryChanges(TreeEntryChanges treeEntryChanges)
     {
-        _treeEntryChanges = Ensure.NotNull(treeEntryChanges, nameof(treeEntryChanges));
+        _treeEntryChanges = Ensure.NotNull(treeEntryChanges);
 
         Mode = treeEntryChanges.Mode.ToGitEntryMode();
         Oid = new GitObjectId(treeEntryChanges.Oid);

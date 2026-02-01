@@ -8,7 +8,7 @@ public class GitSignature : IGitSignature
 
     public GitSignature(Signature signature)
     {
-        _signature = Ensure.NotNull(signature, nameof(signature));
+        _signature = Ensure.NotNull(signature);
     }
 
     public DateTimeOffset When => _signature.When;

@@ -8,7 +8,7 @@ public class GitDiffer : IGitDiffer
 
     public GitDiffer(Diff diff)
     {
-        _diff = Ensure.NotNull(diff, nameof(diff));
+        _diff = Ensure.NotNull(diff);
     }
 
     public IGitTreeChanges Compare()
