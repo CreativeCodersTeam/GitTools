@@ -6,6 +6,7 @@ namespace CreativeCoders.Git.Branches;
 public class GitBranchCollection : IGitBranchCollection
 {
     private readonly BranchCollection _branchCollection;
+
     private readonly RepositoryContext _context;
 
     private readonly ILibGitCaller _libGitCaller;
@@ -13,6 +14,7 @@ public class GitBranchCollection : IGitBranchCollection
     internal GitBranchCollection(RepositoryContext context)
     {
         _context = Ensure.NotNull(context);
+
         _branchCollection = _context.LibGitRepository.Branches;
         _libGitCaller = context.LibGitCaller;
     }
@@ -28,8 +30,8 @@ public class GitBranchCollection : IGitBranchCollection
             throw new GitBranchNotExistsException(branchName);
         }
 
-        var checkedOutBranch = _libGitCaller.Invoke(
-            () => Commands.Checkout(_context.LibGitRepository, _context.LibGitRepository.Branches[branchName]));
+        var checkedOutBranch = _libGitCaller.Invoke(() =>
+            Commands.Checkout(_context.LibGitRepository, _context.LibGitRepository.Branches[branchName]));
 
         return GitBranch.From(checkedOutBranch);
     }
@@ -60,4 +62,22 @@ public class GitBranchCollection : IGitBranchCollection
     }
 
     public IGitBranch? this[string name] => GitBranch.From(_branchCollection[name]);
+
+    public IGitBranch? FindLocalBranchByFriendlyName(string branchName)
+    {
+        return this.FirstOrDefault(x =>
+            !x.IsRemote &&
+            x.Name.Friendly.Equals(branchName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public IGitBranch? FindRemoteBranchByFriendlyName(string branchName)
+    {
+        var remoteNames = _context.Repository.Remotes.Select(x => x.Name);
+
+        return remoteNames.SelectMany(remoteName =>
+                _context.Repository.Branches.Where(y =>
+                    y.IsRemote &&
+                    y.Name.Friendly.Equals($"{remoteName}/{branchName}", StringComparison.OrdinalIgnoreCase)))
+            .FirstOrDefault();
+    }
 }

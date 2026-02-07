@@ -38,9 +38,7 @@ public class StartFeatureCommand(
 
     private void CheckIfFeatureBranchExists(StartFeatureData data)
     {
-        var branch = _gitRepository.Branches.FirstOrDefault(x => !x.IsRemote &&
-                                                                 x.Name.Friendly.Equals(data.FeatureBranch,
-                                                                     StringComparison.OrdinalIgnoreCase));
+        var branch = _gitRepository.Branches.FindLocalBranchByFriendlyName(data.FeatureBranch);
 
         if (branch != null)
         {
@@ -48,22 +46,13 @@ public class StartFeatureCommand(
                 ReturnCodes.FeatureBranchAlreadyExistsLocal);
         }
 
-        var remoteBranch = FindRemoteBranch(data.FeatureBranch, _gitRepository.Remotes.Select(x => x.Name));
+        var remoteBranch = _gitRepository.Branches.FindRemoteBranchByFriendlyName(data.FeatureBranch);
 
         if (remoteBranch != null)
         {
             throw new CliCommandAbortException($"Feature branch '{data.FeatureBranch}' already exists on remote.",
                 ReturnCodes.FeatureBranchAlreadyExistsRemote);
         }
-    }
-
-    private IGitBranch? FindRemoteBranch(string friendlyBranchName, IEnumerable<string> remoteNames)
-    {
-        return remoteNames.SelectMany(remoteName =>
-                _gitRepository.Branches.Where(y =>
-                    y.IsRemote &&
-                    y.Name.Friendly.Equals($"{remoteName}/{friendlyBranchName}", StringComparison.OrdinalIgnoreCase)))
-            .FirstOrDefault();
     }
 
     private void CreateAndCheckOutFeatureBranch(StartFeatureOptions options,
