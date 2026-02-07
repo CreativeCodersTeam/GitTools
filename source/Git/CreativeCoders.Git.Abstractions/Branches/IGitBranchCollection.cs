@@ -13,4 +13,8 @@ public interface IGitBranchCollection : IEnumerable<IGitBranch>
     void DeleteLocalBranch(string branchName);
 
     IGitBranch? this[string name] { get; }
+
+    IGitBranch? FindLocalBranchByFriendlyName(string branchName);
+
+    IGitBranch? FindRemoteBranchByFriendlyName(string branchName);
 }

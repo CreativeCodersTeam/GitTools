@@ -15,7 +15,9 @@ public class RepositoryConfiguration
 
     public string GetFeatureBranchName(string feature)
     {
-        return $"{FeatureBranchPrefix}{feature}";
+        return feature.StartsWith(FeatureBranchPrefix)
+            ? feature
+            : $"{FeatureBranchPrefix}{feature}";
     }
 
     public bool HasDevelopBranch { get; set; }

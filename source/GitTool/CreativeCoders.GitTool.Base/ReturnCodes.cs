@@ -11,4 +11,10 @@ public static class ReturnCodes
     public const int BranchHasUncommittedChanges = -4;
 
     public const int NoGitRepositoryFound = -5;
+
+    public const int NoFeatureBranchFound = -6;
+
+    public const int FeatureBranchAlreadyExistsLocal = -7;
+
+    public const int FeatureBranchAlreadyExistsRemote = -8;
 }

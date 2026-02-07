@@ -1,7 +1,9 @@
 ﻿using CreativeCoders.Cli.Core;
+using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.SysConsole.Core;
@@ -36,15 +38,21 @@ public class StartFeatureCommand(
 
     private void CheckIfFeatureBranchExists(StartFeatureData data)
     {
-        var branch = _gitRepository.Branches[data.FeatureBranch];
+        var branch = _gitRepository.Branches.FindLocalBranchByFriendlyName(data.FeatureBranch);
 
         if (branch != null)
         {
-            _ansiConsole
-                .WriteLine();
+            throw new CliCommandAbortException($"Feature branch '{data.FeatureBranch}' already exists locally.",
+                ReturnCodes.FeatureBranchAlreadyExistsLocal);
         }
 
-        //data.GitRepository.Remotes[data.FeatureBranch]
+        var remoteBranch = _gitRepository.Branches.FindRemoteBranchByFriendlyName(data.FeatureBranch);
+
+        if (remoteBranch != null)
+        {
+            throw new CliCommandAbortException($"Feature branch '{data.FeatureBranch}' already exists on remote.",
+                ReturnCodes.FeatureBranchAlreadyExistsRemote);
+        }
     }
 
     private void CreateAndCheckOutFeatureBranch(StartFeatureOptions options,
