@@ -8,7 +8,7 @@ public class FinishFeatureOptions
 {
     private const string PullRequestTitleName = "prtitle";
 
-    [OptionValue(0, IsRequired = true)] public string FeatureName { get; set; } = null!;
+    [OptionValue(0)] public string FeatureName { get; set; } = null!;
 
     [OptionParameter('t', PullRequestTitleName, HelpText = "Title for pull request that is created")]
     public string? PullRequestTitle { get; set; }

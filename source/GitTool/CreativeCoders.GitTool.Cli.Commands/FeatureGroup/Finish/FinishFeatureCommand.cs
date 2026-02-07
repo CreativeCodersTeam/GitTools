@@ -1,6 +1,8 @@
 ﻿using CreativeCoders.Cli.Core;
+using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using JetBrains.Annotations;
 using Spectre.Console;
@@ -28,7 +30,7 @@ public class FinishFeatureCommand(
     {
         var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
-        return new FinishFeatureData(_gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
+        return new FinishFeatureData(_gitRepository, GetFeatureBranchName(options, configuration),
             configuration.GetDefaultBranchName(_gitRepository.Info.MainBranch), configuration.GitServiceProviderName,
             options.PullRequestTitle);
     }
@@ -61,5 +63,23 @@ public class FinishFeatureCommand(
         _gitRepository.Branches.DeleteLocalBranch(data.FeatureBranch);
 
         return CommandResult.Success;
+    }
+
+    private string GetFeatureBranchName(FinishFeatureOptions options, RepositoryConfiguration configuration)
+    {
+        if (!string.IsNullOrEmpty(options.FeatureName))
+        {
+            return configuration.GetFeatureBranchName(options.FeatureName);
+        }
+
+        var currentBranchName = _gitRepository.Head.Name.Friendly;
+
+        if (currentBranchName.StartsWith(configuration.FeatureBranchPrefix))
+        {
+            return currentBranchName;
+        }
+
+        throw new CliCommandAbortException("No feature name passed and current branch is not a feature branch.",
+            ReturnCodes.NoFeatureBranchFound);
     }
 }
