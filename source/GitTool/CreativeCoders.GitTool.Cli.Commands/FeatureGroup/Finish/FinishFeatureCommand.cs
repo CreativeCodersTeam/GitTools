@@ -39,6 +39,12 @@ public class FinishFeatureCommand(
     {
         var data = CreateData(options);
 
+        if (_gitRepository.Branches.FindLocalBranchByFriendlyName(data.FeatureBranch) == null)
+        {
+            throw new CliCommandAbortException($"Feature branch '{data.FeatureBranch}' does not exist",
+                ReturnCodes.NoFeatureBranchFound);
+        }
+
         try
         {
             _finishFeatureSteps.UpdateFeatureBranch(data);
