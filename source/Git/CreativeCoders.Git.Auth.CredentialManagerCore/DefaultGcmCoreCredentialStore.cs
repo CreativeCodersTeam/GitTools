@@ -6,7 +6,7 @@ namespace CreativeCoders.Git.Auth.CredentialManagerCore;
 [ExcludeFromCodeCoverage]
 internal class DefaultGcmCoreCredentialStore : IGcmCoreCredentialStore
 {
-    public ICredentialStore Create(string? credentialsNameSpace = default)
+    public ICredentialStore Create(string? credentialsNameSpace = null)
     {
         return CredentialManager.Create(credentialsNameSpace);
     }

@@ -12,7 +12,7 @@ public class GitReferenceCollection : IGitReferenceCollection
 
     internal GitReferenceCollection(ReferenceCollection referenceCollection)
     {
-        _referenceCollection = Ensure.NotNull(referenceCollection, nameof(referenceCollection));
+        _referenceCollection = Ensure.NotNull(referenceCollection);
     }
 
     public IEnumerator<IGitReference> GetEnumerator()

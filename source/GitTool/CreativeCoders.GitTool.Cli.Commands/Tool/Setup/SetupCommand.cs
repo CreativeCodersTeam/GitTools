@@ -1,4 +1,5 @@
 using CreativeCoders.Cli.Core;
+using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
@@ -16,23 +17,31 @@ public class SetupCommand(
     IRepositoryConfigurations repositoryConfigurations,
     IGitServiceProviders gitServiceProviders) : ICliCommand
 {
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
+
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
+    private readonly IRepositoryConfigurations _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
+
+    private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
+
     public async Task<CommandResult> ExecuteAsync()
     {
-        var configuration = repositoryConfigurations.GetConfiguration(gitRepository);
+        var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
-        ansiConsole.PrintBlock()
+        _ansiConsole.PrintBlock()
             .WriteLine()
             .WriteLine("Development branch (empty = no development branch)");
 
         var developBranch =
-            await ansiConsole.PromptAsync(
+            await _ansiConsole.PromptAsync(
                 new TextPrompt<string?>($"(Current value = '{configuration.DevelopBranch}'): ")
                     { AllowEmpty = true });
 
         configuration.DevelopBranch = developBranch ?? string.Empty;
         configuration.HasDevelopBranch = !string.IsNullOrEmpty(developBranch);
 
-        var featureBranchPrefix = await ansiConsole.PromptAsync(new TextPrompt<string?>(
+        var featureBranchPrefix = await _ansiConsole.PromptAsync(new TextPrompt<string?>(
                 $"Prefix for feature branches (Empty = current value '{configuration.FeatureBranchPrefix}'): ")
             { AllowEmpty = true });
 
@@ -44,7 +53,7 @@ public class SetupCommand(
         var selectionPrompt = new SelectionPrompt<string>();
 
         var gitProviderName =
-            await ansiConsole.PromptAsync(selectionPrompt.AddChoices(gitServiceProviders.ProviderNames));
+            await _ansiConsole.PromptAsync(selectionPrompt.AddChoices(_gitServiceProviders.ProviderNames));
 
         if (!string.IsNullOrEmpty(gitProviderName))
         {
@@ -54,9 +63,9 @@ public class SetupCommand(
         var disableCertValidationPrompt = new ConfirmationPrompt("Disable certificate check (true/false): ")
             { DefaultValue = configuration.DisableCertificateValidation };
 
-        configuration.DisableCertificateValidation = await ansiConsole.PromptAsync(disableCertValidationPrompt);
+        configuration.DisableCertificateValidation = await _ansiConsole.PromptAsync(disableCertValidationPrompt);
 
-        await repositoryConfigurations.SaveConfigurationAsync(gitRepository.Info.RemoteUri, configuration);
+        await _repositoryConfigurations.SaveConfigurationAsync(_gitRepository.Info.RemoteUri, configuration);
 
         return CommandResult.Success;
     }

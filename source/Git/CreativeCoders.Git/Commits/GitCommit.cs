@@ -4,13 +4,13 @@ using CreativeCoders.Git.Common;
 
 namespace CreativeCoders.Git.Commits;
 
-public class GitCommit : Objects.GitObject, IGitCommit
+public sealed class GitCommit : Objects.GitObject, IGitCommit
 {
     private readonly Commit _commit;
 
     internal GitCommit(Commit commit) : base(commit)
     {
-        _commit = Ensure.NotNull(commit, nameof(commit));
+        _commit = Ensure.NotNull(commit);
 
         Parents = _commit.Parents.Select(x => new GitCommit(x));
         Author = new GitSignature(_commit.Author);

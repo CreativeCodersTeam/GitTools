@@ -12,7 +12,7 @@ namespace CreativeCoders.GitTool.Base.Configurations;
 
 internal class DefaultRepositoryConfigurations : IRepositoryConfigurations
 {
-    private static readonly JsonSerializerOptions __jsonSerializerOptions = new JsonSerializerOptions()
+    private static readonly JsonSerializerOptions __jsonSerializerOptions = new JsonSerializerOptions
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };

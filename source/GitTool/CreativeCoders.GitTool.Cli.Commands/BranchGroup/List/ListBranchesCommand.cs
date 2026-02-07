@@ -15,9 +15,11 @@ public class ListBranchesCommand(ISysConsole sysConsole, IGitRepository gitRepos
 {
     private readonly ISysConsole _sysConsole = Ensure.NotNull(sysConsole);
 
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     private void PrintBranch(IGitBranch branch, int column0Width, int column1Width)
     {
-        var isHead = branch.Equals(gitRepository.Head);
+        var isHead = branch.Equals(_gitRepository.Head);
 
         _sysConsole.Write(isHead ? " * " : "   ");
 
@@ -43,7 +45,7 @@ public class ListBranchesCommand(ISysConsole sysConsole, IGitRepository gitRepos
             .WriteLine("List all branches:")
             .WriteLine();
 
-        var branches = gitRepository
+        var branches = _gitRepository
             .Branches
             .Where(x =>
                 options.Location == BranchLocation.All

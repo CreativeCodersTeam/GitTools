@@ -1,6 +1,5 @@
 ﻿using System;
 using AwesomeAssertions;
-using GitLabApiClient.Internal.Paths;
 using Xunit;
 
 namespace CreativeCoders.GitTool.GitLab.UnitTests;

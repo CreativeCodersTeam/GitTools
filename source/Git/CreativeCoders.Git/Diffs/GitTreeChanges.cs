@@ -8,7 +8,7 @@ public sealed class GitTreeChanges : IGitTreeChanges
 
     internal GitTreeChanges(TreeChanges treeChanges)
     {
-        _treeChanges = Ensure.NotNull(treeChanges, nameof(treeChanges));
+        _treeChanges = Ensure.NotNull(treeChanges);
     }
 
     public IEnumerator<IGitTreeEntryChanges> GetEnumerator()

@@ -20,12 +20,16 @@ public class FinishFeatureCommand(
 
     private readonly IRepositoryConfigurations _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
 
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
+
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     private FinishFeatureData CreateData(FinishFeatureOptions options)
     {
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+        var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
-        return new FinishFeatureData(gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
-            configuration.GetDefaultBranchName(gitRepository.Info.MainBranch), configuration.GitServiceProviderName,
+        return new FinishFeatureData(_gitRepository, configuration.GetFeatureBranchName(options.FeatureName),
+            configuration.GetDefaultBranchName(_gitRepository.Info.MainBranch), configuration.GitServiceProviderName,
             options.PullRequestTitle);
     }
 
@@ -47,14 +51,14 @@ public class FinishFeatureCommand(
         }
         catch (FeatureFinishFailedException e)
         {
-            ansiConsole.MarkupLine($"[red]{e.Message}[/]");
+            _ansiConsole.MarkupLine($"[red]{e.Message}[/]");
 
             return e.ExitCode;
         }
 
-        gitRepository.Branches.CheckOut(data.DefaultBranch);
+        _gitRepository.Branches.CheckOut(data.DefaultBranch);
 
-        gitRepository.Branches.DeleteLocalBranch(data.FeatureBranch);
+        _gitRepository.Branches.DeleteLocalBranch(data.FeatureBranch);
 
         return CommandResult.Success;
     }

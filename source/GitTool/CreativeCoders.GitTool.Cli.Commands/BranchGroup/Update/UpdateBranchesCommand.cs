@@ -30,6 +30,8 @@ public class UpdateBranchesCommand(
 
     private readonly IRepositoryConfigurations _repositoryConfigurations = Ensure.NotNull(repositoryConfigurations);
 
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     public async Task<CommandResult> ExecuteAsync(UpdateBranchesOptions options)
     {
         Ensure.NotNull(options);
@@ -39,14 +41,14 @@ public class UpdateBranchesCommand(
             .WriteMarkupLine(_cml.Caption("Update permanent local branches"))
             .EmptyLine();
 
-        var configuration = _repositoryConfigurations.GetConfiguration(gitRepository);
+        var configuration = _repositoryConfigurations.GetConfiguration(_gitRepository);
 
-        var currentBranch = gitRepository.Head;
+        var currentBranch = _gitRepository.Head;
 
         var updateBranchNames = new List<string>
         {
             "production",
-            GitBranchNames.Local.GetFriendlyName(gitRepository.Info.MainBranch)
+            GitBranchNames.Local.GetFriendlyName(_gitRepository.Info.MainBranch)
         };
 
         if (configuration.HasDevelopBranch)
@@ -58,17 +60,17 @@ public class UpdateBranchesCommand(
         {
             _ansiConsole.WriteLine("Fetch prune to remove remote branch refs if already deleted");
 
-            gitRepository.FetchPruneFromOrigin();
+            _gitRepository.FetchPruneFromOrigin();
         }
 
-        await UpdateBranchesAsync(gitRepository, updateBranchNames).ConfigureAwait(false);
+        await UpdateBranchesAsync(_gitRepository, updateBranchNames).ConfigureAwait(false);
 
-        if (!gitRepository.Head.Equals(currentBranch))
+        if (!_gitRepository.Head.Equals(currentBranch))
         {
             _ansiConsole.WriteMarkupLine(
                 $"Switch back to working branch {_cml.HighLight($"'{currentBranch.Name.Friendly}'")}");
 
-            gitRepository.Branches.CheckOut(currentBranch.Name.Friendly);
+            _gitRepository.Branches.CheckOut(currentBranch.Name.Friendly);
         }
 
         _ansiConsole.EmptyLine();

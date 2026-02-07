@@ -3,104 +3,93 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Commits;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Exceptions;
-using CreativeCoders.SysConsole.Core.Abstractions;
+using CreativeCoders.SysConsole.Core;
+using Spectre.Console;
 using IGitToolPushCommand = CreativeCoders.GitTool.Cli.Commands.Shared.IGitToolPushCommand;
 
 namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Finish;
 
 public class FinishFeatureSteps(
-    ISysConsole sysConsole,
+    IAnsiConsole ansiConsole,
     IGitServiceProviders gitServiceProviders,
     IGitToolPushCommand pushCommand)
     : IFinishFeatureSteps
 {
     private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
 
-    private readonly ISysConsole _sysConsole = Ensure.NotNull(sysConsole);
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
     private readonly IGitToolPushCommand _pushCommand = Ensure.NotNull(pushCommand);
 
     public void UpdateFeatureBranch(FinishFeatureData data)
     {
-        _sysConsole.WriteLine($"Checkout feature branch '{data.FeatureBranch}'");
+        _ansiConsole.WriteLine($"Checkout feature branch '{data.FeatureBranch}'");
 
         data.Repository.Branches.CheckOut(data.FeatureBranch);
 
         if (data.Repository.HasUncommittedChanges(true))
         {
-            _sysConsole
-                .WriteLineError("Feature branch has uncommitted changes. Please commit or revert and try again")
-                .WriteLine();
+            _ansiConsole.MarkupLines(
+                "Feature branch has uncommitted changes. Please commit or revert and try again".ToErrorMarkup(),
+                string.Empty);
 
             throw new FeatureFinishFailedException("Feature branch has uncommitted changes",
                 ReturnCodes.BranchHasUncommittedChanges);
         }
 
-        _sysConsole
-            .WriteLine("Feature branch checked out")
-            .WriteLine();
+        _ansiConsole.WriteLines("Feature branch checked out", string.Empty);
 
         if (data.Repository.Branches[data.FeatureBranch]?.TrackedBranch == null)
         {
             return;
         }
 
-        _sysConsole
+        _ansiConsole
             .WriteLine("Pull feature branch updates from remote");
 
         var mergeResult = data.Repository.Pull();
 
-        _sysConsole.WriteLine($"Pull merge result {mergeResult.MergeStatus}");
+        _ansiConsole.WriteLine($"Pull merge result {mergeResult.MergeStatus}");
 
         if (mergeResult.MergeStatus == GitMergeStatus.Conflicts)
         {
-            _sysConsole
-                .WriteLineError("Pull feature branch updates from remote caused merge conflicts")
-                .WriteLineError("Resolve conflicts and try again");
+            _ansiConsole.MarkupLines("Pull feature branch updates from remote caused merge conflicts".ToErrorMarkup(),
+                "Resolve conflicts and try again".ToErrorMarkup());
 
             throw new FeatureFinishFailedException("Merge feature branch from remote into local caused merge conflicts",
                 ReturnCodes.MergeConflicts);
         }
 
-        _sysConsole
-            .WriteLine("Feature branch updates pulled from remote")
-            .WriteLine();
+        _ansiConsole.WriteLines("Feature branch updates pulled from remote", string.Empty);
     }
 
     public void MergeDefaultBranch(FinishFeatureData data)
     {
-        _sysConsole.WriteLine("Checkout Default branch");
+        _ansiConsole.WriteLine("Checkout Default branch");
 
         data.Repository.Branches.CheckOut(data.DefaultBranch);
 
-        _sysConsole
-            .WriteLine("Default branch checked out")
-            .WriteLine()
-            .WriteLine("Pull default branch updates from remote");
+        _ansiConsole.WriteLines("Default branch checked out", string.Empty, "Pull default branch updates from remote");
 
         var mergeResult = data.Repository.Pull();
 
         if (mergeResult.MergeStatus == GitMergeStatus.Conflicts)
         {
-            _sysConsole
-                .WriteLineError("Pull default branch updates from remote caused merge conflicts")
-                .WriteLineError("Resolve conflicts and try again");
+            _ansiConsole.MarkupLines("Pull default branch updates from remote caused merge conflicts".ToErrorMarkup(),
+                "Resolve conflicts and try again".ToErrorMarkup());
 
             throw new FeatureFinishFailedException("Merge default branch from remote into local caused merge conflicts",
                 ReturnCodes.MergeConflicts);
         }
 
-        _sysConsole
-            .WriteLine("Default branch updates pulled from remote")
-            .WriteLine();
+        _ansiConsole.WriteLines("Default branch updates pulled from remote", string.Empty);
 
         mergeResult = data.Repository.Merge(data.DefaultBranch, data.FeatureBranch, new GitMergeOptions());
 
         if (mergeResult.MergeStatus == GitMergeStatus.Conflicts)
         {
-            _sysConsole
-                .WriteLineError("Merge default branch to feature branch caused merge conflicts")
-                .WriteLineError("Resolve conflicts and try again");
+            _ansiConsole.MarkupLines("Merge default branch to feature branch caused merge conflicts".ToErrorMarkup(),
+                "Resolve conflicts and try again".ToErrorMarkup());
 
             throw new FeatureFinishFailedException("Merge default branch to feature branch caused merge conflicts",
                 ReturnCodes.MergeConflicts);
@@ -111,7 +100,7 @@ public class FinishFeatureSteps(
 
     public async Task PushFeatureBranch(FinishFeatureData data)
     {
-        _sysConsole
+        _ansiConsole
             .WriteLine("Push feature branch to remote");
 
         if (!data.Repository.Head.BranchIsPushedToRemote())
@@ -119,9 +108,7 @@ public class FinishFeatureSteps(
             await _pushCommand.ExecuteAsync(data.Repository, true, false).ConfigureAwait(false);
         }
 
-        _sysConsole
-            .WriteLine("Feature branch pushed to remote")
-            .WriteLine();
+        _ansiConsole.WriteLines("Feature branch pushed to remote", string.Empty);
     }
 
     public async Task CreatePullRequest(FinishFeatureData data)
@@ -132,7 +119,7 @@ public class FinishFeatureSteps(
         if (await provider.PullRequestExists(data.Repository.Info.RemoteUri, data.FeatureBranch,
                 data.DefaultBranch))
         {
-            _sysConsole.WriteLine("Pull/merge request already exists");
+            _ansiConsole.WriteLine("Pull/merge request already exists");
 
             return;
         }
@@ -143,19 +130,18 @@ public class FinishFeatureSteps(
 
         try
         {
-            _sysConsole.WriteLine("Create pull/merge request");
+            _ansiConsole.WriteLine("Create pull/merge request");
 
             await provider.CreatePullRequestAsync(pullRequest).ConfigureAwait(false);
 
-            _sysConsole
-                .WriteLine("Pull/merge request created")
-                .WriteLine();
+            _ansiConsole.WriteLines(
+                "Pull/merge request created",
+                string.Empty
+            );
         }
         catch (CreatePullRequestFailedException e)
         {
-            _sysConsole
-                .WriteLineError(e.Message.Trim())
-                .WriteLine();
+            _ansiConsole.MarkupLines(e.Message.Trim().ToErrorMarkup(), string.Empty);
 
             throw new FeatureFinishFailedException("Create pull request failed", ReturnCodes.GeneralError);
         }

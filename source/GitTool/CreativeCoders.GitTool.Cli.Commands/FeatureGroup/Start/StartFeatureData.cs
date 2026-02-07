@@ -1,8 +1,10 @@
-﻿namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Start;
+﻿using CreativeCoders.Core;
+
+namespace CreativeCoders.GitTool.Cli.Commands.FeatureGroup.Start;
 
 public class StartFeatureData(string featureBranch, string defaultBranch)
 {
-    public string FeatureBranch { get; } = featureBranch;
+    public string FeatureBranch { get; } = Ensure.IsNotNullOrWhitespace(featureBranch);
 
-    public string DefaultBranch { get; } = defaultBranch;
+    public string DefaultBranch { get; } = Ensure.IsNotNullOrWhitespace(defaultBranch);
 }

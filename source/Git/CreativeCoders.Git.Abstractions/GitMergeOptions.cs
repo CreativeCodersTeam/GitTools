@@ -8,13 +8,13 @@ public class GitMergeOptions
     /// <summary>
     ///     Similarity to consider a file renamed.
     /// </summary>
-    public int RenameThreshold = 50;
+    public int RenameThreshold { get; set; } = 50;
 
     /// <summary>
     ///     Maximum similarity sources to examine (overrides
     ///     'merge.renameLimit' config (default 200)
     /// </summary>
-    public int TargetLimit = 200;
+    public int TargetLimit { get; set; } = 200;
 
     public GitFastForwardStrategy FastForwardStrategy { get; set; }
 

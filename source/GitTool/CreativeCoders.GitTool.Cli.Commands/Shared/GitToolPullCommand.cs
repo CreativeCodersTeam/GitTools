@@ -7,17 +7,11 @@ using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.Shared;
 
-public class GitToolPullCommand : IGitToolPullCommand
+public class GitToolPullCommand(IAnsiConsole ansiConsole, ICml cml) : IGitToolPullCommand
 {
-    private readonly IAnsiConsole _ansiConsole;
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
-    private readonly ICml _cml;
-
-    public GitToolPullCommand(IAnsiConsole ansiConsole, ICml cml)
-    {
-        _ansiConsole = Ensure.NotNull(ansiConsole);
-        _cml = Ensure.NotNull(cml);
-    }
+    private readonly ICml _cml = Ensure.NotNull(cml);
 
     public Task<int> ExecuteAsync(IGitRepository gitRepository)
     {

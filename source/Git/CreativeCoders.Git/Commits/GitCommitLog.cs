@@ -8,7 +8,7 @@ public class GitCommitLog : IGitCommitLog
 
     internal GitCommitLog(ICommitLog commitLog)
     {
-        _commitLog = Ensure.NotNull(commitLog, nameof(commitLog));
+        _commitLog = Ensure.NotNull(commitLog);
     }
 
     internal static GitCommitLog? From(ICommitLog? commitLog)

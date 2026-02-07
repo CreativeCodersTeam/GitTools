@@ -9,7 +9,7 @@ public class GitRefSpec : ComparableObject<GitRefSpec, IGitRefSpec>, IGitRefSpec
 
     internal GitRefSpec(RefSpec refSpec)
     {
-        _refSpec = Ensure.NotNull(refSpec, nameof(refSpec));
+        _refSpec = Ensure.NotNull(refSpec);
     }
 
     static GitRefSpec() => InitComparableObject(x => x.Specification);

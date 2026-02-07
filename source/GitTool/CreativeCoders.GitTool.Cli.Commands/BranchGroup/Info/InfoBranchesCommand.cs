@@ -14,6 +14,8 @@ public class InfoBranchesCommand(IAnsiConsole ansiConsole, IGitRepository gitRep
 {
     private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
+
     public Task<CommandResult> ExecuteAsync(InfoBranchesOptions options)
     {
         _ansiConsole.WriteLine("Branch info");
@@ -24,12 +26,12 @@ public class InfoBranchesCommand(IAnsiConsole ansiConsole, IGitRepository gitRep
             .HideHeaders()
             .AddColumn("Name")
             .AddColumn("Value")
-            .AddRow("Current branch:", gitRepository.Head.Name.Canonical)
-            .AddRow("Last Commit:", gitRepository.Head.Tip?.Sha ?? string.Empty);
+            .AddRow("Current branch:", _gitRepository.Head.Name.Canonical)
+            .AddRow("Last Commit:", _gitRepository.Head.Tip?.Sha ?? string.Empty);
 
-        if (gitRepository.Head.TrackedBranch != null)
+        if (_gitRepository.Head.TrackedBranch != null)
         {
-            table.AddRow("Last tracked commit:", gitRepository.Head.TrackedBranch?.Tip?.Sha ?? string.Empty);
+            table.AddRow("Last tracked commit:", _gitRepository.Head.TrackedBranch?.Tip?.Sha ?? string.Empty);
         }
 
         _ansiConsole.Write(table);
@@ -37,7 +39,7 @@ public class InfoBranchesCommand(IAnsiConsole ansiConsole, IGitRepository gitRep
         _ansiConsole.WriteLine();
         _ansiConsole.WriteLine("Last commits");
 
-        var commits = gitRepository.Head.Commits?.Take(options.CommitLogCount);
+        var commits = _gitRepository.Head.Commits?.Take(options.CommitLogCount);
 
         if (commits != null)
         {

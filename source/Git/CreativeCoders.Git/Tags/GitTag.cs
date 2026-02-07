@@ -11,7 +11,7 @@ public class GitTag : ComparableObject<GitTag, IGitTag>, IGitTag
 
     internal GitTag(Tag tag)
     {
-        _tag = Ensure.NotNull(tag, nameof(tag));
+        _tag = Ensure.NotNull(tag);
 
         Name = new ReferenceName(_tag.CanonicalName);
     }

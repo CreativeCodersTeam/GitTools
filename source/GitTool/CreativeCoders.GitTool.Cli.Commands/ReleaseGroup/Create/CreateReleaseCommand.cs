@@ -3,8 +3,8 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
-using CreativeCoders.SysConsole.Core.Abstractions;
 using JetBrains.Annotations;
+using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
 
@@ -12,14 +12,16 @@ namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
 [CliCommand([ReleaseCommandGroup.Name, "create"],
     Description = "Creates a release by creating a version tag")]
 public class CreateReleaseCommand(
-    ISysConsole sysConsole,
+    IAnsiConsole ansiConsole,
     IGitServiceProviders gitServiceProviders,
     IGitRepository gitRepository)
     : ICliCommand<CreateReleaseOptions>
 {
     private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
 
-    private readonly ISysConsole _sysConsole = Ensure.NotNull(sysConsole);
+    private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
+
+    private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
 
     private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
         CreateReleaseOptions options)
@@ -34,37 +36,38 @@ public class CreateReleaseCommand(
 
     public async Task<CommandResult> ExecuteAsync(CreateReleaseOptions options)
     {
-        var mainBranchName = GitBranchNames.Local.GetCanonicalName(gitRepository.Info.MainBranch);
+        var mainBranchName = GitBranchNames.Local.GetCanonicalName(_gitRepository.Info.MainBranch);
 
-        if (gitRepository.Branches["develop"] != null)
+        if (_gitRepository.Branches["develop"] != null)
         {
-            _sysConsole.WriteLine(
+            _ansiConsole.WriteLine(
                 $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
 
-            await MergeDevelopToMain(gitRepository, mainBranchName, options);
+            await MergeDevelopToMain(_gitRepository, mainBranchName, options);
         }
 
         var tagName = $"v{options.Version}";
 
-        _sysConsole.WriteLine($"Create tag '{tagName}'");
+        _ansiConsole.WriteLine($"Create tag '{tagName}'");
 
-        gitRepository.Branches.CheckOut(mainBranchName);
+        _gitRepository.Branches.CheckOut(mainBranchName);
 
-        gitRepository.Pull();
+        _gitRepository.Pull();
 
-        var versionTag = gitRepository.Tags.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
+        var versionTag =
+            _gitRepository.Tags.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
 
         if (options.PushAllTags)
         {
-            _sysConsole.WriteLine("Push all tags to remote");
+            _ansiConsole.WriteLine("Push all tags to remote");
 
-            gitRepository.Tags.PushAllTags();
+            _gitRepository.Tags.PushAllTags();
         }
         else
         {
-            _sysConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
+            _ansiConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
 
-            gitRepository.Tags.PushTag(versionTag);
+            _gitRepository.Tags.PushTag(versionTag);
         }
 
         return CommandResult.Success;
