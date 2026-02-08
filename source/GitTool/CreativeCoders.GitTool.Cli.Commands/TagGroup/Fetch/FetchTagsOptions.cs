@@ -1,7 +1,9 @@
 using CreativeCoders.SysConsole.Cli.Parsing;
+using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Cli.Commands.TagGroup.Fetch;
 
+[UsedImplicitly]
 public class FetchTagsOptions
 {
     [OptionParameter('r', "remote", HelpText = "The remote to fetch tags from")]
