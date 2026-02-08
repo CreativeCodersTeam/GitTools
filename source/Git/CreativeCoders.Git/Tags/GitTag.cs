@@ -14,6 +14,11 @@ public class GitTag : ComparableObject<GitTag, IGitTag>, IGitTag
         _tag = Ensure.NotNull(tag);
 
         Name = new ReferenceName(_tag.CanonicalName);
+
+        if (_tag.Target is Commit commit)
+        {
+            TargetCommit = GitCommit.From(commit);
+        }
     }
 
     static GitTag() => InitComparableObject(x => x.Name.Canonical);
@@ -33,6 +38,8 @@ public class GitTag : ComparableObject<GitTag, IGitTag>, IGitTag
 
         return GitCommit.From(target as Commit);
     }
+
+    public IGitCommit? TargetCommit { get; }
 
     public static implicit operator Tag(GitTag tag) => tag._tag;
 }

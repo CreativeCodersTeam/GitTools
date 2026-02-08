@@ -11,4 +11,6 @@ public interface IGitTag : IEquatable<IGitTag?>, IComparable<IGitTag>, INamedRef
     string TargetSha { get; }
 
     IGitCommit? PeeledTargetCommit();
+
+    IGitCommit? TargetCommit { get; }
 }
