@@ -15,4 +15,9 @@
         <ProjectReference Include="..\CreativeCoders.GitTool.Base\CreativeCoders.GitTool.Base.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="TagGroup\Create\"/>
+        <Folder Include="TagGroup\Delete\"/>
+    </ItemGroup>
+
 </Project>
