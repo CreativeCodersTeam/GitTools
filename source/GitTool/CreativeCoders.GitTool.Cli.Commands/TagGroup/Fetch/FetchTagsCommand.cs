@@ -3,10 +3,12 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.SysConsole.Core;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.TagGroup.Fetch;
 
+[UsedImplicitly]
 [CliCommand([TagCommandGroup.Name, "fetch"], Description = "Fetch tags from remote repository")]
 public class FetchTagsCommand(IAnsiConsole ansiConsole, IGitRepository gitRepository) : ICliCommand<FetchTagsOptions>
 {

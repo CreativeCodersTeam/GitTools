@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Cli.Commands.TagGroup.Delete;
 
-[UsedImplicitly]
+[PublicAPI]
 public class DeleteTagOptions
 {
     [OptionValue(0, HelpText = "The name of the tag to delete")]

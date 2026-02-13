@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Cli.Commands.TagGroup.Create;
 
-[UsedImplicitly]
+[PublicAPI]
 public class CreateTagOptions
 {
     [OptionValue(0, IsRequired = true)] public string TagName { get; set; } = string.Empty;

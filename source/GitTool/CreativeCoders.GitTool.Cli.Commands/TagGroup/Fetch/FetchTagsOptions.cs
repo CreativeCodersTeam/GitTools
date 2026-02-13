@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Cli.Commands.TagGroup.Fetch;
 
-[UsedImplicitly]
+[PublicAPI]
 public class FetchTagsOptions
 {
     [OptionParameter('r', "remote", HelpText = "The remote to fetch tags from")]
