@@ -38,7 +38,7 @@ public class FetchTagsCommand(IAnsiConsole ansiConsole, IGitRepository gitReposi
             });
         }
 
-        _ansiConsole.WriteLine("Tags fetched successfully.");
+        _ansiConsole.MarkupLine("Tags fetched successfully.".ToSuccessMarkup());
 
         return Task.FromResult(CommandResult.Success);
     }
