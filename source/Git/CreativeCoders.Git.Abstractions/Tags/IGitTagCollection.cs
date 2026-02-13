@@ -4,13 +4,17 @@ namespace CreativeCoders.Git.Abstractions.Tags;
 
 public interface IGitTagCollection : IEnumerable<IGitTag>
 {
-    IGitTag CreateTag(string tagName);
+    IGitTag CreateTag(string tagName, string? objectish = null);
 
-    IGitTag CreateTag(string tagName, string objectish);
+    IGitTag CreateTagWithMessage(string tagName, string message, string? objectish = null);
 
-    IGitTag CreateTagWithMessage(string tagName, string message);
+    void DeleteTag(string tagName, bool deleteOnRemote = false);
 
-    IGitTag CreateTagWithMessage(string tagName, string objectish, string message);
+    void DeleteTag(IGitTag tag, bool deleteOnRemote = false);
+
+    void DeleteRemoteTag(string tagName);
+
+    void PushTag(string tagName);
 
     void PushTag(IGitTag tag);
 

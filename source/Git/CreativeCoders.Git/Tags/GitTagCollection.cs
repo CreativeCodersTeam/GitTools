@@ -19,29 +19,37 @@ public class GitTagCollection : IGitTagCollection
         _libGitCaller = _context.LibGitCaller;
     }
 
-    public IGitTag CreateTag(string tagName)
+    public IGitTag CreateTag(string tagName, string? objectish = null)
     {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName)));
+        return string.IsNullOrWhiteSpace(objectish)
+            ? new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName)))
+            : new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, objectish)));
     }
 
-    public IGitTag CreateTag(string tagName, string objectish)
+    public IGitTag CreateTagWithMessage(string tagName, string message, string? objectish = null)
     {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, objectish)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string message)
-    {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, _context.GetSignature(), message)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string objectish, string message)
-    {
-        return new GitTag(
-            _libGitCaller
+        return string.IsNullOrWhiteSpace(objectish)
+            ? new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, _context.GetSignature(), message)))
+            : new GitTag(_libGitCaller
                 .Invoke(() => _repository.ApplyTag(tagName, objectish, _context.GetSignature(), message)));
     }
 
-    public void PushTag(IGitTag tag)
+    public void DeleteTag(string tagName, bool deleteOnRemote = false)
+    {
+        _libGitCaller.Invoke(() => _repository.Tags.Remove(tagName));
+
+        if (deleteOnRemote)
+        {
+            DeleteRemoteTag(tagName);
+        }
+    }
+
+    public void DeleteTag(IGitTag tag, bool deleteOnRemote = false)
+    {
+        DeleteTag(tag.Name.Canonical, deleteOnRemote);
+    }
+
+    public void DeleteRemoteTag(string tagName)
     {
         var pushOptions = new PushOptions
         {
@@ -49,7 +57,24 @@ public class GitTagCollection : IGitTagCollection
         };
 
         _libGitCaller.Invoke(() =>
-            _repository.Network.Push(_repository.Network.Remotes[GitRemotes.Origin], tag.Name.Canonical, pushOptions));
+            _repository.Network.Push(_repository.Network.Remotes[GitRemotes.Origin], $":refs/tags/{tagName}",
+                pushOptions));
+    }
+
+    public void PushTag(string tagName)
+    {
+        var pushOptions = new PushOptions
+        {
+            CredentialsProvider = _context.GetCredentialsHandler()
+        };
+
+        _libGitCaller.Invoke(() =>
+            _repository.Network.Push(_repository.Network.Remotes[GitRemotes.Origin], tagName, pushOptions));
+    }
+
+    public void PushTag(IGitTag tag)
+    {
+        PushTag(tag.Name.Canonical);
     }
 
     public void PushAllTags()

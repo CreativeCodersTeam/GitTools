@@ -41,7 +41,6 @@ public class ListBranchesCommand(ISysConsole sysConsole, IGitRepository gitRepos
     public Task<CommandResult> ExecuteAsync(ListBranchesOptions options)
     {
         _sysConsole
-            .WriteLine()
             .WriteLine("List all branches:")
             .WriteLine();
 
@@ -61,8 +60,6 @@ public class ListBranchesCommand(ISysConsole sysConsole, IGitRepository gitRepos
 
         // ReSharper disable once AccessToDisposedClosure
         branches.ForEach(branch => PrintBranch(branch, column0Width, column1Width));
-
-        _sysConsole.WriteLine();
 
         return Task.FromResult(CommandResult.Success);
     }

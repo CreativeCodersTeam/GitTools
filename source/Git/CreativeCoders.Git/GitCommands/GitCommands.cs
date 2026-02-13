@@ -20,4 +20,9 @@ public class GitCommands : IGitCommands
     {
         return new PushCommand(_repositoryContext);
     }
+
+    public IFetchTagsCommand CreateFetchTagsCommand()
+    {
+        return new FetchTagsCommand(_repositoryContext);
+    }
 }

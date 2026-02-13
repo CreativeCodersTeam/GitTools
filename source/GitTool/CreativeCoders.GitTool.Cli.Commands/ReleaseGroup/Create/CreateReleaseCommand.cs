@@ -55,7 +55,7 @@ public class CreateReleaseCommand(
         _gitRepository.Pull();
 
         var versionTag =
-            _gitRepository.Tags.CreateTagWithMessage(tagName, mainBranchName, $"Version {options.Version}");
+            _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {options.Version}", mainBranchName);
 
         if (options.PushAllTags)
         {
