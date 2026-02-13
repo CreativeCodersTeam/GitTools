@@ -8,6 +8,14 @@ public interface IGitTagCollection : IEnumerable<IGitTag>
 
     IGitTag CreateTagWithMessage(string tagName, string message, string? objectish = null);
 
+    void DeleteTag(string tagName, bool deleteOnRemote = false);
+
+    void DeleteTag(IGitTag tag, bool deleteOnRemote = false);
+
+    void DeleteRemoteTag(string tagName);
+
+    void PushTag(string tagName);
+
     void PushTag(IGitTag tag);
 
     void PushAllTags();
