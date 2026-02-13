@@ -23,7 +23,7 @@ public class CreateTagCommand(IAnsiConsole ansiConsole, IGitRepository gitReposi
         var tag = CreateTag(options);
 
         _ansiConsole.MarkupLines(
-            $"Tag '{tag.Name}' created.".ToSuccessMarkup(),
+            $"Tag '{tag.Name.Friendly}' created.".ToSuccessMarkup(),
             string.Empty,
             $"Target commit: {tag.TargetCommit?.Id.Sha ?? "[none]"}".ToEscapedMarkup());
 
