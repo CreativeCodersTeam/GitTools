@@ -42,8 +42,6 @@ public class GitToolPushCommand(IAnsiConsole ansiConsole, ICml cml) : IGitToolPu
 
         pushCommand.Run();
 
-        _ansiConsole.WriteLine();
-
         return Task.FromResult(0);
     }
 

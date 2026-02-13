@@ -6,15 +6,15 @@ internal class FetchTagsCommand(RepositoryContext repositoryContext) : IFetchTag
 {
     private readonly RepositoryContext _repositoryContext = Ensure.NotNull(repositoryContext);
 
-    public void Execute(string remoteName = "origin")
+    public void Execute(FetchTagsCommandOptions commandOptions)
     {
         var fetchOptions = new FetchOptions
         {
-            Prune = true,
+            Prune = commandOptions.Prune,
             TagFetchMode = TagFetchMode.All
         };
 
-        Commands.Fetch(_repositoryContext.LibGitRepository, remoteName, ["+refs/tags/*:refs/tags/*"],
+        Commands.Fetch(_repositoryContext.LibGitRepository, commandOptions.RemoteName, ["+refs/tags/*:refs/tags/*"],
             fetchOptions,
             "Fetch all tags");
     }

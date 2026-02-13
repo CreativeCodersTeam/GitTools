@@ -16,7 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="TagGroup\Create\"/>
         <Folder Include="TagGroup\Delete\"/>
     </ItemGroup>
 

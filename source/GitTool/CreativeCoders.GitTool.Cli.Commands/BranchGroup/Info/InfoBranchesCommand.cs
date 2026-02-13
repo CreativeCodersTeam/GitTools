@@ -46,8 +46,6 @@ public class InfoBranchesCommand(IAnsiConsole ansiConsole, IGitRepository gitRep
             _ansiConsole.PrintCommitLog(commits);
         }
 
-        _ansiConsole.WriteLine();
-
         return Task.FromResult(CommandResult.Success);
     }
 }

@@ -38,8 +38,6 @@ public class GitToolPullCommand(IAnsiConsole ansiConsole, ICml cml) : IGitToolPu
 
         PrintMergeResultStatus(mergeResult.MergeStatus);
 
-        _ansiConsole.WriteLine();
-
         return Task.FromResult(0);
     }
 

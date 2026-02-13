@@ -1,6 +1,7 @@
 using CreativeCoders.Cli.Core;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
+using CreativeCoders.Git.Abstractions.GitCommands;
 using CreativeCoders.SysConsole.Core;
 using Spectre.Console;
 
@@ -30,7 +31,11 @@ public class FetchTagsCommand(IAnsiConsole ansiConsole, IGitRepository gitReposi
         foreach (var remote in remotes)
         {
             _ansiConsole.WriteLine($"Fetch tags from remote '{remote.Name}' ({remote.Url})...");
-            fetchTagsCommand.Execute(remote.Name);
+            fetchTagsCommand.Execute(new FetchTagsCommandOptions
+            {
+                RemoteName = remote.Name,
+                Prune = options.Prune
+            });
         }
 
         _ansiConsole.WriteLine("Tags fetched successfully.");

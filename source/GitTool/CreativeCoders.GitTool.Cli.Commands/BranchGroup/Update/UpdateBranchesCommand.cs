@@ -37,7 +37,6 @@ public class UpdateBranchesCommand(
         Ensure.NotNull(options);
 
         _ansiConsole
-            .EmptyLine()
             .WriteMarkupLine(_cml.Caption("Update permanent local branches"))
             .EmptyLine();
 
@@ -72,8 +71,6 @@ public class UpdateBranchesCommand(
 
             _gitRepository.Branches.CheckOut(currentBranch.Name.Friendly);
         }
-
-        _ansiConsole.EmptyLine();
 
         return CommandResult.Success;
     }

@@ -24,6 +24,8 @@ internal static class Program
     {
         var result = await CliHostBuilder.Create()
             .ConfigureServices(ConfigureServices)
+            .PrintHeaderText([string.Empty])
+            .PrintFooterText([string.Empty])
             .EnableHelp(HelpCommandKind.CommandOrArgument)
             .ScanAssemblies(typeof(ShowConfigCommand).Assembly)
             .Build()

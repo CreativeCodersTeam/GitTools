@@ -19,25 +19,18 @@ public class GitTagCollection : IGitTagCollection
         _libGitCaller = _context.LibGitCaller;
     }
 
-    public IGitTag CreateTag(string tagName)
+    public IGitTag CreateTag(string tagName, string? objectish = null)
     {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName)));
+        return string.IsNullOrWhiteSpace(objectish)
+            ? new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName)))
+            : new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, objectish)));
     }
 
-    public IGitTag CreateTag(string tagName, string objectish)
+    public IGitTag CreateTagWithMessage(string tagName, string message, string? objectish = null)
     {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, objectish)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string message)
-    {
-        return new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, _context.GetSignature(), message)));
-    }
-
-    public IGitTag CreateTagWithMessage(string tagName, string objectish, string message)
-    {
-        return new GitTag(
-            _libGitCaller
+        return string.IsNullOrWhiteSpace(objectish)
+            ? new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, _context.GetSignature(), message)))
+            : new GitTag(_libGitCaller
                 .Invoke(() => _repository.ApplyTag(tagName, objectish, _context.GetSignature(), message)));
     }
 
