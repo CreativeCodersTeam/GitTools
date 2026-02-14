@@ -2,8 +2,7 @@ namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
 
 public enum VersionAutoIncrement
 {
-    None,
-    Major,
+    Patch,
     Minor,
-    Patch
+    Major
 }

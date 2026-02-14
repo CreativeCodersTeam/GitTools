@@ -1,4 +1,5 @@
 ﻿using CreativeCoders.Cli.Core;
+using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
@@ -39,6 +40,20 @@ public class CreateReleaseCommand(
         }
 
         var version = CreateVersion(options);
+
+        if (options is { VersionIncrement: not null, ConfirmAutoIncrementVersion: true })
+        {
+            _ansiConsole.WriteLine($"Version will be incremented to '{version}'");
+
+            if (!await _ansiConsole.PromptAsync(new TextPrompt<bool>("Do you want to continue?").DefaultValue(true))
+                    .ConfigureAwait(false))
+            {
+                throw new CliCommandAbortException("Release creation aborted.", ReturnCodes.ReleaseCreationAborted)
+                {
+                    IsError = false
+                };
+            }
+        }
 
         var tagName = $"v{version}";
 

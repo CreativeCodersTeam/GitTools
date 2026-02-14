@@ -19,4 +19,6 @@ public static class ReturnCodes
     public const int FeatureBranchAlreadyExistsRemote = -8;
 
     public const int LocalTagNotFound = -9;
+
+    public const int ReleaseCreationAborted = -10;
 }

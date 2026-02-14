@@ -17,6 +17,9 @@ public class CreateReleaseOptions : IOptionsValidation
     [OptionParameter('i', "increment", HelpText = "Version increment")]
     public VersionAutoIncrement? VersionIncrement { get; set; }
 
+    [OptionParameter('c', "confirm", HelpText = "Confirm auto increment version")]
+    public bool ConfirmAutoIncrementVersion { get; set; }
+
     public Task<OptionsValidationResult> ValidateAsync()
     {
         if (string.IsNullOrWhiteSpace(Version) && VersionIncrement == null)
