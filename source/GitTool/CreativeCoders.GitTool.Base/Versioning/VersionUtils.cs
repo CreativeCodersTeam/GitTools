@@ -15,7 +15,7 @@ public static class VersionUtils
 
         var versionParts = version.Split('.');
 
-        var isValidVersion = versionParts.Length == 3 && versionParts.All(x => int.TryParse(x, out _));
+        var isValidVersion = versionParts.All(x => int.TryParse(x, out _));
 
         normalizedVersion = isValidVersion ? string.Join(".", versionParts) : string.Empty;
 

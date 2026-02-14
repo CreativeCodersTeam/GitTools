@@ -20,7 +20,7 @@ public class VersionBuilder
         _versionParts.AddRange(SplitVersionParts(version));
     }
 
-    private IEnumerable<string> SplitVersionParts(string version)
+    private List<string> SplitVersionParts(string version)
     {
         var versionParts = version.Split('.').ToList();
 
@@ -90,5 +90,15 @@ public class VersionBuilder
     public string Build()
     {
         return BuildVersion(_versionParts);
+    }
+
+    public int GetVersionPart(int partIndex)
+    {
+        if (partIndex < 0 || partIndex > 2)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partIndex));
+        }
+
+        return int.Parse(_versionParts[partIndex]);
     }
 }

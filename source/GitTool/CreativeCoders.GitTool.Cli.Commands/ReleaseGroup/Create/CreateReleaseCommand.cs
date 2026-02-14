@@ -74,12 +74,17 @@ public class CreateReleaseCommand(
             return new VersionBuilder(options.Version).Build();
         }
 
-        var greatestVersion = GetVersionTags().OrderByDescending(x => x).FirstOrDefault();
+        _gitRepository.FetchAllTags("origin");
+
+        var greatestVersion = _gitRepository
+            .GetVersionTags()
+            .OrderByDescending(x => x.Version, new VersionComparer())
+            .FirstOrDefault();
 
         var versionBuilder =
-            new VersionBuilder(string.IsNullOrWhiteSpace(greatestVersion)
+            new VersionBuilder(string.IsNullOrWhiteSpace(greatestVersion?.Version)
                 ? DefaultBaseVersionForIncrement
-                : greatestVersion);
+                : greatestVersion.Version);
 
         switch (options.VersionIncrement!)
         {
@@ -91,19 +96,6 @@ public class CreateReleaseCommand(
         }
 
         return versionBuilder.Build();
-    }
-
-    private IEnumerable<string> GetVersionTags()
-    {
-        _gitRepository.FetchAllTags("origin");
-
-        foreach (var tag in _gitRepository.Tags)
-        {
-            if (VersionUtils.IsValidVersion(tag.Name.Friendly, out var version))
-            {
-                yield return version;
-            }
-        }
     }
 
     private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
