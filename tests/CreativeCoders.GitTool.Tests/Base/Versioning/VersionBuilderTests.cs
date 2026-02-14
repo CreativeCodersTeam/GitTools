@@ -1,10 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using AwesomeAssertions;
-using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Versioning;
 using Xunit;
 
-namespace CreativeCoders.GitTool.Tests.Base;
+namespace CreativeCoders.GitTool.Tests.Base.Versioning;
 
 public class VersionBuilderTests
 {
@@ -108,6 +107,20 @@ public class VersionBuilderTests
         var result = builder.Build();
 
         // Assert
+        result.Should().Be("1.3.0");
+    }
+
+    [Fact]
+    public void IncrementMinor_WithOutPatchReset_IncrementsByOne()
+    {
+        // Arrange
+        var builder = new VersionBuilder("1.2.3");
+
+        // Act
+        builder.IncrementMinor(1, false);
+        var result = builder.Build();
+
+        // Assert
         result.Should().Be("1.3.3");
     }
 
@@ -122,7 +135,7 @@ public class VersionBuilderTests
         var result = builder.Build();
 
         // Assert
-        result.Should().Be("1.12.3");
+        result.Should().Be("1.12.0");
     }
 
     [Fact]
@@ -133,6 +146,20 @@ public class VersionBuilderTests
 
         // Act
         builder.IncrementMajor();
+        var result = builder.Build();
+
+        // Assert
+        result.Should().Be("2.0.0");
+    }
+
+    [Fact]
+    public void IncrementMajor_WithOutResetMinorAndPatch_MinorAndPatchAreResetToZero()
+    {
+        // Arrange
+        var builder = new VersionBuilder("1.2.3");
+
+        // Act
+        builder.IncrementMajor(1, false);
         var result = builder.Build();
 
         // Assert
@@ -150,22 +177,71 @@ public class VersionBuilderTests
         var result = builder.Build();
 
         // Assert
-        result.Should().Be("3.2.3");
+        result.Should().Be("3.0.0");
     }
 
     [Fact]
-    public void MultipleIncrements_ReturnsCorrectFinalVersion()
+    public void MultipleIncrements_WithOutResetLowerVersionParts_ReturnsCorrectFinalVersion()
     {
         // Arrange
         var builder = new VersionBuilder("1.1.1");
 
         // Act
-        builder.IncrementMajor();
-        builder.IncrementMinor(2);
+        builder.IncrementMajor(1, false);
+        builder.IncrementMinor(2, false);
         builder.IncrementPatch(3);
         var result = builder.Build();
 
         // Assert
         result.Should().Be("2.3.4");
+    }
+
+    [Fact]
+    public void MajorMinorPatch_Get_ReturnCorrectVersionParts()
+    {
+        // Arrange
+        var builder = new VersionBuilder("1.2.3");
+
+        // Act
+        var major = builder.Major;
+        var minor = builder.Minor;
+        var patch = builder.Patch;
+
+        // Assert
+        major.Should().Be(1);
+        minor.Should().Be(2);
+        patch.Should().Be(3);
+    }
+
+    [Fact]
+    public void GetVersionPart_Get_ReturnCorrectVersionParts()
+    {
+        // Arrange
+        var builder = new VersionBuilder("1.2.3");
+
+        // Act
+        var major = builder.GetVersionPart(VersionBuilder.MajorPartIndex);
+        var minor = builder.GetVersionPart(VersionBuilder.MinorPartIndex);
+        var patch = builder.GetVersionPart(VersionBuilder.PatchPartIndex);
+
+        // Assert
+        major.Should().Be(1);
+        minor.Should().Be(2);
+        patch.Should().Be(3);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(3)]
+    public void GetVersionPart_InvalidIndex_ThrowsArgumentOutOfRangeException(int partIndex)
+    {
+        // Arrange
+        var builder = new VersionBuilder("1.2.3");
+
+        // Act
+        Action act = () => _ = builder.GetVersionPart(partIndex);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>();
     }
 }

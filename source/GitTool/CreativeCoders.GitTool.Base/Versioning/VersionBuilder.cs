@@ -6,9 +6,9 @@ namespace CreativeCoders.GitTool.Base.Versioning;
 
 public class VersionBuilder
 {
-    private const int MajorPartIndex = 0;
-    private const int MinorPartIndex = 1;
-    private const int PatchPartIndex = 2;
+    public const int MajorPartIndex = 0;
+    public const int MinorPartIndex = 1;
+    public const int PatchPartIndex = 2;
 
     private readonly VersionFormatKind _formatKind;
 

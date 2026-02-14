@@ -24,6 +24,11 @@ public static class VersionUtils
 
     public static string RemoveTrailingVersionPrefix(string version)
     {
+        if (string.IsNullOrEmpty(version))
+        {
+            return string.Empty;
+        }
+
         string[] versionPrefixes = ["version", "v"];
 
         var versionPrefix =
