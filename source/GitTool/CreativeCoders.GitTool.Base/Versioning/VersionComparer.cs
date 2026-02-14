@@ -6,14 +6,12 @@ public class VersionComparer : IComparer<string>
 {
     public int Compare(string? x, string? y)
     {
-        if (x == null && y == null)
+        switch (x)
         {
-            return 0;
-        }
-
-        if (x == null)
-        {
-            return -1;
+            case null when y == null:
+                return 0;
+            case null:
+                return -1;
         }
 
         if (y == null)
