@@ -65,14 +65,29 @@ public class VersionBuilder
         return IncrementPart(PatchPartIndex, incrementBy);
     }
 
-    public VersionBuilder IncrementMinor(int incrementBy = 1)
+    public VersionBuilder IncrementMinor(int incrementBy = 1, bool resetPatch = true)
     {
-        return IncrementPart(MinorPartIndex, incrementBy);
+        IncrementPart(MinorPartIndex, incrementBy);
+
+        if (resetPatch)
+        {
+            Patch = 0;
+        }
+
+        return this;
     }
 
-    public VersionBuilder IncrementMajor(int incrementBy = 1)
+    public VersionBuilder IncrementMajor(int incrementBy = 1, bool resetMinorAndPatch = true)
     {
-        return IncrementPart(MajorPartIndex, incrementBy);
+        IncrementPart(MajorPartIndex, incrementBy);
+
+        if (resetMinorAndPatch)
+        {
+            Minor = 0;
+            Patch = 0;
+        }
+
+        return this;
     }
 
     private VersionBuilder IncrementPart(int partIndex, int incrementBy)
@@ -94,11 +109,26 @@ public class VersionBuilder
 
     public int GetVersionPart(int partIndex)
     {
-        if (partIndex < 0 || partIndex > 2)
-        {
-            throw new ArgumentOutOfRangeException(nameof(partIndex));
-        }
+        return partIndex is < 0 or > 2
+            ? throw new ArgumentOutOfRangeException(nameof(partIndex))
+            : int.Parse(_versionParts[partIndex]);
+    }
 
-        return int.Parse(_versionParts[partIndex]);
+    public int Major
+    {
+        get => GetVersionPart(MajorPartIndex);
+        set => _versionParts[MajorPartIndex] = value.ToString();
+    }
+
+    public int Minor
+    {
+        get => GetVersionPart(MinorPartIndex);
+        set => _versionParts[MinorPartIndex] = value.ToString();
+    }
+
+    public int Patch
+    {
+        get => GetVersionPart(PatchPartIndex);
+        set => _versionParts[PatchPartIndex] = value.ToString();
     }
 }

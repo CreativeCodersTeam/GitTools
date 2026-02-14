@@ -110,8 +110,10 @@ public class CreateReleaseCommand(
 
         switch (options.VersionIncrement!)
         {
-            case VersionAutoIncrement.Major: versionBuilder.IncrementMajor(); break;
-            case VersionAutoIncrement.Minor: versionBuilder.IncrementMinor(); break;
+            case VersionAutoIncrement.Major:
+                versionBuilder.IncrementMajor(1, options.ResetLowerVersionPartsOnAutoInc); break;
+            case VersionAutoIncrement.Minor:
+                versionBuilder.IncrementMinor(1, options.ResetLowerVersionPartsOnAutoInc); break;
             case VersionAutoIncrement.Patch: versionBuilder.IncrementPatch(); break;
             default:
                 throw new InvalidOperationException("Unknown VersionAutoIncrement");
