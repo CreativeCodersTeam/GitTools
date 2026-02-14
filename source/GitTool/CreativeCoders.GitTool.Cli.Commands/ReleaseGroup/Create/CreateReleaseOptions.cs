@@ -13,3 +13,10 @@ public class CreateReleaseOptions
     [OptionParameter('a', PushAllTagsLongName)]
     public bool PushAllTags { get; set; }
 }
+
+public enum VersionAutoIncrement
+{
+    Major,
+    Minor,
+    Patch
+}
