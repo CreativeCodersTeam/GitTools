@@ -58,7 +58,7 @@ public class CreateReleaseCommand(
 
         var tagName = $"v{version}";
 
-        _ansiConsole.WriteLine($"Creating tag '{tagName}'");
+        _ansiConsole.WriteLine($"Creating tag '{tagName}'...");
 
         _gitRepository.Branches.CheckOut(mainBranchName);
 
@@ -71,7 +71,7 @@ public class CreateReleaseCommand(
 
         if (options.PushAllTags)
         {
-            _ansiConsole.WriteLine("Pushing all tags to remote");
+            _ansiConsole.WriteLine("Pushing all tags to remote...");
 
             _gitRepository.Tags.PushAllTags();
 
@@ -79,7 +79,7 @@ public class CreateReleaseCommand(
         }
         else
         {
-            _ansiConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
+            _ansiConsole.WriteLine($"Pushing tag '{versionTag.Name.Canonical}'...");
 
             _gitRepository.Tags.PushTag(versionTag);
 
