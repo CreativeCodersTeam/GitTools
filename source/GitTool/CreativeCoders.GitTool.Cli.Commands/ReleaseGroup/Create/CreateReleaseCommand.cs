@@ -42,7 +42,7 @@ public class CreateReleaseCommand(
 
         var version = CreateVersion(options);
 
-        if (options is { VersionIncrement: not null, ConfirmAutoIncrementVersion: true })
+        if (options is { VersionIncrement: not null, NoConfirmAutoIncrementVersion: false })
         {
             _ansiConsole.MarkupLine($"Version will be incremented to '{version}'".ToInfoMarkup());
 

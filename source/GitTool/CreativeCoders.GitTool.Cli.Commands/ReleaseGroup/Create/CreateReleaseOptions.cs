@@ -20,8 +20,8 @@ public class CreateReleaseOptions : IOptionsValidation
     [OptionParameter('r', "resetlower", HelpText = "Reset lower version parts on auto increment")]
     public bool ResetLowerVersionPartsOnAutoInc { get; set; } = true;
 
-    [OptionParameter('c', "confirm", HelpText = "Confirm auto increment version")]
-    public bool ConfirmAutoIncrementVersion { get; set; }
+    [OptionParameter("nc", "noconfirm", HelpText = "No confirmation for auto increment version")]
+    public bool NoConfirmAutoIncrementVersion { get; set; }
 
     public Task<OptionsValidationResult> ValidateAsync()
     {
