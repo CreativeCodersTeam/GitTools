@@ -153,7 +153,7 @@ public class VersionBuilderTests
     }
 
     [Fact]
-    public void IncrementMajor_WithOutResetMinorAndPatch_MinorAndPatchAreResetToZero()
+    public void IncrementMajor_WithOutResetMinorAndPatch_MinorAndPatchAreNotResetToZero()
     {
         // Arrange
         var builder = new VersionBuilder("1.2.3");
