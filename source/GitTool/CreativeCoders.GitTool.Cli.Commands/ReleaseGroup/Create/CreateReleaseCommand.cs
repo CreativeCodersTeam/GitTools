@@ -46,8 +46,12 @@ public class CreateReleaseCommand(
         {
             _ansiConsole.MarkupLine($"Version will be incremented to '{version}'".ToInfoMarkup());
 
-            if (!await _ansiConsole.PromptAsync(new TextPrompt<bool>("Do you want to continue?").DefaultValue(true))
-                    .ConfigureAwait(false))
+            var prompt = new ConfirmationPrompt("Do you want to continue?")
+            {
+                DefaultValue = true
+            };
+
+            if (!await _ansiConsole.PromptAsync(prompt).ConfigureAwait(false))
             {
                 throw new CliCommandAbortException("Release creation aborted.", ReturnCodes.ReleaseCreationAborted)
                 {
