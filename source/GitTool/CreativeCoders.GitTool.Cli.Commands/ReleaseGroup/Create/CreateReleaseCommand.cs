@@ -3,6 +3,7 @@ using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
+using CreativeCoders.GitTool.Base.Versioning;
 using JetBrains.Annotations;
 using Spectre.Console;
 
@@ -17,22 +18,13 @@ public class CreateReleaseCommand(
     IGitRepository gitRepository)
     : ICliCommand<CreateReleaseOptions>
 {
+    private const string DefaultBaseVersionForIncrement = "0.0.0";
+
     private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
 
     private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
     private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
-
-    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
-        CreateReleaseOptions options)
-    {
-        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
-
-        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
-            $"Release {options.Version}", "develop", mainBranchName);
-
-        _ = await provider.CreatePullRequestAsync(createPullRequest);
-    }
 
     public async Task<CommandResult> ExecuteAsync(CreateReleaseOptions options)
     {
@@ -46,7 +38,9 @@ public class CreateReleaseCommand(
             await MergeDevelopToMain(_gitRepository, mainBranchName, options);
         }
 
-        var tagName = $"v{options.Version}";
+        var version = CreateVersion(options);
+
+        var tagName = $"v{version}";
 
         _ansiConsole.WriteLine($"Create tag '{tagName}'");
 
@@ -55,7 +49,7 @@ public class CreateReleaseCommand(
         _gitRepository.Pull();
 
         var versionTag =
-            _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {options.Version}", mainBranchName);
+            _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {version}", mainBranchName);
 
         if (options.PushAllTags)
         {
@@ -71,5 +65,55 @@ public class CreateReleaseCommand(
         }
 
         return CommandResult.Success;
+    }
+
+    private string CreateVersion(CreateReleaseOptions options)
+    {
+        if (!string.IsNullOrWhiteSpace(options.Version))
+        {
+            return new VersionBuilder(options.Version).Build();
+        }
+
+        var greatestVersion = GetVersionTags().OrderByDescending(x => x).FirstOrDefault();
+
+        var versionBuilder =
+            new VersionBuilder(string.IsNullOrWhiteSpace(greatestVersion)
+                ? DefaultBaseVersionForIncrement
+                : greatestVersion);
+
+        switch (options.VersionIncrement!)
+        {
+            case VersionAutoIncrement.Major: versionBuilder.IncrementMajor(); break;
+            case VersionAutoIncrement.Minor: versionBuilder.IncrementMinor(); break;
+            case VersionAutoIncrement.Patch: versionBuilder.IncrementPatch(); break;
+            default:
+                throw new InvalidOperationException("Unknown VersionAutoIncrement");
+        }
+
+        return versionBuilder.Build();
+    }
+
+    private IEnumerable<string> GetVersionTags()
+    {
+        _gitRepository.FetchAllTags("origin");
+
+        foreach (var tag in _gitRepository.Tags)
+        {
+            if (VersionUtils.IsValidVersion(tag.Name.Friendly, out var version))
+            {
+                yield return version;
+            }
+        }
+    }
+
+    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
+        CreateReleaseOptions options)
+    {
+        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
+
+        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
+            $"Release {options.Version}", "develop", mainBranchName);
+
+        _ = await provider.CreatePullRequestAsync(createPullRequest);
     }
 }

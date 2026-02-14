@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 
-namespace CreativeCoders.GitTool.Base;
+namespace CreativeCoders.GitTool.Base.Versioning;
 
 public class VersionBuilder
 {
@@ -61,22 +60,22 @@ public class VersionBuilder
         return string.Join(".", versionParts);
     }
 
-    public void IncrementPatch(int incrementBy = 1)
+    public VersionBuilder IncrementPatch(int incrementBy = 1)
     {
-        IncrementPart(PatchPartIndex, incrementBy);
+        return IncrementPart(PatchPartIndex, incrementBy);
     }
 
-    public void IncrementMinor(int incrementBy = 1)
+    public VersionBuilder IncrementMinor(int incrementBy = 1)
     {
-        IncrementPart(MinorPartIndex, incrementBy);
+        return IncrementPart(MinorPartIndex, incrementBy);
     }
 
-    public void IncrementMajor(int incrementBy = 1)
+    public VersionBuilder IncrementMajor(int incrementBy = 1)
     {
-        IncrementPart(MajorPartIndex, incrementBy);
+        return IncrementPart(MajorPartIndex, incrementBy);
     }
 
-    private void IncrementPart(int partIndex, int incrementBy)
+    private VersionBuilder IncrementPart(int partIndex, int incrementBy)
     {
         if (!int.TryParse(_versionParts[partIndex], out var versionPartNumber))
         {
@@ -84,23 +83,12 @@ public class VersionBuilder
         }
 
         _versionParts[partIndex] = (versionPartNumber + incrementBy).ToString();
+
+        return this;
     }
 
     public string Build()
     {
         return BuildVersion(_versionParts);
     }
-}
-
-public enum VersionFormatKind
-{
-    Strict,
-    Loose
-}
-
-[PublicAPI]
-public class VersionFormatException(string? version, string? message = null) : Exception(message ??
-    $"The version '{version}' has an invalid format. The version must consist of at least 3 parts separated by dots (e.g. '1.0.0').")
-{
-    public string? Version { get; } = version;
 }

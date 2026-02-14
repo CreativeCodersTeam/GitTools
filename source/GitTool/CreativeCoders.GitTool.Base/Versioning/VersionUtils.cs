@@ -1,0 +1,36 @@
+using System;
+using System.Linq;
+
+namespace CreativeCoders.GitTool.Base.Versioning;
+
+public static class VersionUtils
+{
+    public static bool IsValidVersion(string version, out string normalizedVersion,
+        bool ignoreTrailingVersionPrefix = true)
+    {
+        if (ignoreTrailingVersionPrefix)
+        {
+            version = RemoveTrailingVersionPrefix(version);
+        }
+
+        var versionParts = version.Split('.');
+
+        var isValidVersion = versionParts.Length == 3 && versionParts.All(x => int.TryParse(x, out _));
+
+        normalizedVersion = isValidVersion ? string.Join(".", versionParts) : string.Empty;
+
+        return isValidVersion;
+    }
+
+    public static string RemoveTrailingVersionPrefix(string version)
+    {
+        string[] versionPrefixes = ["version", "v"];
+
+        var versionPrefix =
+            versionPrefixes.FirstOrDefault(x => version.StartsWith(x, StringComparison.OrdinalIgnoreCase));
+
+        return string.IsNullOrWhiteSpace(versionPrefix)
+            ? version
+            : version[versionPrefix.Length..];
+    }
+}

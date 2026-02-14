@@ -1,22 +1,29 @@
-﻿using CreativeCoders.SysConsole.Cli.Parsing;
+﻿using CreativeCoders.Cli.Core;
+using CreativeCoders.SysConsole.Cli.Parsing;
 using JetBrains.Annotations;
 
 namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
 
 [PublicAPI]
-public class CreateReleaseOptions
+public class CreateReleaseOptions : IOptionsValidation
 {
     private const string PushAllTagsLongName = "alltags";
 
-    [OptionValue(0, IsRequired = true)] public string? Version { get; set; }
+    [OptionValue(0, IsRequired = false)] public string? Version { get; set; }
 
     [OptionParameter('a', PushAllTagsLongName)]
     public bool PushAllTags { get; set; }
-}
 
-public enum VersionAutoIncrement
-{
-    Major,
-    Minor,
-    Patch
+    [OptionParameter('i', "increment", HelpText = "Version increment")]
+    public VersionAutoIncrement? VersionIncrement { get; set; }
+
+    public Task<OptionsValidationResult> ValidateAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Version) && VersionIncrement == null)
+        {
+            return Task.FromResult(OptionsValidationResult.Invalid(["Version or version increment must be specified"]));
+        }
+
+        return Task.FromResult(OptionsValidationResult.Valid());
+    }
 }

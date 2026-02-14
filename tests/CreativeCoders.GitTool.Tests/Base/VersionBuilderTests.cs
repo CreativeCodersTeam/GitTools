@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using AwesomeAssertions;
 using CreativeCoders.GitTool.Base;
+using CreativeCoders.GitTool.Base.Versioning;
 using Xunit;
 
 namespace CreativeCoders.GitTool.Tests.Base;
