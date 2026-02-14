@@ -5,6 +5,7 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Versioning;
+using CreativeCoders.SysConsole.Core;
 using JetBrains.Annotations;
 using Spectre.Console;
 
@@ -43,7 +44,7 @@ public class CreateReleaseCommand(
 
         if (options is { VersionIncrement: not null, ConfirmAutoIncrementVersion: true })
         {
-            _ansiConsole.WriteLine($"Version will be incremented to '{version}'");
+            _ansiConsole.MarkupLine($"Version will be incremented to '{version}'".ToInfoMarkup());
 
             if (!await _ansiConsole.PromptAsync(new TextPrompt<bool>("Do you want to continue?").DefaultValue(true))
                     .ConfigureAwait(false))
@@ -57,7 +58,7 @@ public class CreateReleaseCommand(
 
         var tagName = $"v{version}";
 
-        _ansiConsole.WriteLine($"Create tag '{tagName}'");
+        _ansiConsole.WriteLine($"Creating tag '{tagName}'");
 
         _gitRepository.Branches.CheckOut(mainBranchName);
 
@@ -66,17 +67,23 @@ public class CreateReleaseCommand(
         var versionTag =
             _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {version}", mainBranchName);
 
+        _ansiConsole.MarkupLine($"Tag '{tagName}' created".ToSuccessMarkup());
+
         if (options.PushAllTags)
         {
-            _ansiConsole.WriteLine("Push all tags to remote");
+            _ansiConsole.WriteLine("Pushing all tags to remote");
 
             _gitRepository.Tags.PushAllTags();
+
+            _ansiConsole.MarkupLine("All tags pushed successfully".ToSuccessMarkup());
         }
         else
         {
             _ansiConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
 
             _gitRepository.Tags.PushTag(versionTag);
+
+            _ansiConsole.MarkupLine($"Tag '{versionTag.Name.Canonical}' pushed successfully".ToSuccessMarkup());
         }
 
         return CommandResult.Success;
