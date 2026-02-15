@@ -53,10 +53,10 @@ public class VersionUtilsTests
     [InlineData("version", "")]
     [InlineData("", "")]
     [InlineData(null, "")]
-    public void RemoveTrailingVersionPrefix_VariousInputs_ReturnsExpectedResult(string version, string expected)
+    public void RemoveLeadingVersionPrefix_VariousInputs_ReturnsExpectedResult(string version, string expected)
     {
         // Act
-        var result = VersionUtils.RemoveTrailingVersionPrefix(version);
+        var result = VersionUtils.RemoveLeadingVersionPrefix(version);
 
         // Assert
         result.Should().Be(expected);

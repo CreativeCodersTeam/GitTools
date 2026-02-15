@@ -6,11 +6,11 @@ namespace CreativeCoders.GitTool.Base.Versioning;
 public static class VersionUtils
 {
     public static bool IsValidVersion(string version, out string normalizedVersion,
-        bool ignoreTrailingVersionPrefix = true)
+        bool ignoreLeadingVersionPrefix = true)
     {
-        if (ignoreTrailingVersionPrefix)
+        if (ignoreLeadingVersionPrefix)
         {
-            version = RemoveTrailingVersionPrefix(version);
+            version = RemoveLeadingVersionPrefix(version);
         }
 
         var versionParts = version.Split('.');
@@ -22,7 +22,7 @@ public static class VersionUtils
         return isValidVersion;
     }
 
-    public static string RemoveTrailingVersionPrefix(string version)
+    public static string RemoveLeadingVersionPrefix(string version)
     {
         if (string.IsNullOrEmpty(version))
         {
