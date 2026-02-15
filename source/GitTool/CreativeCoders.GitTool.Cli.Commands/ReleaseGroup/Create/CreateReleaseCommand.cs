@@ -1,8 +1,11 @@
 ﻿using CreativeCoders.Cli.Core;
+using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
 using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
+using CreativeCoders.GitTool.Base.Versioning;
+using CreativeCoders.SysConsole.Core;
 using JetBrains.Annotations;
 using Spectre.Console;
 
@@ -13,63 +16,106 @@ namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
     Description = "Creates a release by creating a version tag")]
 public class CreateReleaseCommand(
     IAnsiConsole ansiConsole,
-    IGitServiceProviders gitServiceProviders,
     IGitRepository gitRepository)
     : ICliCommand<CreateReleaseOptions>
 {
-    private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
+    private const string DefaultBaseVersionForIncrement = "0.0.0";
 
     private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
     private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
 
-    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
-        CreateReleaseOptions options)
-    {
-        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
-
-        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
-            $"Release {options.Version}", "develop", mainBranchName);
-
-        _ = await provider.CreatePullRequestAsync(createPullRequest);
-    }
-
     public async Task<CommandResult> ExecuteAsync(CreateReleaseOptions options)
     {
         var mainBranchName = GitBranchNames.Local.GetCanonicalName(_gitRepository.Info.MainBranch);
 
-        if (_gitRepository.Branches["develop"] != null)
-        {
-            _ansiConsole.WriteLine(
-                $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
+        var version = CreateVersion(options);
 
-            await MergeDevelopToMain(_gitRepository, mainBranchName, options);
+        if (options is { VersionIncrement: not null, NoConfirmAutoIncrementVersion: false })
+        {
+            _ansiConsole.MarkupLine($"Version will be incremented to '{version}'".ToInfoMarkup());
+
+            var prompt = new ConfirmationPrompt("Do you want to continue?")
+            {
+                DefaultValue = true
+            };
+
+            if (!await _ansiConsole.PromptAsync(prompt).ConfigureAwait(false))
+            {
+                throw new CliCommandAbortException("Release creation aborted.", ReturnCodes.ReleaseCreationAborted)
+                {
+                    IsError = false
+                };
+            }
         }
 
-        var tagName = $"v{options.Version}";
+        var tagName = $"v{version}";
 
-        _ansiConsole.WriteLine($"Create tag '{tagName}'");
+        _ansiConsole.WriteLine($"Creating tag '{tagName}'...");
 
         _gitRepository.Branches.CheckOut(mainBranchName);
 
         _gitRepository.Pull();
 
         var versionTag =
-            _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {options.Version}", mainBranchName);
+            _gitRepository.Tags.CreateTagWithMessage(tagName, $"Version {version}", mainBranchName);
+
+        _ansiConsole.MarkupLine($"Tag '{tagName}' created".ToSuccessMarkup());
 
         if (options.PushAllTags)
         {
-            _ansiConsole.WriteLine("Push all tags to remote");
+            _ansiConsole.WriteLine("Pushing all tags to remote...");
 
             _gitRepository.Tags.PushAllTags();
+
+            _ansiConsole.MarkupLine("All tags pushed successfully".ToSuccessMarkup());
         }
         else
         {
-            _ansiConsole.WriteLine($"Push tag '{versionTag.Name.Canonical}'");
+            _ansiConsole.WriteLine($"Pushing tag '{versionTag.Name.Canonical}'...");
 
             _gitRepository.Tags.PushTag(versionTag);
+
+            _ansiConsole.MarkupLine($"Tag '{versionTag.Name.Canonical}' pushed successfully".ToSuccessMarkup());
         }
 
         return CommandResult.Success;
+    }
+
+    private string CreateVersion(CreateReleaseOptions options)
+    {
+        if (!string.IsNullOrWhiteSpace(options.Version))
+        {
+            return new VersionBuilder(options.Version).Build();
+        }
+
+        _gitRepository.FetchAllTags("origin");
+
+        var greatestVersion = _gitRepository
+            .GetVersionTags()
+            .OrderByDescending(x => x.Version, new VersionComparer())
+            .FirstOrDefault();
+
+        var versionBuilder =
+            new VersionBuilder(string.IsNullOrWhiteSpace(greatestVersion?.Version)
+                ? DefaultBaseVersionForIncrement
+                : greatestVersion.Version);
+
+        switch (options.VersionIncrement!)
+        {
+            case VersionAutoIncrement.Major:
+                versionBuilder.IncrementMajor(1, options.ResetLowerVersionPartsOnAutoInc);
+                break;
+            case VersionAutoIncrement.Minor:
+                versionBuilder.IncrementMinor(1, options.ResetLowerVersionPartsOnAutoInc);
+                break;
+            case VersionAutoIncrement.Patch:
+                versionBuilder.IncrementPatch();
+                break;
+            default:
+                throw new InvalidOperationException("Unknown VersionAutoIncrement");
+        }
+
+        return versionBuilder.Build();
     }
 }

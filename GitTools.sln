@@ -80,6 +80,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Cli.Commands", "source\GitTool\CreativeCoders.GitTool.Cli.Commands\CreativeCoders.GitTool.Cli.Commands.csproj", "{80C7112B-7D72-4585-BDFA-101289319B2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreativeCoders.GitTool.Tests", "tests\CreativeCoders.GitTool.Tests\CreativeCoders.GitTool.Tests.csproj", "{EB39081F-6139-40B2-BEE7-E024DE6118CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{80C7112B-7D72-4585-BDFA-101289319B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C7112B-7D72-4585-BDFA-101289319B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C7112B-7D72-4585-BDFA-101289319B2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB39081F-6139-40B2-BEE7-E024DE6118CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB39081F-6139-40B2-BEE7-E024DE6118CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB39081F-6139-40B2-BEE7-E024DE6118CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB39081F-6139-40B2-BEE7-E024DE6118CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +165,7 @@ Global
 		{D65676E3-6820-464B-8493-597E3E1DCD98} = {90C87656-57A8-4AE9-8619-DA08AA137D6A}
 		{46156AAB-B9F6-4C99-AD0A-9F370DB87679} = {D65676E3-6820-464B-8493-597E3E1DCD98}
 		{80C7112B-7D72-4585-BDFA-101289319B2C} = {D65676E3-6820-464B-8493-597E3E1DCD98}
+		{EB39081F-6139-40B2-BEE7-E024DE6118CD} = {B7558045-D005-49D4-9205-55A32B6C99DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D38E5978-8FB3-474B-BDCB-18853E21A429}
