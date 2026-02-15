@@ -16,13 +16,10 @@ namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.Create;
     Description = "Creates a release by creating a version tag")]
 public class CreateReleaseCommand(
     IAnsiConsole ansiConsole,
-    IGitServiceProviders gitServiceProviders,
     IGitRepository gitRepository)
     : ICliCommand<CreateReleaseOptions>
 {
     private const string DefaultBaseVersionForIncrement = "0.0.0";
-
-    private readonly IGitServiceProviders _gitServiceProviders = Ensure.NotNull(gitServiceProviders);
 
     private readonly IAnsiConsole _ansiConsole = Ensure.NotNull(ansiConsole);
 
@@ -31,14 +28,6 @@ public class CreateReleaseCommand(
     public async Task<CommandResult> ExecuteAsync(CreateReleaseOptions options)
     {
         var mainBranchName = GitBranchNames.Local.GetCanonicalName(_gitRepository.Info.MainBranch);
-
-        if (_gitRepository.Branches["develop"] != null)
-        {
-            _ansiConsole.WriteLine(
-                $"Repository has a develop branch. So first a merge from develop -> {mainBranchName} must be done.");
-
-            await MergeDevelopToMain(_gitRepository, mainBranchName, options);
-        }
 
         var version = CreateVersion(options);
 
@@ -124,16 +113,5 @@ public class CreateReleaseCommand(
         }
 
         return versionBuilder.Build();
-    }
-
-    private async Task MergeDevelopToMain(IGitRepository repository, string mainBranchName,
-        CreateReleaseOptions options)
-    {
-        var provider = await _gitServiceProviders.GetServiceProviderAsync(repository, null);
-
-        var createPullRequest = new GitCreatePullRequest(repository.Info.RemoteUri,
-            $"Release {options.Version}", "develop", mainBranchName);
-
-        _ = await provider.CreatePullRequestAsync(createPullRequest);
     }
 }
