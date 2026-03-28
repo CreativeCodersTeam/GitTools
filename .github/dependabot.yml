@@ -20,31 +20,15 @@ updates:
           - "Microsoft.NET.Test.Sdk"
           - "coverlet.collector"
           - "JetBrains.Annotations"
-          - "Cake.*"
       # Tier 2: Production dependencies — auto-merge on patch only
       microsoft-packages:
         patterns:
           - "Microsoft.Extensions.*"
-          - "Microsoft.AspNetCore.*"
-          - "Microsoft.EntityFrameworkCore*"
-          - "Microsoft.CodeAnalysis.*"
-          - "Microsoft.JSInterop"
       runtime-libraries:
         patterns:
-          - "Castle.Core"
-          - "Polly"
           - "Newtonsoft.Json"
-          - "NHibernate"
-          - "LiteDB"
-          - "System.IO.Abstractions*"
-          - "System.Reactive"
-          - "System.IO.Ports"
           - "Spectre.Console"
-          - "Swashbuckle.AspNetCore"
-          - "MimeMapping"
           - "Octokit"
-          - "YamlDotNet"
-          - "log4net"
       # Catch-all: Any package not matched by the groups above.
       # Dependabot assigns each package to the first matching group only,
       # so this will never include packages already covered above.
