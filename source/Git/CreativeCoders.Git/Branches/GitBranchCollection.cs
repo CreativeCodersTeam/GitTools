@@ -3,6 +3,9 @@ using CreativeCoders.Git.Abstractions.Exceptions;
 
 namespace CreativeCoders.Git.Branches;
 
+/// <summary>
+/// Represents a collection of Git branches with operations for checkout, creation, and deletion.
+/// </summary>
 public class GitBranchCollection : IGitBranchCollection
 {
     private readonly BranchCollection _branchCollection;
@@ -19,6 +22,7 @@ public class GitBranchCollection : IGitBranchCollection
         _libGitCaller = _context.LibGitCaller;
     }
 
+    /// <inheritdoc />
     public IGitBranch? CheckOut(string branchName)
     {
         Ensure.Argument(branchName).NotNullOrEmpty();
@@ -36,11 +40,13 @@ public class GitBranchCollection : IGitBranchCollection
         return GitBranch.From(checkedOutBranch);
     }
 
+    /// <inheritdoc />
     public IGitBranch? CreateBranch(string branchName)
     {
         return GitBranch.From(_libGitCaller.Invoke(() => _context.LibGitRepository.CreateBranch(branchName)));
     }
 
+    /// <inheritdoc />
     public void DeleteLocalBranch(string branchName)
     {
         var branch = _libGitCaller.Invoke(() => _context.LibGitRepository.Branches[branchName]);
@@ -61,8 +67,10 @@ public class GitBranchCollection : IGitBranchCollection
         return GetEnumerator();
     }
 
+    /// <inheritdoc />
     public IGitBranch? this[string name] => GitBranch.From(_branchCollection[name]);
 
+    /// <inheritdoc />
     public IGitBranch? FindLocalBranchByFriendlyName(string branchName)
     {
         return this.FirstOrDefault(x =>
@@ -70,6 +78,7 @@ public class GitBranchCollection : IGitBranchCollection
             x.Name.Friendly.Equals(branchName, StringComparison.OrdinalIgnoreCase));
     }
 
+    /// <inheritdoc />
     public IGitBranch? FindRemoteBranchByFriendlyName(string branchName)
     {
         var remoteNames = _context.Repository.Remotes.Select(x => x.Name);

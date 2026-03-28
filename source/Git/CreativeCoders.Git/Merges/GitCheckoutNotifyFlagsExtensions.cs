@@ -2,8 +2,16 @@
 
 namespace CreativeCoders.Git.Merges;
 
+/// <summary>
+/// Provides extension methods for converting between <see cref="GitCheckoutNotifyFlags"/> and LibGit2Sharp <see cref="CheckoutNotifyFlags"/>.
+/// </summary>
 public static class GitCheckoutNotifyFlagsExtensions
 {
+    /// <summary>
+    /// Converts a <see cref="GitCheckoutNotifyFlags"/> to a LibGit2Sharp <see cref="CheckoutNotifyFlags"/>.
+    /// </summary>
+    /// <param name="checkoutNotifyFlags">The Git checkout notify flags.</param>
+    /// <returns>The corresponding <see cref="CheckoutNotifyFlags"/> value.</returns>
     public static CheckoutNotifyFlags ToCheckoutNotifyFlags(this GitCheckoutNotifyFlags checkoutNotifyFlags)
     {
         return new CheckoutNotifyFlags()
@@ -14,6 +22,11 @@ public static class GitCheckoutNotifyFlagsExtensions
             .AddFlagIfSet(CheckoutNotifyFlags.Untracked, checkoutNotifyFlags, GitCheckoutNotifyFlags.Untracked);
     }
 
+    /// <summary>
+    /// Converts a LibGit2Sharp <see cref="CheckoutNotifyFlags"/> to a <see cref="GitCheckoutNotifyFlags"/>.
+    /// </summary>
+    /// <param name="checkoutNotifyFlags">The LibGit2Sharp checkout notify flags.</param>
+    /// <returns>The corresponding <see cref="GitCheckoutNotifyFlags"/> value.</returns>
     public static GitCheckoutNotifyFlags ToGitCheckoutNotifyFlags(this CheckoutNotifyFlags checkoutNotifyFlags)
     {
         return new GitCheckoutNotifyFlags()

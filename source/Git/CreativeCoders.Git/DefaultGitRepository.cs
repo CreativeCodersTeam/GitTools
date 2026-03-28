@@ -20,6 +20,9 @@ using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git;
 
+/// <summary>
+/// Provides the default implementation of <see cref="IGitRepository"/> backed by LibGit2Sharp.
+/// </summary>
 internal sealed class DefaultGitRepository : IGitRepository
 {
     private readonly IGitCredentialProviders _credentialProviders;
@@ -28,6 +31,12 @@ internal sealed class DefaultGitRepository : IGitRepository
 
     private readonly Repository _repo;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultGitRepository"/> class.
+    /// </summary>
+    /// <param name="repo">The underlying LibGit2Sharp repository.</param>
+    /// <param name="credentialProviders">The credential providers for authentication.</param>
+    /// <param name="libGitCaller">The caller used to invoke LibGit2Sharp operations with exception handling.</param>
     public DefaultGitRepository(Repository repo, IGitCredentialProviders credentialProviders,
         ILibGitCaller libGitCaller)
     {
@@ -86,16 +95,19 @@ internal sealed class DefaultGitRepository : IGitRepository
         };
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         _repo.Dispose();
     }
 
+    /// <inheritdoc />
     public GitMergeResult Pull()
     {
         return Commands.CreatePullCommand().Run();
     }
 
+    /// <inheritdoc />
     public void Push(GitPushOptions gitPushOptions)
     {
         Commands.CreatePushCommand()
@@ -103,6 +115,7 @@ internal sealed class DefaultGitRepository : IGitRepository
             .Run();
     }
 
+    /// <inheritdoc />
     public void Fetch(string remoteName, GitFetchOptions gitFetchOptions)
     {
         var fetchOptions = gitFetchOptions.ToFetchOptions(GetCredentialsHandler());
@@ -119,6 +132,7 @@ internal sealed class DefaultGitRepository : IGitRepository
         _libGitCaller.Invoke(() => LibGit2Sharp.Commands.Fetch(_repo, remote.Name, refSpecs, fetchOptions, null));
     }
 
+    /// <inheritdoc />
     public GitMergeResult Merge(string sourceBranchName, string targetBranchName, GitMergeOptions mergeOptions)
     {
         return _libGitCaller.Invoke(() =>
@@ -138,6 +152,7 @@ internal sealed class DefaultGitRepository : IGitRepository
         });
     }
 
+    /// <inheritdoc />
     public bool HasUncommittedChanges(bool includeUntracked)
     {
         using var treeChanges =
@@ -146,27 +161,41 @@ internal sealed class DefaultGitRepository : IGitRepository
         return treeChanges.Count > 0;
     }
 
+    /// <summary>
+    /// Gets the underlying LibGit2Sharp repository instance.
+    /// </summary>
     internal Repository LibGit2Repository => _repo;
 
+    /// <inheritdoc />
     public IGitRepositoryInfo Info { get; }
 
+    /// <inheritdoc />
     public bool IsHeadDetached => _libGitCaller.Invoke(() => _repo.Info.IsHeadDetached);
 
+    /// <inheritdoc />
     public IGitBranch Head => GitBranch.From(_libGitCaller.Invoke(() => _repo.Head))!;
 
+    /// <inheritdoc />
     public IGitTagCollection Tags { get; }
 
+    /// <inheritdoc />
     public IGitReferenceCollection Refs { get; }
 
+    /// <inheritdoc />
     public IGitBranchCollection Branches { get; }
 
+    /// <inheritdoc />
     public IGitCommitLog Commits { get; }
 
+    /// <inheritdoc />
     public IGitRemoteCollection Remotes { get; }
 
+    /// <inheritdoc />
     public IGitDiffer Differ { get; }
 
+    /// <inheritdoc />
     public IGitCommands Commands { get; }
 
+    /// <inheritdoc />
     public HostCertificateCheckHandler? CertificateCheck { get; set; }
 }
