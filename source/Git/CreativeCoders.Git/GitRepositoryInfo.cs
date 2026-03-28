@@ -2,17 +2,8 @@
 
 namespace CreativeCoders.Git;
 
-internal class GitRepositoryInfo : IGitRepositoryInfo
+internal class GitRepositoryInfo(IRepository repository) : IGitRepositoryInfo
 {
-    public GitRepositoryInfo(IRepository repository)
-    {
-        Path = repository.Info.Path;
-
-        MainBranch = GetMainBranch(repository);
-
-        RemoteUri = new Uri(repository.Network.Remotes[GitRemotes.Origin].Url);
-    }
-
     private static GitMainBranch GetMainBranch(IRepository repository)
     {
         var mainBranch = repository.Branches[GitBranchNames.Remote.Main.CanonicalName];
@@ -29,9 +20,9 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             : GitMainBranch.Custom;
     }
 
-    public string? Path { get; }
+    public string? Path { get; } = Ensure.NotNull(repository).Info.Path;
 
-    public GitMainBranch MainBranch { get; }
+    public GitMainBranch MainBranch { get; } = GetMainBranch(repository);
 
-    public Uri RemoteUri { get; }
+    public Uri RemoteUri { get; } = new Uri(Ensure.NotNull(repository).Network.Remotes[GitRemotes.Origin].Url);
 }

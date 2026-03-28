@@ -5,21 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CreativeCoders.Git;
 
-internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
+internal class DefaultGitRepositoryFactory(
+    IGitCredentialProviders credentialProviders,
+    IGitRepositoryUtils repositoryUtils,
+    IServiceProvider serviceProvider)
+    : IGitRepositoryFactory
 {
-    private readonly IGitCredentialProviders _credentialProviders;
+    private readonly IGitCredentialProviders _credentialProviders = Ensure.NotNull(credentialProviders);
 
-    private readonly IGitRepositoryUtils _repositoryUtils;
+    private readonly IGitRepositoryUtils _repositoryUtils = Ensure.NotNull(repositoryUtils);
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public DefaultGitRepositoryFactory(IGitCredentialProviders credentialProviders,
-        IGitRepositoryUtils repositoryUtils, IServiceProvider serviceProvider)
-    {
-        _credentialProviders = Ensure.NotNull(credentialProviders);
-        _repositoryUtils = Ensure.NotNull(repositoryUtils);
-        _serviceProvider = Ensure.NotNull(serviceProvider);
-    }
+    private readonly IServiceProvider _serviceProvider = Ensure.NotNull(serviceProvider);
 
     public IGitRepository OpenRepository(string? path)
     {

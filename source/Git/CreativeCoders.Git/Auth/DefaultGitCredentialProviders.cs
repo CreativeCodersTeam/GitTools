@@ -3,14 +3,9 @@ using CreativeCoders.Git.Abstractions.Auth;
 
 namespace CreativeCoders.Git.Auth;
 
-internal class DefaultGitCredentialProviders : IGitCredentialProviders
+internal class DefaultGitCredentialProviders(IEnumerable<IGitCredentialProvider> providers) : IGitCredentialProviders
 {
-    private readonly IEnumerable<IGitCredentialProvider> _providers;
-
-    public DefaultGitCredentialProviders(IEnumerable<IGitCredentialProvider> providers)
-    {
-        _providers = Ensure.NotNull(providers);
-    }
+    private readonly IEnumerable<IGitCredentialProvider> _providers = Ensure.NotNull(providers);
 
     public IGitCredentialProvider? GetProvider(string providerName)
     {

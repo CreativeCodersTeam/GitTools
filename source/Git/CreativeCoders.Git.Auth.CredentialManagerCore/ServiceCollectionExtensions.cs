@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace CreativeCoders.Git.Auth.CredentialManagerCore.DependencyInjection;
+namespace CreativeCoders.Git.Auth.CredentialManagerCore;
 
 [PublicAPI]
 public static class ServiceCollectionExtensions

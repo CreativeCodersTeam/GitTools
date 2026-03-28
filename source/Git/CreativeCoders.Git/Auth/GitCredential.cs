@@ -4,15 +4,9 @@ using CreativeCoders.Git.Abstractions.Auth;
 namespace CreativeCoders.Git.Auth;
 
 [ExcludeFromCodeCoverage]
-public class GitCredential : IGitCredential
+public class GitCredential(string userName, string password) : IGitCredential
 {
-    public GitCredential(string userName, string password)
-    {
-        UserName = userName;
-        Password = password;
-    }
+    public string UserName { get; } = userName;
 
-    public string UserName { get; }
-
-    public string Password { get; }
+    public string Password { get; } = password;
 }

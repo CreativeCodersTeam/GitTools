@@ -16,7 +16,7 @@ public class GitBranchCollection : IGitBranchCollection
         _context = Ensure.NotNull(context);
 
         _branchCollection = _context.LibGitRepository.Branches;
-        _libGitCaller = context.LibGitCaller;
+        _libGitCaller = _context.LibGitCaller;
     }
 
     public IGitBranch? CheckOut(string branchName)

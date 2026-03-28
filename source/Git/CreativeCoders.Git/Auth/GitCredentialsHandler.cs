@@ -3,17 +3,9 @@ using CreativeCoders.Git.Abstractions.Auth;
 
 namespace CreativeCoders.Git.Auth;
 
-public class GitCredentialsHandler
+public class GitCredentialsHandler(IGitCredentialProviders credentialProviders)
 {
-    private readonly IGitCredentialProviders _credentialProviders;
-
-    public GitCredentialsHandler(IGitCredentialProviders credentialProviders)
-    {
-        _credentialProviders = Ensure
-            .Argument(credentialProviders)
-            .NotNull()
-            .Value;
-    }
+    private readonly IGitCredentialProviders _credentialProviders = Ensure.NotNull(credentialProviders);
 
     public Credentials? HandleCredentials(string url, string? usernameFromUrl, SupportedCredentialTypes types)
     {

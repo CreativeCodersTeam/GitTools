@@ -1,4 +1,4 @@
-﻿using CreativeCoders.Git.Auth.CredentialManagerCore.DependencyInjection;
+﻿using CreativeCoders.Git.Auth.CredentialManagerCore;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using Microsoft.Extensions.DependencyInjection.Extensions;
