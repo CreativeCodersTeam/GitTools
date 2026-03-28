@@ -92,7 +92,8 @@ The tool reads its configuration from a JSON file located at:
 | Platform | Path |
 |----------|------|
 | Windows  | `%LOCALAPPDATA%\CreativeCoders\GitTool\gt.json` |
-| macOS / Linux | `~/.local/share/CreativeCoders/GitTool/gt.json` |
+| macOS    | `~/Library/Application Support/CreativeCoders/GitTool/gt.json` |
+| Linux    | `~/.local/share/CreativeCoders/GitTool/gt.json` |
 
 ### Example configuration
 
