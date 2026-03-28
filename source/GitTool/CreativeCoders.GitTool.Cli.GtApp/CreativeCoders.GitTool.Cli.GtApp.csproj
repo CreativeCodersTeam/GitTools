@@ -7,6 +7,7 @@
         <AssemblyName>gt</AssemblyName>
         <RootNamespace>CreativeCoders.GitTool.Cli.App</RootNamespace>
         <PackAsTool>true</PackAsTool>
+        <Description>CLI tool for managing Git repositories with GitHub and GitLab integration. Provides commands for branches, pull requests, releases, and tags.</Description>
         <IsPackable>true</IsPackable>
         <ToolCommandName>gt</ToolCommandName>
         <PackageId>CreativeCoders.GitTool</PackageId>
