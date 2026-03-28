@@ -1,5 +1,8 @@
 ﻿namespace CreativeCoders.Git.Abstractions;
 
+/// <summary>
+/// Specifies the fast-forward strategy for a merge operation.
+/// </summary>
 public enum GitFastForwardStrategy
 {
     /// <summary>

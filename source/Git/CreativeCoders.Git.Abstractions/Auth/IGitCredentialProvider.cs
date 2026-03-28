@@ -1,23 +1,20 @@
 ﻿namespace CreativeCoders.Git.Abstractions.Auth;
 
-/// <summary>   Interface for git credential provider. </summary>
+/// <summary>
+/// Provides credentials for authenticating against a Git remote.
+/// </summary>
 public interface IGitCredentialProvider
 {
-    ///-------------------------------------------------------------------------------------------------
-    /// <summary>   Gets the credentials for a specific git url. </summary>
-    ///
-    /// <param name="url">      URL of the resource. </param>
-    /// <param name="fromUrl">  URL of from. </param>
-    /// 
-    ///
-    /// <returns>   The credentials. </returns>
-    ///-------------------------------------------------------------------------------------------------
+    /// <summary>
+    /// Gets the credentials for the specified URL.
+    /// </summary>
+    /// <param name="url">The URL of the remote resource.</param>
+    /// <param name="fromUrl">The URL that initiated the credential request, or <see langword="null"/> if not available.</param>
+    /// <returns>The credential, or <see langword="null"/> if no credential is available.</returns>
     IGitCredential? GetCredentials(string url, string? fromUrl);
 
-    ///-------------------------------------------------------------------------------------------------
-    /// <summary>   Gets the name of the credential provider. </summary>
-    ///
-    /// <value> The name. </value>
-    ///-------------------------------------------------------------------------------------------------
+    /// <summary>
+    /// Gets the name of the credential provider.
+    /// </summary>
     string Name { get; }
 }

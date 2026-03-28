@@ -1,6 +1,9 @@
 ﻿namespace CreativeCoders.Git.Abstractions;
 
 // ReSharper disable CommentTypo
+/// <summary>
+/// Specifies how conflicting files should be written out during checkout.
+/// </summary>
 public enum GitCheckoutFileConflictStrategy
 {
     /// <summary>

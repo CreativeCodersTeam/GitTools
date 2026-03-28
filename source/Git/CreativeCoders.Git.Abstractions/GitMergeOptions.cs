@@ -2,6 +2,9 @@
 
 namespace CreativeCoders.Git.Abstractions;
 
+/// <summary>
+/// Represents options for a Git merge operation.
+/// </summary>
 [PublicAPI]
 public class GitMergeOptions
 {
@@ -16,6 +19,9 @@ public class GitMergeOptions
     /// </summary>
     public int TargetLimit { get; set; } = 200;
 
+    /// <summary>
+    ///     Gets or sets the fast-forward strategy for the merge.
+    /// </summary>
     public GitFastForwardStrategy FastForwardStrategy { get; set; }
 
     /// <summary>

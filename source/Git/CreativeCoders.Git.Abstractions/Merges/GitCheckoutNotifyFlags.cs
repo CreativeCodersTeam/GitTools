@@ -23,5 +23,6 @@ public enum GitCheckoutNotifyFlags
     Untracked = 8,
     /// <summary>Notify about ignored file.</summary>
     Ignored = 16,
+    /// <summary>Notify on all checkout events.</summary>
     All = 31
 }
