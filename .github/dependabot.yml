@@ -18,17 +18,24 @@ updates:
           - "FakeItEasy"
           - "AwesomeAssertions"
           - "Microsoft.NET.Test.Sdk"
-          - "coverlet.collector"
+          - "coverlet.*"
           - "JetBrains.Annotations"
+          - "CreativeCoders.CakeBuild"
       # Tier 2: Production dependencies — auto-merge on patch only
       microsoft-packages:
         patterns:
           - "Microsoft.Extensions.*"
+      creativecoders-packages:
+        patterns:
+          - "CreativeCoders.*"
       runtime-libraries:
         patterns:
+          - "Devlooped.CredentialManager"
+          - "GitLabApiClient"
+          - "LibGit2Sharp"
           - "Newtonsoft.Json"
-          - "Spectre.Console"
           - "Octokit"
+          - "Spectre.Console"
       # Catch-all: Any package not matched by the groups above.
       # Dependabot assigns each package to the first matching group only,
       # so this will never include packages already covered above.
