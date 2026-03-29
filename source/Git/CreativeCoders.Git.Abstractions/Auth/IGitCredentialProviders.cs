@@ -2,16 +2,16 @@
 
 namespace CreativeCoders.Git.Abstractions.Auth;
 
-/// <summary>   Interface for collection of git credential providers. </summary>
+/// <summary>
+/// Represents a collection of <see cref="IGitCredentialProvider"/> instances and provides lookup by name.
+/// </summary>
 [PublicAPI]
 public interface IGitCredentialProviders : IGitCredentialProvider
 {
-    ///-------------------------------------------------------------------------------------------------
-    /// <summary>   Gets a provider for <paramref name="providerName"/>. </summary>
-    ///
-    /// <param name="providerName"> Name of the provider. </param>
-    ///
-    /// <returns>   The provider. </returns>
-    ///-------------------------------------------------------------------------------------------------
+    /// <summary>
+    /// Gets the credential provider with the specified name.
+    /// </summary>
+    /// <param name="providerName">The name of the provider to retrieve.</param>
+    /// <returns>The matching credential provider, or <see langword="null"/> if no provider with the specified name exists.</returns>
     IGitCredentialProvider? GetProvider(string providerName);
 }

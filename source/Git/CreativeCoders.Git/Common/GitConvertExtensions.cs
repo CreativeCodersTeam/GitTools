@@ -5,8 +5,17 @@ using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.Common;
 
+/// <summary>
+/// Provides extension methods for converting between LibGit2Sharp types and their Git abstraction equivalents.
+/// </summary>
 public static class GitConvertExtensions
 {
+    /// <summary>
+    /// Converts a LibGit2Sharp <see cref="RefSpecDirection"/> to a <see cref="GitRefSpecDirection"/>.
+    /// </summary>
+    /// <param name="refSpecDirection">The LibGit2Sharp ref spec direction.</param>
+    /// <returns>The corresponding <see cref="GitRefSpecDirection"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized direction.</exception>
     public static GitRefSpecDirection ToGitRefSpecDirection(this RefSpecDirection refSpecDirection)
     {
         return refSpecDirection switch
@@ -17,6 +26,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a LibGit2Sharp <see cref="MergeStatus"/> to a <see cref="GitMergeStatus"/>.
+    /// </summary>
+    /// <param name="mergeStatus">The LibGit2Sharp merge status.</param>
+    /// <returns>The corresponding <see cref="GitMergeStatus"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized merge status.</exception>
     public static GitMergeStatus ToGitMergeStatus(this MergeStatus mergeStatus)
     {
         return mergeStatus switch
@@ -29,6 +44,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a nullable <see cref="GitTagFetchMode"/> to a nullable LibGit2Sharp <see cref="TagFetchMode"/>.
+    /// </summary>
+    /// <param name="tagFetchMode">The Git tag fetch mode, or <see langword="null"/>.</param>
+    /// <returns>The corresponding <see cref="TagFetchMode"/> value, or <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized tag fetch mode.</exception>
     public static TagFetchMode? ToTagFetchMode(this GitTagFetchMode? tagFetchMode)
     {
         if (tagFetchMode == null)
@@ -46,6 +67,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a <see cref="GitFetchOptions"/> to a LibGit2Sharp <see cref="FetchOptions"/>.
+    /// </summary>
+    /// <param name="fetchOptions">The Git fetch options.</param>
+    /// <param name="credentialsHandler">The credentials handler for authentication.</param>
+    /// <returns>A new <see cref="FetchOptions"/> instance.</returns>
     public static FetchOptions ToFetchOptions(this GitFetchOptions fetchOptions,
         CredentialsHandler credentialsHandler)
     {
@@ -58,6 +85,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a <see cref="GitFastForwardStrategy"/> to a LibGit2Sharp <see cref="FastForwardStrategy"/>.
+    /// </summary>
+    /// <param name="fastForwardStrategy">The Git fast-forward strategy.</param>
+    /// <returns>The corresponding <see cref="FastForwardStrategy"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized fast-forward strategy.</exception>
     public static FastForwardStrategy ToFastForwardStrategy(this GitFastForwardStrategy fastForwardStrategy)
     {
         return fastForwardStrategy switch
@@ -69,6 +102,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a <see cref="GitCheckoutFileConflictStrategy"/> to a LibGit2Sharp <see cref="CheckoutFileConflictStrategy"/>.
+    /// </summary>
+    /// <param name="fileConflictStrategy">The Git checkout file conflict strategy.</param>
+    /// <returns>The corresponding <see cref="CheckoutFileConflictStrategy"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized file conflict strategy.</exception>
     public static CheckoutFileConflictStrategy ToFileConflictStrategy(
         this GitCheckoutFileConflictStrategy fileConflictStrategy)
     {
@@ -83,6 +122,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a <see cref="GitMergeFileFavor"/> to a LibGit2Sharp <see cref="MergeFileFavor"/>.
+    /// </summary>
+    /// <param name="mergeFileFavor">The Git merge file favor.</param>
+    /// <returns>The corresponding <see cref="MergeFileFavor"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized merge file favor.</exception>
     public static MergeFileFavor ToMergeFileFavor(this GitMergeFileFavor mergeFileFavor)
     {
         return mergeFileFavor switch
@@ -95,6 +140,11 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a <see cref="GitMergeOptions"/> to a LibGit2Sharp <see cref="MergeOptions"/>.
+    /// </summary>
+    /// <param name="mergeOptions">The Git merge options.</param>
+    /// <returns>A new <see cref="MergeOptions"/> instance.</returns>
     public static MergeOptions ToMergeOptions(this GitMergeOptions mergeOptions)
     {
         return new MergeOptions
@@ -112,6 +162,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a LibGit2Sharp <see cref="ChangeKind"/> to a <see cref="GitEntryChangeKind"/>.
+    /// </summary>
+    /// <param name="changeKind">The LibGit2Sharp change kind.</param>
+    /// <returns>The corresponding <see cref="GitEntryChangeKind"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized change kind.</exception>
     public static GitEntryChangeKind ToGitEntryChangeKind(this ChangeKind changeKind)
     {
         return changeKind switch
@@ -131,6 +187,12 @@ public static class GitConvertExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a LibGit2Sharp <see cref="Mode"/> to a <see cref="GitEntryMode"/>.
+    /// </summary>
+    /// <param name="mode">The LibGit2Sharp file mode.</param>
+    /// <returns>The corresponding <see cref="GitEntryMode"/> value.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a recognized file mode.</exception>
     public static GitEntryMode ToGitEntryMode(this Mode mode)
     {
         return mode switch

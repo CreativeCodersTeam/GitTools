@@ -2,17 +2,13 @@
 
     <PropertyGroup>
         <Nullable>enable</Nullable>
+        <Description>Abstractions for Git operations including repositories, branches, commits, tags, remotes, and credential handling. Provides a strongly-typed interface layer on top of LibGit2Sharp.</Description>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CreativeCoders.Core"/>
         <PackageReference Include="JetBrains.Annotations"/>
 
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-        <Folder Include="Pushes\"/>
     </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <Nullable>enable</Nullable>
+        <Description>LibGit2Sharp-based implementation of CreativeCoders.Git.Abstractions. Provides repository operations, credential handling, and dependency injection registration via AddGit().</Description>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,10 +13,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CreativeCoders.Git.Abstractions\CreativeCoders.Git.Abstractions.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Merges\"/>
     </ItemGroup>
 
 </Project>

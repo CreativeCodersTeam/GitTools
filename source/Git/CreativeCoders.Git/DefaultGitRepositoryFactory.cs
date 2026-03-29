@@ -5,22 +5,25 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CreativeCoders.Git;
 
-internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
+/// <summary>
+/// Provides the default implementation of <see cref="IGitRepositoryFactory"/> for opening Git repositories.
+/// </summary>
+/// <param name="credentialProviders">The credential providers for authentication.</param>
+/// <param name="repositoryUtils">The repository utilities for path discovery.</param>
+/// <param name="serviceProvider">The service provider for resolving dependencies.</param>
+internal class DefaultGitRepositoryFactory(
+    IGitCredentialProviders credentialProviders,
+    IGitRepositoryUtils repositoryUtils,
+    IServiceProvider serviceProvider)
+    : IGitRepositoryFactory
 {
-    private readonly IGitCredentialProviders _credentialProviders;
+    private readonly IGitCredentialProviders _credentialProviders = Ensure.NotNull(credentialProviders);
 
-    private readonly IGitRepositoryUtils _repositoryUtils;
+    private readonly IGitRepositoryUtils _repositoryUtils = Ensure.NotNull(repositoryUtils);
 
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider = Ensure.NotNull(serviceProvider);
 
-    public DefaultGitRepositoryFactory(IGitCredentialProviders credentialProviders,
-        IGitRepositoryUtils repositoryUtils, IServiceProvider serviceProvider)
-    {
-        _credentialProviders = Ensure.NotNull(credentialProviders);
-        _repositoryUtils = Ensure.NotNull(repositoryUtils);
-        _serviceProvider = Ensure.NotNull(serviceProvider);
-    }
-
+    /// <inheritdoc />
     public IGitRepository OpenRepository(string? path)
     {
         var repo = path == null
@@ -32,6 +35,7 @@ internal class DefaultGitRepositoryFactory : IGitRepositoryFactory
             _serviceProvider.GetRequiredService<ILibGitCaller>());
     }
 
+    /// <inheritdoc />
     public IGitRepository OpenRepositoryFromCurrentDir()
     {
         return OpenRepository(Env.CurrentDirectory);

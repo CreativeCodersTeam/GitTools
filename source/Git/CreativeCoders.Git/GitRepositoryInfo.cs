@@ -2,17 +2,12 @@
 
 namespace CreativeCoders.Git;
 
-internal class GitRepositoryInfo : IGitRepositoryInfo
+/// <summary>
+/// Provides metadata information about a Git repository such as path, main branch, and remote URI.
+/// </summary>
+/// <param name="repository">The underlying LibGit2Sharp repository.</param>
+internal class GitRepositoryInfo(IRepository repository) : IGitRepositoryInfo
 {
-    public GitRepositoryInfo(IRepository repository)
-    {
-        Path = repository.Info.Path;
-
-        MainBranch = GetMainBranch(repository);
-
-        RemoteUri = new Uri(repository.Network.Remotes[GitRemotes.Origin].Url);
-    }
-
     private static GitMainBranch GetMainBranch(IRepository repository)
     {
         var mainBranch = repository.Branches[GitBranchNames.Remote.Main.CanonicalName];
@@ -29,9 +24,12 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             : GitMainBranch.Custom;
     }
 
-    public string? Path { get; }
+    /// <inheritdoc />
+    public string? Path { get; } = Ensure.NotNull(repository).Info.Path;
 
-    public GitMainBranch MainBranch { get; }
+    /// <inheritdoc />
+    public GitMainBranch MainBranch { get; } = GetMainBranch(repository);
 
-    public Uri RemoteUri { get; }
+    /// <inheritdoc />
+    public Uri RemoteUri { get; } = new Uri(Ensure.NotNull(repository).Network.Remotes[GitRemotes.Origin].Url);
 }

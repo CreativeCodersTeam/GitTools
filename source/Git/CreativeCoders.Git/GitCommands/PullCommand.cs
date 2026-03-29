@@ -8,6 +8,9 @@ using CreativeCoders.Git.Merges;
 
 namespace CreativeCoders.Git.GitCommands;
 
+/// <summary>
+/// Implements the pull command that fetches from a remote and merges into the current branch.
+/// </summary>
 internal class PullCommand : IPullCommand
 {
     private readonly RepositoryContext _repositoryContext;
@@ -20,6 +23,10 @@ internal class PullCommand : IPullCommand
 
     private Action<GitFetchTransferProgress>? _transferProgress;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PullCommand"/> class.
+    /// </summary>
+    /// <param name="repositoryContext">The repository context.</param>
     public PullCommand(RepositoryContext repositoryContext)
     {
         _repositoryContext = Ensure.NotNull(repositoryContext);
@@ -48,11 +55,13 @@ internal class PullCommand : IPullCommand
         return _checkoutNotify == null || _checkoutNotify(path, notifyFlags.ToGitCheckoutNotifyFlags());
     }
 
+    /// <inheritdoc />
     public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify)
     {
         return OnCheckoutNotify(notify, GitCheckoutNotifyFlags.All);
     }
 
+    /// <inheritdoc />
     public IPullCommand OnCheckoutNotify(GitSimpleCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
         return OnCheckoutNotify((path, checkoutNotifyFlag) =>
@@ -64,11 +73,13 @@ internal class PullCommand : IPullCommand
             notifyFlags);
     }
 
+    /// <inheritdoc />
     public IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify)
     {
         return OnCheckoutNotify(notify, GitCheckoutNotifyFlags.All);
     }
 
+    /// <inheritdoc />
     public IPullCommand OnCheckoutNotify(GitCheckoutNotifyHandler notify, GitCheckoutNotifyFlags notifyFlags)
     {
         Ensure.NotNull(notify);
@@ -80,6 +91,7 @@ internal class PullCommand : IPullCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPullCommand OnCheckoutProgress(GitCheckoutProgressHandler progress)
     {
         _checkoutProgress = Ensure.NotNull(progress);
@@ -87,6 +99,7 @@ internal class PullCommand : IPullCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPullCommand OnTransferProgress(Action<GitFetchTransferProgress> progress)
     {
         _transferProgress = Ensure.NotNull(progress);
@@ -94,6 +107,7 @@ internal class PullCommand : IPullCommand
         return this;
     }
 
+    /// <inheritdoc />
     public GitMergeResult Run()
     {
         var options = new PullOptions

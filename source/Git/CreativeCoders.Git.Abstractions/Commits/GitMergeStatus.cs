@@ -1,5 +1,8 @@
 ﻿namespace CreativeCoders.Git.Abstractions.Commits;
 
+/// <summary>
+/// Specifies the status of a Git merge operation.
+/// </summary>
 public enum GitMergeStatus
 {
     /// <summary>Merge was up-to-date.</summary>

@@ -4,6 +4,9 @@ using CreativeCoders.Git.Abstractions.Tags;
 
 namespace CreativeCoders.Git.Tags;
 
+/// <summary>
+/// Represents a collection of Git tags with operations for creating, deleting, and pushing tags.
+/// </summary>
 public class GitTagCollection : IGitTagCollection
 {
     private readonly RepositoryContext _context;
@@ -19,6 +22,7 @@ public class GitTagCollection : IGitTagCollection
         _libGitCaller = _context.LibGitCaller;
     }
 
+    /// <inheritdoc />
     public IGitTag CreateTag(string tagName, string? objectish = null)
     {
         return string.IsNullOrWhiteSpace(objectish)
@@ -26,6 +30,7 @@ public class GitTagCollection : IGitTagCollection
             : new GitTag(_libGitCaller.Invoke(() => _repository.ApplyTag(tagName, objectish)));
     }
 
+    /// <inheritdoc />
     public IGitTag CreateTagWithMessage(string tagName, string message, string? objectish = null)
     {
         return string.IsNullOrWhiteSpace(objectish)
@@ -34,6 +39,7 @@ public class GitTagCollection : IGitTagCollection
                 .Invoke(() => _repository.ApplyTag(tagName, objectish, _context.GetSignature(), message)));
     }
 
+    /// <inheritdoc />
     public void DeleteTag(string tagName, bool deleteOnRemote = false)
     {
         _libGitCaller.Invoke(() => _repository.Tags.Remove(tagName));
@@ -44,11 +50,13 @@ public class GitTagCollection : IGitTagCollection
         }
     }
 
+    /// <inheritdoc />
     public void DeleteTag(IGitTag tag, bool deleteOnRemote = false)
     {
         DeleteTag(tag.Name.Canonical, deleteOnRemote);
     }
 
+    /// <inheritdoc />
     public void DeleteRemoteTag(string tagName)
     {
         var pushOptions = new PushOptions
@@ -61,6 +69,7 @@ public class GitTagCollection : IGitTagCollection
                 pushOptions));
     }
 
+    /// <inheritdoc />
     public void PushTag(string tagName)
     {
         var pushOptions = new PushOptions
@@ -72,11 +81,13 @@ public class GitTagCollection : IGitTagCollection
             _repository.Network.Push(_repository.Network.Remotes[GitRemotes.Origin], tagName, pushOptions));
     }
 
+    /// <inheritdoc />
     public void PushTag(IGitTag tag)
     {
         PushTag(tag.Name.Canonical);
     }
 
+    /// <inheritdoc />
     public void PushAllTags()
     {
         this.ForEach(PushTag);

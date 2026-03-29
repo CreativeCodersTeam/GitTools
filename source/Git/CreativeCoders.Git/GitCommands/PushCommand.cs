@@ -9,6 +9,9 @@ using LibGit2Sharp.Handlers;
 
 namespace CreativeCoders.Git.GitCommands;
 
+/// <summary>
+/// Implements the push command that pushes local commits to a remote repository.
+/// </summary>
 internal class PushCommand : IPushCommand
 {
     private readonly RepositoryContext _repositoryContext;
@@ -31,6 +34,10 @@ internal class PushCommand : IPushCommand
 
     private Action<IEnumerable<IGitCommit>>? _unPushedCommits;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PushCommand"/> class.
+    /// </summary>
+    /// <param name="repositoryContext">The repository context.</param>
     public PushCommand(RepositoryContext repositoryContext)
     {
         _repositoryContext = Ensure.NotNull(repositoryContext);
@@ -120,9 +127,11 @@ internal class PushCommand : IPushCommand
         _repositoryContext.LibGitRepository.Network.Push(pushBranch, pushOptions);
     }
 
+    /// <inheritdoc />
     public IPushCommand CreateRemoteBranchIfNotExists()
         => CreateRemoteBranchIfNotExists(true);
 
+    /// <inheritdoc />
     public IPushCommand CreateRemoteBranchIfNotExists(bool createRemoteBranchIfNotExists)
     {
         _createRemoteBranchIfNotExists = createRemoteBranchIfNotExists;
@@ -130,6 +139,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand Branch(IGitBranch branch)
     {
         _branch = branch;
@@ -137,11 +147,13 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand Confirm()
     {
         return Confirm(true);
     }
 
+    /// <inheritdoc />
     public IPushCommand Confirm(bool confirm)
     {
         _confirm = confirm;
@@ -149,6 +161,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnPushStatusError(Action<GitPushStatusError> pushStatusError)
     {
         _pushStatusError = pushStatusError;
@@ -156,6 +169,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnPackBuilderProgress(Action<GitPackBuilderProgress> packBuilderProgress)
     {
         return OnPackBuilderProgress(x =>
@@ -166,6 +180,7 @@ internal class PushCommand : IPushCommand
         });
     }
 
+    /// <inheritdoc />
     public IPushCommand OnPackBuilderProgress(Func<GitPackBuilderProgress, bool> packBuilderProgress)
     {
         _packBuilderProgress = packBuilderProgress;
@@ -173,6 +188,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnTransferProgress(Action<GitPushTransferProgress> transferProgress)
     {
         return OnTransferProgress(x =>
@@ -183,6 +199,7 @@ internal class PushCommand : IPushCommand
         });
     }
 
+    /// <inheritdoc />
     public IPushCommand OnTransferProgress(Func<GitPushTransferProgress, bool> transferProgress)
     {
         _transferProgress = transferProgress;
@@ -190,6 +207,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnNegotiationCompletedBeforePush(
         Action<IEnumerable<GitPushUpdate>> negotiationCompletedBeforePush)
     {
@@ -201,6 +219,7 @@ internal class PushCommand : IPushCommand
         });
     }
 
+    /// <inheritdoc />
     public IPushCommand OnNegotiationCompletedBeforePush(
         Func<IEnumerable<GitPushUpdate>, bool> negotiationCompletedBeforePush)
     {
@@ -209,6 +228,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnUnPushedCommits(Action<IEnumerable<IGitCommit>> unPushedCommits)
     {
         _unPushedCommits = unPushedCommits;
@@ -216,6 +236,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public IPushCommand OnConfirm(Func<bool> doConfirm)
     {
         _doConfirm = doConfirm;
@@ -223,6 +244,7 @@ internal class PushCommand : IPushCommand
         return this;
     }
 
+    /// <inheritdoc />
     public void Run()
     {
         _repositoryContext.LibGitCaller.Invoke(PushInternal);

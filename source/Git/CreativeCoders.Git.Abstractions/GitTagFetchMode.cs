@@ -1,5 +1,8 @@
 ﻿namespace CreativeCoders.Git.Abstractions;
 
+/// <summary>
+/// Specifies the behavior for downloading tags during a fetch operation.
+/// </summary>
 public enum GitTagFetchMode
 {
     /// <summary>

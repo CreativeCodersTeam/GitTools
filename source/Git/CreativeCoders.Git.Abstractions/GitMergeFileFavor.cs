@@ -1,5 +1,8 @@
 ﻿namespace CreativeCoders.Git.Abstractions;
 
+/// <summary>
+/// Specifies how conflicting file content should be resolved during a merge.
+/// </summary>
 public enum GitMergeFileFavor
 {
     /// <summary>

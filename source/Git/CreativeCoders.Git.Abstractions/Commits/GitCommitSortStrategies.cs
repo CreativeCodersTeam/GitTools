@@ -3,6 +3,9 @@ using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Commits;
 
+/// <summary>
+/// Specifies the sort strategies for enumerating commits in a commit log.
+/// </summary>
 [PublicAPI]
 [Flags]
 public enum GitCommitSortStrategies
