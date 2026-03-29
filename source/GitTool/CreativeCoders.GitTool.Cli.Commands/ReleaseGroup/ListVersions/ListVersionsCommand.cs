@@ -1,13 +1,14 @@
 using CreativeCoders.Cli.Core;
 using CreativeCoders.Core;
 using CreativeCoders.Git.Abstractions;
-using CreativeCoders.Git.Abstractions.Tags;
 using CreativeCoders.GitTool.Base.Versioning;
 using CreativeCoders.SysConsole.Core;
+using JetBrains.Annotations;
 using Spectre.Console;
 
 namespace CreativeCoders.GitTool.Cli.Commands.ReleaseGroup.ListVersions;
 
+[UsedImplicitly]
 [CliCommand([ReleaseCommandGroup.Name, "list-versions"], Description = "Lists version tags")]
 public class ListVersionsCommand(IAnsiConsole ansiConsole, IGitRepository gitRepository)
     : ICliCommand<ListVersionsOptions>

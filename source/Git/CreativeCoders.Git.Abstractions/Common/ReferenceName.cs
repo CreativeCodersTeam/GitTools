@@ -61,12 +61,9 @@ public class ReferenceName : ComparableObject<ReferenceName>
     /// <exception cref="ArgumentException"><paramref name="canonicalName"/> is not a valid canonical reference name.</exception>
     public static ReferenceName Parse(string canonicalName)
     {
-        if (TryParse(canonicalName, out var referenceName))
-        {
-            return referenceName!;
-        }
-
-        throw new ArgumentException($"'{nameof(canonicalName)}' is not a canonical name");
+        return TryParse(canonicalName, out var referenceName)
+            ? referenceName!
+            : throw new ArgumentException($"'{nameof(canonicalName)}' is not a canonical name");
     }
 
     private string ShortenName()

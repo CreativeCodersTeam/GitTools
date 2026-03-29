@@ -3,7 +3,6 @@ using CreativeCoders.Cli.Hosting.Exceptions;
 using CreativeCoders.Core;
 using CreativeCoders.Core.Collections;
 using CreativeCoders.Git.Abstractions;
-using CreativeCoders.Git.Abstractions.Branches;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.SysConsole.Core;
