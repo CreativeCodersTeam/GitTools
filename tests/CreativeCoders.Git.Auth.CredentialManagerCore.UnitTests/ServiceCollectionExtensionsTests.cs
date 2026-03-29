@@ -1,9 +1,9 @@
-﻿using CreativeCoders.Git.Abstractions.Auth;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
+using CreativeCoders.Git.Abstractions.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests.DependencyInjection;
+namespace CreativeCoders.Git.Auth.CredentialManagerCore.UnitTests;
 
 public class ServiceCollectionExtensionsTests
 {
