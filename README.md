@@ -1,14 +1,14 @@
 # GitTools
 
-> A .NET-based CLI tool and Git abstraction library for streamlined Git workflows with GitHub and GitLab integration.
+> A .NET CLI tool and Git abstraction library for streamlined Git workflows with GitHub and GitLab integration.
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/CreativeCoders.GitTool)](https://www.nuget.org/packages/CreativeCoders.GitTool)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ## Overview
 
-GitTools is a collection of .NET libraries and a CLI tool (`gt`) that simplifies everyday Git workflows. It wraps [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) in a clean abstraction layer and adds high-level commands for managing feature branches, releases, tags, and more — with first-class integration for both GitHub and GitLab.
+GitTools provides the `gt` CLI tool and a set of .NET libraries that simplify everyday Git workflows. It wraps [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) in a clean abstraction layer and adds high-level commands for managing feature branches, releases, tags, and more — with first-class support for both **GitHub** and **GitLab**.
 
 ## Features
 
@@ -59,15 +59,15 @@ gt branch list                # List all local and remote branches
 gt branch info                # Show details about the current branch
 gt branch pull                # Pull the current branch from remote
 gt branch push                # Push the current branch to remote
-gt branch update              # Pull all permanent local branches (main, develop, …)
+gt branch update              # Pull all permanent local branches (main, develop, ...)
 ```
 
 ### Release commands
 
 ```bash
-gt release create 1.2.0          # Create a release tag v1.2.0
-gt release create --increment minor        # Auto-increment the minor version
-gt release list-versions                   # List all version tags
+gt release create 1.2.0              # Create a release tag v1.2.0
+gt release create --increment minor  # Auto-increment the minor version
+gt release list-versions             # List all version tags
 ```
 
 ### Tag commands
