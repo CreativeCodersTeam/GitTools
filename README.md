@@ -2,9 +2,12 @@
 
 > A .NET CLI tool and Git abstraction library for streamlined Git workflows with GitHub and GitLab integration.
 
+[![Build](https://github.com/CreativeCodersTeam/GitTools/actions/workflows/main.yml/badge.svg)](https://github.com/CreativeCodersTeam/GitTools/actions/workflows/main.yml)
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/CreativeCoders.GitTool)](https://www.nuget.org/packages/CreativeCoders.GitTool)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+[Features](#features) | [Getting started](#getting-started) | [Usage](#usage) | [Configuration](#configuration) | [Architecture](#architecture) | [Building from source](#building-from-source)
 
 ## Overview
 
@@ -19,24 +22,27 @@ GitTools provides the `gt` CLI tool and a set of .NET libraries that simplify ev
 - **GitHub integration** — automatic pull request creation via [Octokit](https://github.com/octokit/octokit.net)
 - **GitLab integration** — automatic merge request creation via [GitLabApiClient](https://github.com/nmklotas/GitLabApiClient)
 - **Credential support** — seamless authentication through [Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager)
+- **Git abstraction layer** — clean interfaces (`IGitRepository`, `IGitRepositoryFactory`, ...) for testable Git operations
 - **Per-repository configuration** — JSON-based configuration with sensible defaults
 
-## Installation
+## Getting started
 
-Install the `gt` CLI as a global .NET tool:
+1. Install the tool:
+   ```bash
+   dotnet tool install --global CreativeCoders.GitTool
+   ```
+2. Navigate to any Git repository:
+   ```bash
+   cd your-repo
+   ```
+3. Start your first feature:
+   ```bash
+   gt feature start my-feature
+   ```
 
-```bash
-dotnet tool install --global CreativeCoders.GitTool
-```
-
-Or update an existing installation:
-
-```bash
-dotnet tool update --global CreativeCoders.GitTool
-```
-
-> [!NOTE]
-> Requires [.NET 10 SDK](https://dotnet.microsoft.com/download) or later.
+> [!IMPORTANT]
+> Requires [.NET 10 SDK](https://dotnet.microsoft.com/download) or later and Git installed on your machine.
+> [Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager) is recommended for authentication.
 
 ## Usage
 
@@ -95,7 +101,8 @@ The tool reads its configuration from a JSON file located at:
 | macOS    | `~/Library/Application Support/CreativeCoders/GitTool/gt.json` |
 | Linux    | `~/.local/share/CreativeCoders/GitTool/gt.json` |
 
-### Example configuration
+<details>
+<summary>Example configuration</summary>
 
 ```json
 {
@@ -115,7 +122,10 @@ The tool reads its configuration from a JSON file located at:
 
 Per-repository configuration files (prefix `repo_`) in the same folder allow repository-specific overrides such as a custom develop branch name, feature branch prefix, or disabling TLS certificate validation for self-hosted instances.
 
-### Repository configuration defaults
+</details>
+
+<details>
+<summary>Repository configuration defaults</summary>
 
 | Setting | Default |
 |---------|---------|
@@ -125,9 +135,38 @@ Per-repository configuration files (prefix `repo_`) in the same folder allow rep
 | `gitServiceProviderName` | `github` |
 | `disableCertificateValidation` | `false` |
 
+</details>
+
+## Git abstraction library
+
+Beyond the CLI, GitTools ships a set of libraries that provide a clean, testable abstraction over [LibGit2Sharp](https://github.com/libgit2/libgit2sharp). You can reference these projects directly if you want to build your own Git tooling on top of them.
+
+Register the services via dependency injection:
+
+```csharp
+services.AddGit();
+```
+
+Then inject `IGitRepositoryFactory` to open repositories:
+
+```csharp
+public class MyService(IGitRepositoryFactory repoFactory)
+{
+    public void DoWork()
+    {
+        using var repo = repoFactory.OpenRepository("/path/to/repo");
+        var branches = repo.Branches;
+        // ...
+    }
+}
+```
+
+The abstraction layer exposes interfaces like `IGitRepository`, `IGitRepositoryFactory`, and `IGitRepositoryUtils` — making it straightforward to mock Git operations in tests.
+
 ## Architecture
 
-The solution is split into focused projects:
+<details>
+<summary>Project structure</summary>
 
 ```
 source/
@@ -143,6 +182,8 @@ source/
     └── CreativeCoders.GitTool.GitLab            # GitLab service provider (GitLabApiClient)
 ```
 
+</details>
+
 ## Building from source
 
 ```bash
@@ -156,7 +197,5 @@ dotnet test GitTools.sln
 dotnet pack source/GitTool/CreativeCoders.GitTool.Cli.GtApp/CreativeCoders.GitTool.Cli.GtApp.csproj
 ```
 
-## Requirements
-
-- .NET 10 SDK
-- Git (with [Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager) recommended for authentication)
+> [!TIP]
+> Found a bug or have a question? [Open an issue](https://github.com/CreativeCodersTeam/GitTools/issues).
