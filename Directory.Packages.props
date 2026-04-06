@@ -8,10 +8,10 @@
         <PackageVersion Include="AwesomeAssertions" Version="9.4.0"/>
         <PackageVersion Include="coverlet.collector" Version="8.0.1"/>
         <PackageVersion Include="coverlet.msbuild" Version="8.0.1"/>
-        <PackageVersion Include="CreativeCoders.CakeBuild" Version="6.7.0"/>
-        <PackageVersion Include="CreativeCoders.Cli.Hosting" Version="6.7.0"/>
-        <PackageVersion Include="CreativeCoders.Core" Version="6.7.0"/>
-        <PackageVersion Include="CreativeCoders.SysConsole.Core" Version="6.7.0"/>
+        <PackageVersion Include="CreativeCoders.CakeBuild" Version="6.7.1"/>
+        <PackageVersion Include="CreativeCoders.Cli.Hosting" Version="6.7.1"/>
+        <PackageVersion Include="CreativeCoders.Core" Version="6.7.1"/>
+        <PackageVersion Include="CreativeCoders.SysConsole.Core" Version="6.7.1"/>
         <PackageVersion Include="Devlooped.CredentialManager" Version="2.7.0"/>
         <PackageVersion Include="FakeItEasy" Version="9.0.1"/>
         <PackageVersion Include="GitLabApiClient" Version="1.8.0"/>
