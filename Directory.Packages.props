@@ -17,11 +17,11 @@
         <PackageVersion Include="GitLabApiClient" Version="1.8.0"/>
         <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4"/>
         <PackageVersion Include="LibGit2Sharp" Version="0.31.0"/>
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.6"/>
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.6"/>
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.6"/>
-        <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.6"/>
-        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.6"/>
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7"/>
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7"/>
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7"/>
+        <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.7"/>
+        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.7"/>
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0"/>
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageVersion Include="Octokit" Version="14.0.0"/>
