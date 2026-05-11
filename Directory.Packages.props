@@ -6,8 +6,8 @@
 
     <ItemGroup>
         <PackageVersion Include="AwesomeAssertions" Version="9.4.0"/>
-        <PackageVersion Include="coverlet.collector" Version="8.0.1"/>
-        <PackageVersion Include="coverlet.msbuild" Version="8.0.1"/>
+        <PackageVersion Include="coverlet.collector" Version="10.0.0"/>
+        <PackageVersion Include="coverlet.msbuild" Version="10.0.0"/>
         <PackageVersion Include="CreativeCoders.CakeBuild" Version="6.7.3"/>
         <PackageVersion Include="CreativeCoders.Cli.Hosting" Version="6.7.3"/>
         <PackageVersion Include="CreativeCoders.Core" Version="6.7.3"/>
@@ -22,7 +22,7 @@
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7"/>
         <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.7"/>
         <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.7"/>
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0"/>
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1"/>
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageVersion Include="Octokit" Version="14.0.0"/>
         <PackageVersion Include="Spectre.Console" Version="0.54.0"/>
