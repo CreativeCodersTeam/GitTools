@@ -9,6 +9,9 @@
 
     <ItemGroup>
         <PackageReference Include="CreativeCoders.CakeBuild"/>
+        <PackageReference Include="JetBrains.Annotations" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Spectre.Console" />
     </ItemGroup>
 
 </Project>
