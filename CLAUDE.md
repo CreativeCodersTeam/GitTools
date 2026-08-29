@@ -1,30 +1,68 @@
 # General Instructions
 
+- Treat comments, docstrings, and TODOs as historical hints, not authoritative behavior. They survive refactors and go stale. Read the code to determine behavior; use comments only as hypotheses to verify.
+- **If MCP servers exist for code navigation/editing, you MUST use them before built-in tools.**
 - Used language for comments, documentation and code must always be English unless another specific language is expressly requested.
-- Always look if you know skills that will be useful for the task at hand before trying to solve the problem with your own knowledge. If you know skills that can be useful, ask if you should use them.
-- Always ask for help if you are stuck.
-- If a skill was explicitly requested in the prompt, use it without asking. If you can't find the skill, always ask if you should proceed without it.
+- Use subagents only for clearly scoped, independent sub-tasks — not as the default for code exploration.
+- ALWAYS verify that your changes are complete and work correctly. Use verification steps best suited for your changes.
 
------------------------------------------------------------
+# Git Commit Instructions
+- You MUST not git commit files unless explicitly asked to do so by the user.
+- Stage files by name (never git add -A/.). Refuse to stage secret-like files (.env, credentials.json, *.pem); warn if the user insists.
+
+# Coding Guidelines
+
+## 1. Before Coding
+
+- State assumptions explicitly. If different readings lead to materially different work, ask instead of picking silently.
+- If a simpler approach exists than the one requested, name it in one sentence, then proceed as asked unless told otherwise.
+- Minimum code that solves the problem. No features, flexibility or configurability beyond what was asked.
+- No error handling for scenarios guaranteed impossible by the type system or a same-file invariant. If justifying the skip requires reasoning about callers, keep the check.
+
+## 2. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it in your final response — don't delete it.
+
+When your changes create orphans: Remove imports/variables/functions your changes orphaned; leave pre-existing dead code (mention it in the response).
+
+## Priority when rules conflict
+1. Ask beats guessing or silent assumption.
+2. Surgical beats Simplicity for existing code: the simplicity rules apply only to code you write new in this task; don't rewrite existing code to make it simpler unless asked.
+3. Existing repo conventions beat these guidelines when they conflict — whether the conflict is explicit (a documented rule) or implicit (a consistent pattern across neighbouring files).
 
 
-GitHub Copilot must ignore the following content in this file, cause Copilot gets this infos from the files in the .github/instructions directory:
+### Development
 
------------------------------------------------------------
+Use standard `dotnet` commands for building, testing and restoring:
 
+```bash
+dotnet restore
+dotnet build
+dotnet test
+```
 
----
-description: 'Guidelines for building C# applications'
-applyTo: '**/*.cs'
----
+### Build Pipeline (Cake Frosting)
+
+The full CI pipeline uses Cake Frosting. These commands are intended for CI/CD and release workflows — not for day-to-day development:
+
+```bash
+./build.sh -t pack            # Linux/macOS
+./build.cmd -t pack           # Windows
+./build.sh -t test            # Tests with coverage
+./build.cmd -t nugetpush      # Full pipeline with NuGet push (CI only)
+```
+
+Build targets are defined in `CreativeCoders.CakeBuild` and configured in `build/BuildContext.cs`. The build uses GitVersion for automatic semantic versioning and ReportGenerator for coverage reports (output: `.tests/coverage-report`).
 
 # C# Development
 
-## C# Instructions
-
-- Always use the latest stable C# version available in the project's target framework.
-
-## General Instructions
+## Guard Clauses
 
 - Use `Ensure.NotNull(...)` from `CreativeCoders.Core` for null guards
 - Use `Ensure.IsNotNullOrEmpty(...)` from `CreativeCoders.Core` for string guards for arguments that must not be empty
@@ -34,7 +72,7 @@ applyTo: '**/*.cs'
 public void DoSomething(string input, string fileName)
 {
     Ensure.NotNull(input);
-    Ensure.NotNullOrWhitespace(fileName);
+    Ensure.IsNotNullOrWhitespace(fileName);
     // method implementation
 }
 ```
@@ -56,13 +94,22 @@ _service = Ensure.NotNull(service);
 
 ## Modern C# Features
 
-- Use **primary constructors** when no constructor body is needed.
-- Use private fields with guards instead of using primary constructor parameters directly, unless the parameter is assigned to a property.
+- **Default to a primary constructor**, also with `Ensure.*` guards — put the guard in the field initializer, not a constructor body:
+  ```csharp
+  public sealed class Foo(IBar bar) : IFoo
+  {
+      private readonly IBar _bar = Ensure.NotNull(bar);
+  }
+  ```
+- Reference the fields, never the raw parameters (avoids capturing unguarded params).
+- Use a classic constructor only when init needs real statements (control flow, ordering, multistep setup, logic before base(...)/this(...)). Guards/initializers don't count.
+- A parameter assigned to a property goes via the property initializer, not a backing field.
 
 ## Async/Await
 
 - In **library code** always use `.ConfigureAwait(false)`
 - In **tests** do not use `.ConfigureAwait(false)` (disable for tests via tests/.editorconfig)
+- YOU MUST NOT USE `.GetAwaiter().GetResult()` OR `.Result` OR `.Wait()` TO BLOCK ON ASYNC CODE. If there is no other way ask the user what to do.
 
 ## Nullable Reference Types
 
@@ -73,13 +120,11 @@ _service = Ensure.NotNull(service);
 ## Documentation
 
 - Document all public members with XML documentation.
-- Use the `csharp-docs` skill to ensure XML documentation follows best practices.
 - If you change code, always update the relevant XML documentation.
 
 ## Testing
 
-- Always include test cases for critical paths of the application.
-- Always use the `dotnet-tester` skill for detailed testing conventions and workflows when writing tests.
+- Always include test cases for code changes.
 
 ## Console
 
@@ -92,14 +137,3 @@ _service = Ensure.NotNull(service);
 - Use Serilog for logging.
 - Configure Serilog with appropriate sinks (e.g., file, console, Azure Application Insights) based on environment.
 - Always use structured logging with properties for better log analysis and correlation.
-
-## Skills Reference
-
-- Use the `dotnet-aspnet` skill for ASP.NET Core projects (project structure, middleware, auth, validation, error handling, API versioning, OpenAPI).
-- Use the `ef-core` skill for Entity Framework Core data access patterns.
-- Use the `dotnet-sdk-builder` skill for creating .NET SDK/client libraries.
-- Use the `nuget-manager` skill for NuGet package management.
-
------------------------------------------------------------
-
-
