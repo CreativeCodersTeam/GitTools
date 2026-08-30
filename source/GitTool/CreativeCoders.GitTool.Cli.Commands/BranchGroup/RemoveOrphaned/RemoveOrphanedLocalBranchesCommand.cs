@@ -76,17 +76,8 @@ public class RemoveOrphanedLocalBranchesCommand(
         // non-interactively, and only an actual selection needs a terminal.
         if (requiresSelection && !_ansiConsole.Profile.Capabilities.Interactive)
         {
-            var abortMessage = options.All
-                ? "The fetch prune failed, so the orphaned branches may be based on a stale remote "
-                  + "state. Deleting them without selection needs an interactive terminal. "
-                  + "Use option '--skip-fetch-prune' to accept the local branch state."
-                : "Selecting branches needs an interactive terminal. Use option '--all' to delete "
-                  + "all orphaned local branches without selection"
-                  + (fetchPruneFailed
-                      ? " and '--skip-fetch-prune' to accept the local branch state."
-                      : ".");
-
-            throw new CliCommandAbortException(abortMessage, ReturnCodes.NoInteractiveTerminal);
+            throw new CliCommandAbortException(BuildAbortMessage(options.All, fetchPruneFailed),
+                ReturnCodes.NoInteractiveTerminal);
         }
 
         if (options.All && fetchPruneFailed)
@@ -108,6 +99,23 @@ public class RemoveOrphanedLocalBranchesCommand(
         }
 
         return DeleteBranches(selectedBranches);
+    }
+
+    private static string BuildAbortMessage(bool all, bool fetchPruneFailed)
+    {
+        if (all)
+        {
+            return "The fetch prune failed, so the orphaned branches may be based on a stale remote "
+                   + "state. Deleting them without selection needs an interactive terminal. "
+                   + "Use option '--skip-fetch-prune' to accept the local branch state.";
+        }
+
+        var skipFetchPruneHint = fetchPruneFailed
+            ? " and '--skip-fetch-prune' to accept the local branch state."
+            : ".";
+
+        return "Selecting branches needs an interactive terminal. Use option '--all' to delete "
+               + "all orphaned local branches without selection" + skipFetchPruneHint;
     }
 
     private async Task<IReadOnlyCollection<IGitBranch>> SelectBranchesAsync(

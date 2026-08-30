@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace CreativeCoders.Git.Abstractions.Merges;
@@ -6,6 +7,7 @@ namespace CreativeCoders.Git.Abstractions.Merges;
 /// <summary>Flags controlling checkout notification behavior.</summary>
 [PublicAPI]
 [Flags]
+[SuppressMessage("", "S2344", Justification = "Mirrors the LibGit2Sharp CheckoutNotifyFlags naming")]
 public enum GitCheckoutNotifyFlags
 {
     /// <summary>No checkout notification.</summary>

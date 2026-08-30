@@ -49,7 +49,7 @@ public class DefaultGcmCoreCredentialProviderTests
             .Should()
             .NotBeNull();
 
-        credentials!.UserName
+        credentials.UserName
             .Should()
             .Be(expectedUserName);
 
