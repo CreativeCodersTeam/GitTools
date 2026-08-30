@@ -51,6 +51,11 @@ public class GitBranchCollection : IGitBranchCollection
     {
         var branch = _libGitCaller.Invoke(() => _context.LibGitRepository.Branches[branchName]);
 
+        if (branch is null)
+        {
+            throw new GitBranchNotExistsException(branchName);
+        }
+
         if (branch.IsRemote)
         {
             return;

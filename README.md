@@ -65,7 +65,8 @@ gt branch list                # List all local and remote branches
 gt branch info                # Show details about the current branch
 gt branch pull                # Pull the current branch from remote
 gt branch push                # Push the current branch to remote
-gt branch update              # Pull all permanent local branches (main, develop, ...)
+gt branch update              # Pull all permanent local branches (--skip-fetch-prune to skip pruning)
+gt branch remove-orphaned     # Delete local branches that have no counterpart on the remote
 ```
 
 ### Release commands
