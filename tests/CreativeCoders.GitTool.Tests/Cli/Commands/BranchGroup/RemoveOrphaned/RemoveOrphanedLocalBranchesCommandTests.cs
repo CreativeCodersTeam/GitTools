@@ -172,6 +172,25 @@ public class RemoveOrphanedLocalBranchesCommandTests
         A.CallTo(() => gitRepository.Fetch(A<string>._, A<GitFetchOptions>._)).MustNotHaveHappened();
     }
 
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ExecuteAsync_IncludeUntrackedOption_PassesValueToProvider(bool includeUntracked)
+    {
+        // Arrange
+        var gitRepository = CreateRepository(A.Fake<IGitBranchCollection>());
+
+        var sut = CreateSut(new TestConsole(), gitRepository, out var orphanedLocalBranchesProvider);
+
+        // Act
+        await sut.ExecuteAsync(new RemoveOrphanedLocalBranchesOptions { IncludeUntracked = includeUntracked });
+
+        // Assert
+        A.CallTo(() => orphanedLocalBranchesProvider.GetOrphanedLocalBranches(includeUntracked))
+            .MustHaveHappenedOnceExactly();
+    }
+
     [Fact]
     public async Task ExecuteAsync_FetchPruneFails_WritesWarningAndShowsSelection()
     {
@@ -325,13 +344,19 @@ public class RemoveOrphanedLocalBranchesCommandTests
 
     private static RemoveOrphanedLocalBranchesCommand CreateSut(IAnsiConsole ansiConsole,
         IGitRepository gitRepository, params IGitBranch[] orphanedBranches)
+        => CreateSut(ansiConsole, gitRepository, out _, orphanedBranches);
+
+    private static RemoveOrphanedLocalBranchesCommand CreateSut(IAnsiConsole ansiConsole,
+        IGitRepository gitRepository, out IOrphanedLocalBranchesProvider orphanedLocalBranchesProvider,
+        params IGitBranch[] orphanedBranches)
     {
-        var orphanedLocalBranchesProvider = A.Fake<IOrphanedLocalBranchesProvider>();
+        var provider = A.Fake<IOrphanedLocalBranchesProvider>();
 
-        A.CallTo(() => orphanedLocalBranchesProvider.GetOrphanedLocalBranches()).Returns(orphanedBranches);
+        A.CallTo(() => provider.GetOrphanedLocalBranches(A<bool>._)).Returns(orphanedBranches);
 
-        return new RemoveOrphanedLocalBranchesCommand(ansiConsole, A.Fake<ICml>(), gitRepository,
-            orphanedLocalBranchesProvider);
+        orphanedLocalBranchesProvider = provider;
+
+        return new RemoveOrphanedLocalBranchesCommand(ansiConsole, A.Fake<ICml>(), gitRepository, provider);
     }
 
     private static IGitRepository CreateRepository(IGitBranchCollection branchCollection)

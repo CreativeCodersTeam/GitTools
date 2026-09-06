@@ -33,4 +33,21 @@ public class RemoveOrphanedLocalBranchesOptions
     [OptionParameter("sp", "skip-fetch-prune",
         HelpText = "Skips the fetch prune before determining the orphaned local branches")]
     public bool SkipFetchPrune { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value that indicates whether local branches without a configured upstream are also treated
+    /// as orphaned.
+    /// </summary>
+    /// <value>
+    /// <see langword="true"/> to treat a local branch as orphaned when no remote branch with the same name exists,
+    /// regardless of whether an upstream is configured; otherwise, <see langword="false"/> to treat only branches
+    /// whose configured upstream no longer exists as orphaned.
+    /// </value>
+    /// <remarks>
+    /// Without this option, local branches that have never been pushed are not reported as orphaned. The option is
+    /// orthogonal to <see cref="All"/> and <see cref="SkipFetchPrune"/>.
+    /// </remarks>
+    [OptionParameter('u', "include-untracked",
+        HelpText = "Also treats local branches without a configured upstream as orphaned")]
+    public bool IncludeUntracked { get; set; }
 }

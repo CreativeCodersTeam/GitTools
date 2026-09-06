@@ -66,7 +66,7 @@ gt branch info                # Show details about the current branch
 gt branch pull                # Pull the current branch from remote
 gt branch push                # Push the current branch to remote
 gt branch update              # Pull all permanent local branches (--skip-fetch-prune to skip pruning)
-gt branch remove-orphaned     # Delete local branches that have no counterpart on the remote
+gt branch remove-orphaned     # Delete local branches whose remote branch was deleted (-u: also never-pushed branches)
 ```
 
 ### Release commands

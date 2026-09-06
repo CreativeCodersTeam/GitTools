@@ -14,7 +14,7 @@ namespace CreativeCoders.GitTool.Cli.Commands.BranchGroup.RemoveOrphaned;
 
 [UsedImplicitly]
 [CliCommand([BranchCommandGroup.Name, "remove-orphaned"],
-    Description = "Removes local branches which have no counterpart on the remote")]
+    Description = "Removes local branches whose remote counterpart was deleted")]
 public class RemoveOrphanedLocalBranchesCommand(
     IAnsiConsole ansiConsole,
     ICml cml,
@@ -59,7 +59,7 @@ public class RemoveOrphanedLocalBranchesCommand(
             }
         }
 
-        var orphanedBranches = _orphanedLocalBranchesProvider.GetOrphanedLocalBranches();
+        var orphanedBranches = _orphanedLocalBranchesProvider.GetOrphanedLocalBranches(options.IncludeUntracked);
 
         if (orphanedBranches.Count == 0)
         {

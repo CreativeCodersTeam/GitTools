@@ -129,7 +129,7 @@ SPEC §3.1 for `false` and keeps today's §3.2 name matching for `true`, with bo
 the new signature with `includeUntracked: true` until Task #2 wires the option.
 Depends on: none
 Parallel with: —
-Status: ready
+Status: done
 
 Consumes:
 - `IGitBranch.IsRemote`, `IsTracking`, `TrackedBranch`, `Name.Canonical`, `Name.Friendly` (existing, `source/Git/CreativeCoders.Git.Abstractions/Branches/IGitBranch.cs`)
@@ -177,22 +177,22 @@ NFR-2 → automated   dotnet test — all pre-existing tests green (provider and
 ```
 
 Todos:
-- [ ] Test `GetOrphanedLocalBranches_TrackingBranchWithMissingRemoteRef_ReturnsBranch` for AC-1 / FR-1 — failing (does not compile until IF-1 exists)
+- [x] Test `GetOrphanedLocalBranches_TrackingBranchWithMissingRemoteRef_ReturnsBranch` for AC-1 / FR-1 — failing (does not compile until IF-1 exists)
   - prerequisite: extend `CreateBranch` in `OrphanedLocalBranchesProviderTests` with `bool isTracking = false, IGitBranch? trackedBranch = null` and configure `IsTracking` and `TrackedBranch` explicitly on the fake (see FakeItEasy caveat in §3; `Returns(null)` when `trackedBranch` is null). Remote-tracking fakes are created with `CreateBranch("refs/remotes/<remote>/<name>", true)` and passed as `trackedBranch`.
-- [ ] Test `GetOrphanedLocalBranches_TrackingBranchWithExistingRemoteRef_DoesNotReturnBranch` for AC-2 — failing
-- [ ] Test `GetOrphanedLocalBranches_LocalBranchWithoutUpstream_DoesNotReturnBranch` for AC-3 (`isTracking: false`, `trackedBranch: null`) — failing
-- [ ] Test `GetOrphanedLocalBranches_IsTrackingWithoutTrackedBranch_DoesNotReturnBranch` for AC-4 (`isTracking: true`, `trackedBranch: null`) — failing
-- [ ] Test `GetOrphanedLocalBranches_CurrentHeadBranchWithMissingRemoteRef_DoesNotReturnBranch` for AC-5 / FR-3 — failing
-- [ ] Test `GetOrphanedLocalBranches_RemoteBranch_DoesNotReturnBranch` for AC-6 / FR-3 — failing
-- [ ] Test `GetOrphanedLocalBranches_MultipleTrackingBranchesWithMissingRemoteRefs_ReturnsAllOfThem` for AC-7 — failing
-- [ ] Test `GetOrphanedLocalBranches_TrackingBranchOnSecondRemoteWithExistingRef_DoesNotReturnBranch` for AC-8 (`remoteNames: ["origin", "upstream"]`, remote-tracking fake `refs/remotes/upstream/...` present in `branches`) — failing
-- [ ] Test `GetOrphanedLocalBranches_IncludeUntrackedWithLocalBranchWithoutUpstream_ReturnsBranch` for AC-10 / FR-2 — failing
-- [ ] Change the 9 existing tests to call `sut.GetOrphanedLocalBranches(includeUntracked: true)`; expectations and names unchanged (AC-9)
-- [ ] Change `IOrphanedLocalBranchesProvider.GetOrphanedLocalBranches()` to `GetOrphanedLocalBranches(bool includeUntracked)`; update `<summary>`, add `<param name="includeUntracked">`, extend `<remarks>` to describe both modes and the HEAD invariant (IF-1)
-- [ ] Implement in `OrphanedLocalBranchesProvider`: keep the existing name-matching block as the `includeUntracked` path verbatim (constraint 6); add the tracking-based path: set of `Name.Canonical` of all `IsRemote` branches (`StringComparer.OrdinalIgnoreCase`), return branches with `!IsRemote && !Equals(head) && IsTracking && TrackedBranch is not null && !set.Contains(TrackedBranch.Name.Canonical)` (FR-1, FR-3)
-- [ ] Update the call site in `RemoveOrphanedLocalBranchesCommand.ExecuteAsync` to `GetOrphanedLocalBranches(includeUntracked: true)` — temporary, keeps today's behaviour; replaced in Task #2
-- [ ] Update `CreateSut` in `RemoveOrphanedLocalBranchesCommandTests` to `A.CallTo(() => orphanedLocalBranchesProvider.GetOrphanedLocalBranches(A<bool>._)).Returns(orphanedBranches)`
-- [ ] `dotnet build` and `dotnet test` green; all 13 existing command tests untouched apart from `CreateSut` (NFR-2)
+- [x] Test `GetOrphanedLocalBranches_TrackingBranchWithExistingRemoteRef_DoesNotReturnBranch` for AC-2 — failing
+- [x] Test `GetOrphanedLocalBranches_LocalBranchWithoutUpstream_DoesNotReturnBranch` for AC-3 (`isTracking: false`, `trackedBranch: null`) — failing
+- [x] Test `GetOrphanedLocalBranches_IsTrackingWithoutTrackedBranch_DoesNotReturnBranch` for AC-4 (`isTracking: true`, `trackedBranch: null`) — failing
+- [x] Test `GetOrphanedLocalBranches_CurrentHeadBranchWithMissingRemoteRef_DoesNotReturnBranch` for AC-5 / FR-3 — failing
+- [x] Test `GetOrphanedLocalBranches_RemoteBranch_DoesNotReturnBranch` for AC-6 / FR-3 — failing
+- [x] Test `GetOrphanedLocalBranches_MultipleTrackingBranchesWithMissingRemoteRefs_ReturnsAllOfThem` for AC-7 — failing
+- [x] Test `GetOrphanedLocalBranches_TrackingBranchOnSecondRemoteWithExistingRef_DoesNotReturnBranch` for AC-8 (`remoteNames: ["origin", "upstream"]`, remote-tracking fake `refs/remotes/upstream/...` present in `branches`) — failing
+- [x] Test `GetOrphanedLocalBranches_IncludeUntrackedWithLocalBranchWithoutUpstream_ReturnsBranch` for AC-10 / FR-2 — failing
+- [x] Change the 9 existing tests to call `sut.GetOrphanedLocalBranches(includeUntracked: true)`; expectations and names unchanged (AC-9)
+- [x] Change `IOrphanedLocalBranchesProvider.GetOrphanedLocalBranches()` to `GetOrphanedLocalBranches(bool includeUntracked)`; update `<summary>`, add `<param name="includeUntracked">`, extend `<remarks>` to describe both modes and the HEAD invariant (IF-1)
+- [x] Implement in `OrphanedLocalBranchesProvider`: keep the existing name-matching block as the `includeUntracked` path verbatim (constraint 6); add the tracking-based path: set of `Name.Canonical` of all `IsRemote` branches (`StringComparer.OrdinalIgnoreCase`), return branches with `!IsRemote && !Equals(head) && IsTracking && TrackedBranch is not null && !set.Contains(TrackedBranch.Name.Canonical)` (FR-1, FR-3)
+- [x] Update the call site in `RemoveOrphanedLocalBranchesCommand.ExecuteAsync` to `GetOrphanedLocalBranches(includeUntracked: true)` — temporary, keeps today's behaviour; replaced in Task #2
+- [x] Update `CreateSut` in `RemoveOrphanedLocalBranchesCommandTests` to `A.CallTo(() => orphanedLocalBranchesProvider.GetOrphanedLocalBranches(A<bool>._)).Returns(orphanedBranches)`
+- [x] `dotnet build` and `dotnet test` green; all 13 existing command tests untouched apart from `CreateSut` (NFR-2)
 
 Done when: all Verifies tests pass, the full test run is green, the interface documentation describes
 both modes, and `gt branch remove-orphaned` behaves exactly as before (compatibility path via the
@@ -206,7 +206,7 @@ and run the manual verification the spec requires before the change is done
 (IF-2, FR-4, AC-11, AC-12, NFR-1, NFR-2).
 Depends on: #1
 Parallel with: —
-Status: ready
+Status: done
 
 Consumes:
 - IF-1 `GetOrphanedLocalBranches(bool includeUntracked)` — from #1
@@ -231,15 +231,15 @@ NFR-2 → automated   dotnet test — all pre-existing tests green
 ```
 
 Todos:
-- [ ] Test `ExecuteAsync_IncludeUntrackedOption_PassesValueToProvider(bool includeUntracked)` for AC-11 / FR-4 in `RemoveOrphanedLocalBranchesCommandTests`: `[Theory]`, `[InlineData(true)]`, `[InlineData(false)]`; arrange `new RemoveOrphanedLocalBranchesOptions { IncludeUntracked = includeUntracked }`, assert `A.CallTo(() => provider.GetOrphanedLocalBranches(includeUntracked)).MustHaveHappenedOnceExactly()` (the provider fake must be reachable from the test; extend `CreateSut` or create the fake inline in the style of `CreateRepository`) — failing (property does not exist)
-- [ ] Add `public bool IncludeUntracked { get; set; }` to `RemoveOrphanedLocalBranchesOptions` with `[OptionParameter('u', "include-untracked", HelpText = "Also treats local branches without a configured upstream as orphaned")]` and XML docs (`<summary>`, `<value>`, `<remarks>`) in the shape of `SkipFetchPrune` (IF-2)
-- [ ] Replace `GetOrphanedLocalBranches(includeUntracked: true)` in `RemoveOrphanedLocalBranchesCommand.ExecuteAsync` with `GetOrphanedLocalBranches(options.IncludeUntracked)` (FR-4)
-- [ ] Update `[CliCommand(... Description = ...)]` on `RemoveOrphanedLocalBranchesCommand` — proposed text (G-1): `"Removes local branches whose remote counterpart was deleted"`
-- [ ] Update `README.md` line 69 — proposed text (G-2): `gt branch remove-orphaned     # Delete local branches whose remote branch was deleted (-u: also never-pushed branches)`
-- [ ] `dotnet build` and `dotnet test` green; compare the warning count with `main` (NFR-1, NFR-2)
-- [ ] Manual check IF-2: `gt branch remove-orphaned --help` lists `-u, --include-untracked` with the help text
-- [ ] Manual check AC-12 on a real repository (owner: user): (1) create a branch, push it, delete it on the remote, run `gt branch remove-orphaned` — the branch is reported; (2) a never-pushed local branch is **not** reported; (3) `gt branch remove-orphaned -u` reports both. If (1) fails, run `gt branch list` — if the pruned branch shows no tracked name, `TrackedBranch` is `null` after the prune (SPEC §3.3): **stop and report back**; do not extend `IGitRepository` / `IGitBranch` (SPEC §7 Ask first)
-- [ ] XML docs of every changed member re-read against the new behaviour (constraint 8)
+- [x] Test `ExecuteAsync_IncludeUntrackedOption_PassesValueToProvider(bool includeUntracked)` for AC-11 / FR-4 in `RemoveOrphanedLocalBranchesCommandTests`: `[Theory]`, `[InlineData(true)]`, `[InlineData(false)]`; arrange `new RemoveOrphanedLocalBranchesOptions { IncludeUntracked = includeUntracked }`, assert `A.CallTo(() => provider.GetOrphanedLocalBranches(includeUntracked)).MustHaveHappenedOnceExactly()` (the provider fake must be reachable from the test; extend `CreateSut` or create the fake inline in the style of `CreateRepository`) — failing (property does not exist)
+- [x] Add `public bool IncludeUntracked { get; set; }` to `RemoveOrphanedLocalBranchesOptions` with `[OptionParameter('u', "include-untracked", HelpText = "Also treats local branches without a configured upstream as orphaned")]` and XML docs (`<summary>`, `<value>`, `<remarks>`) in the shape of `SkipFetchPrune` (IF-2)
+- [x] Replace `GetOrphanedLocalBranches(includeUntracked: true)` in `RemoveOrphanedLocalBranchesCommand.ExecuteAsync` with `GetOrphanedLocalBranches(options.IncludeUntracked)` (FR-4)
+- [x] Update `[CliCommand(... Description = ...)]` on `RemoveOrphanedLocalBranchesCommand` — proposed text (G-1): `"Removes local branches whose remote counterpart was deleted"`
+- [x] Update `README.md` line 69 — proposed text (G-2): `gt branch remove-orphaned     # Delete local branches whose remote branch was deleted (-u: also never-pushed branches)`
+- [x] `dotnet build` and `dotnet test` green; compare the warning count with `main` (NFR-1, NFR-2)
+- [x] Manual check IF-2: `gt branch remove-orphaned --help` lists `-u, --include-untracked` with the help text
+- [x] Manual check AC-12 on a real repository (owner: user): (1) create a branch, push it, delete it on the remote, run `gt branch remove-orphaned` — the branch is reported; (2) a never-pushed local branch is **not** reported; (3) `gt branch remove-orphaned -u` reports both. If (1) fails, run `gt branch list` — if the pruned branch shows no tracked name, `TrackedBranch` is `null` after the prune (SPEC §3.3): **stop and report back**; do not extend `IGitRepository` / `IGitBranch` (SPEC §7 Ask first)
+- [x] XML docs of every changed member re-read against the new behaviour (constraint 8)
 
 Done when: the AC-11 theory passes for both values, build and full test run are green with no new
 warnings, README and command description describe the new default, and the manual checks IF-2 and
@@ -326,3 +326,7 @@ implementation are recorded here, not applied silently.
 
 | Date | Task | Change | Reason | Origin |
 |---|---|---|---|---|
+| 2026-09-06 | #1 | Test `GetOrphanedLocalBranches_RemoteBranch_DoesNotReturnBranch` (AC-6): the remote-branch fake is additionally configured with `isTracking: true` and a `trackedBranch` whose ref is missing | Otherwise the test passes for the wrong reason (rule 3 fails before rule 1 is checked); with the extra setup `IsRemote` is the deciding condition. Test-only, same expectation | implement-dev-plan |
+| 2026-09-06 | #1 | New test `GetOrphanedLocalBranches_NotTrackingWithTrackedBranchSet_DoesNotReturnBranch` (isTracking: false, TrackedBranch set with missing ref, default mode → not returned) added as a Verifies entry for FR-1 rule 3 | Review round 1 F-1 (major): no existing test isolated §3.1 rule 3; mutation check confirmed exactly this test fails without `&& x.IsTracking`. Per D-7 | implement-dev-plan |
+| 2026-09-06 | #1 | `OrphanedLocalBranchesProvider.GetOrphanedLocalBranches(bool)` delegates to private helpers `GetOrphanedByName(branches, currentBranch)` (instance; contains the name-matching block verbatim) and `GetOrphanedByTracking(branches, currentBranch)` (static) instead of an `if (includeUntracked)` block | Review round 1 F-2 (suggestion), selected by the user (D-7); IF-1 signature unchanged, block moved byte-identical modulo indentation (constraint 6), no new types (constraint 4) | implement-dev-plan |
+| 2026-09-06 | #2 | `RemoveOrphanedLocalBranchesCommandTests.CreateSut` gained an overload with `out IOrphanedLocalBranchesProvider`; the existing overload delegates to it; the AC-11 test uses the overload instead of an inline fake | Review round 1 F-3 (suggestion), selected by the user (D-7); single SUT construction path | implement-dev-plan |

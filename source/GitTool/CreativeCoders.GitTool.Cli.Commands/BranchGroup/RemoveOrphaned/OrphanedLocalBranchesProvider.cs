@@ -13,12 +13,19 @@ public class OrphanedLocalBranchesProvider(IGitRepository gitRepository) : IOrph
     private readonly IGitRepository _gitRepository = Ensure.NotNull(gitRepository);
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IGitBranch> GetOrphanedLocalBranches()
+    public IReadOnlyCollection<IGitBranch> GetOrphanedLocalBranches(bool includeUntracked)
     {
         var currentBranch = _gitRepository.Head;
 
         var branches = _gitRepository.Branches.ToArray();
 
+        return includeUntracked
+            ? GetOrphanedByName(branches, currentBranch)
+            : GetOrphanedByTracking(branches, currentBranch);
+    }
+
+    private IReadOnlyCollection<IGitBranch> GetOrphanedByName(IGitBranch[] branches, IGitBranch currentBranch)
+    {
         var remoteFriendlyNames = branches
             .Where(x => x.IsRemote)
             .Select(x => x.Name.Friendly)
@@ -34,6 +41,23 @@ public class OrphanedLocalBranchesProvider(IGitRepository gitRepository) : IOrph
             .Where(x => !x.IsRemote
                         && !x.Equals(currentBranch)
                         && !trackedBranchNames.Contains(x.Name.Friendly))
+            .ToArray();
+    }
+
+    private static IReadOnlyCollection<IGitBranch> GetOrphanedByTracking(IGitBranch[] branches,
+        IGitBranch currentBranch)
+    {
+        var remoteCanonicalNames = branches
+            .Where(x => x.IsRemote)
+            .Select(x => x.Name.Canonical)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return branches
+            .Where(x => !x.IsRemote
+                        && !x.Equals(currentBranch)
+                        && x.IsTracking
+                        && x.TrackedBranch is not null
+                        && !remoteCanonicalNames.Contains(x.TrackedBranch.Name.Canonical))
             .ToArray();
     }
 }
