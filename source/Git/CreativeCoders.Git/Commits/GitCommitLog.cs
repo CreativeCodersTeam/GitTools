@@ -78,7 +78,8 @@ public class GitCommitLog : IGitCommitLog
 
         if (commitFilter.MessagePattern is not null)
         {
-            var regex = new Regex(commitFilter.MessagePattern, RegexOptions.IgnoreCase);
+            var regex = new Regex(commitFilter.MessagePattern, RegexOptions.IgnoreCase,
+                TimeSpan.FromSeconds(2));
             results = results.Where(c => regex.IsMatch(c.Message));
         }
 

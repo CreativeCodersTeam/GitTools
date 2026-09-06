@@ -14,5 +14,5 @@ public interface ICml
 
     string HighLight(string text);
 
-    string Url(string text);
+    string Url(string url);
 }

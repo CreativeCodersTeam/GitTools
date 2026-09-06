@@ -1,4 +1,6 @@
-﻿namespace CreativeCoders.Git.Merges;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CreativeCoders.Git.Merges;
 
 /// <summary>
 /// Represents configuration options for a Git merge operation.
@@ -13,6 +15,8 @@ public class GitMergeOptions
 
     }
 
+    [SuppressMessage("", "S2325",
+        Justification = "Placeholder that will map instance state once merge options are supported")]
     internal MergeOptions ToMergeOptions()
     {
         return new MergeOptions();

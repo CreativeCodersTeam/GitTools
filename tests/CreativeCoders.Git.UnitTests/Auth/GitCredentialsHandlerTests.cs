@@ -36,7 +36,7 @@ public class GitCredentialsHandlerTests
             .Should()
             .NotBeNull();
 
-        credentials!.Username
+        credentials.Username
             .Should()
             .Be(expectedUserName);
 

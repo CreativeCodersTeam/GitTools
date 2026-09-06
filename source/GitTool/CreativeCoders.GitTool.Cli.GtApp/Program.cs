@@ -7,6 +7,7 @@ using CreativeCoders.Git.Abstractions;
 using CreativeCoders.GitTool.Base;
 using CreativeCoders.GitTool.Base.Configurations;
 using CreativeCoders.GitTool.Base.Output;
+using CreativeCoders.GitTool.Cli.Commands.BranchGroup;
 using CreativeCoders.GitTool.Cli.Commands.FeatureGroup;
 using CreativeCoders.GitTool.Cli.Commands.Shared;
 using CreativeCoders.GitTool.Cli.Commands.Tool.ShowConfig;
@@ -43,6 +44,8 @@ internal static class Program
         services.Configure<ToolConfiguration>(configuration.GetSection("tool"));
 
         ConfigureGitRepository(services);
+
+        services.AddGitBranchCommands();
 
         services.AddGitFeatureCommands();
 

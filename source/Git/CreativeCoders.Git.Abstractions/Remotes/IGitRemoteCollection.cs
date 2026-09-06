@@ -15,8 +15,4 @@ public interface IGitRemoteCollection : IEnumerable<IGitRemote>
     /// <param name="name">The name of the remote.</param>
     /// <returns>The matching remote, or <see langword="null"/> if not found.</returns>
     IGitRemote? this[string name] { get; }
-
-    //void Remove(string remoteName);
-
-    //void Update(string remoteName, string refSpec);
 }
