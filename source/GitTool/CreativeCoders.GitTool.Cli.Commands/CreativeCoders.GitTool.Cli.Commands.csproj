@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="CreativeCoders.Cli.Hosting"/>
         <PackageReference Include="CreativeCoders.SysConsole.Core"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     </ItemGroup>
 
     <ItemGroup>
